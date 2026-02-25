@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS: Zero to Job-Ready</title>
+<style>
+:root{--bg:#0d0d0d;--s:#141414;--s2:#1c1c1c;--b:#252525;--a:#f0b429;--a2:#3ecf8e;--a3:#7c6af7;--d:#f87171;--info:#38bdf8;--t:#e4e4e4;--m:#777;--cb:#090909}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.75}
+.hero{background:linear-gradient(160deg,#0f0a1a 0%,#0d0d0d 60%);border-bottom:1px solid var(--b);padding:72px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(124,106,247,.12) 0%,transparent 65%);pointer-events:none}
+.badge{display:inline-block;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);color:var(--a);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:6px 18px;border-radius:100px;margin-bottom:28px}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.05;margin-bottom:20px;letter-spacing:-1px}
+.hero h1 span{color:var(--a)}
+.hero>p{color:var(--m);font-size:1.1rem;max-width:520px;margin:0 auto 36px}
+.stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
+.sn{font-size:2rem;font-weight:900;color:var(--a2);line-height:1}
+.sl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+nav.top{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--b);display:flex;align-items:center;overflow-x:auto;padding:0 20px;scrollbar-width:none}
+nav.top::-webkit-scrollbar{display:none}
+nav.top a{display:block;padding:15px 16px;color:var(--m);text-decoration:none;font-size:12px;font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+nav.top a:hover{color:var(--t);border-bottom-color:var(--a)}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px}
+.sec{padding:60px 0;border-bottom:1px solid var(--b)}
+.sec-t{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;margin-bottom:8px}
+.sec-s{color:var(--m);margin-bottom:40px}
+.wp{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:4px;margin-bottom:14px}
+.w1 .wp{background:rgba(240,180,41,.1);color:var(--a)}
+.w2 .wp{background:rgba(124,106,247,.1);color:var(--a3)}
+.day{background:var(--s);border:1px solid var(--b);border-radius:14px;margin-bottom:24px;overflow:hidden}
+.dh{display:flex;align-items:flex-start;gap:18px;padding:24px 28px;border-bottom:1px solid var(--b)}
+.db-badge{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.w1 .db-badge{background:rgba(240,180,41,.12);color:var(--a)}
+.w2 .db-badge{background:rgba(124,106,247,.12);color:var(--a3)}
+.dm h3{font-size:1.1rem;font-weight:800;margin-bottom:4px}
+.dm p{font-size:13px;color:var(--m)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase}
+.tb{background:rgba(62,207,142,.1);color:var(--a2)}
+.td{background:rgba(248,113,113,.1);color:var(--d)}
+.tg{background:rgba(240,180,41,.1);color:var(--a)}
+.ti{background:rgba(124,106,247,.1);color:var(--a3)}
+.tp{background:rgba(56,189,248,.1);color:var(--info)}
+.db{padding:28px}
+.teach{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:24px;margin-bottom:20px}
+.tl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--a2);margin-bottom:16px}
+.teach h4{font-size:15px;font-weight:700;color:var(--t);margin:20px 0 8px}
+.teach h4:first-of-type{margin-top:0}
+.teach p,.teach li{font-size:14px;color:#bbb}
+.teach ul,.teach ol{padding-left:20px;margin-bottom:10px}
+.teach li{margin-bottom:5px}
+.teach strong{color:var(--t)}
+code{background:var(--cb);border:1px solid #1e1e1e;border-radius:4px;padding:1px 6px;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;color:#a78bfa}
+pre{background:var(--cb);border:1px solid #1e1e1e;border-radius:10px;padding:20px 22px;overflow-x:auto;margin:12px 0;font-family:'Cascadia Code','Fira Code',monospace;font-size:13px;line-height:1.65}
+.kw{color:#c084fc}.str{color:#86efac}.cm{color:#444;font-style:italic}.fn{color:#60a5fa}.num{color:#fb923c}
+.broken{background:rgba(248,113,113,.15);border-radius:3px;padding:0 2px}
+.blk{border-radius:10px;padding:20px 22px;margin:16px 0;border-left:3px solid}
+.bb{background:rgba(62,207,142,.06);border-color:var(--a2)}
+.bd{background:rgba(248,113,113,.06);border-color:var(--d)}
+.bi{background:rgba(124,106,247,.06);border-color:var(--a3)}
+.bt{background:rgba(240,180,41,.06);border-color:var(--a)}
+.bda{background:rgba(56,189,248,.06);border-color:var(--info)}
+.bl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.bb .bl{color:var(--a2)}.bd .bl{color:var(--d)}.bi .bl{color:var(--a3)}.bt .bl{color:var(--a)}.bda .bl{color:var(--info)}
+.blk h4{font-size:15px;font-weight:700;margin-bottom:8px}
+.blk p,.blk li{font-size:14px;color:#ccc}
+.blk ul,.blk ol{padding-left:18px;margin-top:6px}
+.blk li{margin-bottom:5px}
+.fw{background:linear-gradient(135deg,rgba(240,180,41,.04),rgba(124,106,247,.04));border:1px solid rgba(240,180,41,.18);border-radius:12px;padding:26px;margin:20px 0}
+.fw h3{color:var(--a);font-size:15px;margin-bottom:14px}
+.fw ol{padding-left:20px}
+.fw li{font-size:14px;color:#ccc;margin-bottom:10px}
+.fw li strong{color:var(--t)}
+.pc{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:24px;margin-bottom:18px;position:relative;overflow:hidden}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.p1::before{background:linear-gradient(90deg,var(--a),transparent)}
+.p2::before{background:linear-gradient(90deg,var(--a2),transparent)}
+.p3::before{background:linear-gradient(90deg,var(--a3),transparent)}
+.p4::before{background:linear-gradient(90deg,var(--d),transparent)}
+.p5::before{background:linear-gradient(90deg,var(--info),transparent)}
+.pcap::before{background:linear-gradient(90deg,var(--a),var(--a3))}
+.pn{font-size:10px;color:var(--m);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.pc h3{font-size:1.15rem;font-weight:800;margin-bottom:8px}
+.pc>p{font-size:14px;color:#aaa;margin-bottom:12px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:11px;padding:3px 10px;border-radius:100px;background:var(--s2);border:1px solid var(--b);color:var(--m);font-weight:600}
+.ps{margin-top:16px}
+.ps h5{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--m);margin-bottom:10px}
+.ps ol{padding-left:18px}
+.ps li{font-size:13px;color:#bbb;margin-bottom:5px}
+.cap-hero{background:linear-gradient(135deg,rgba(240,180,41,.06),rgba(124,106,247,.06));border:1px solid rgba(240,180,41,.2);border-radius:16px;padding:40px;text-align:center;margin-bottom:32px}
+.cap-hero h2{font-size:2rem;font-weight:900;margin-bottom:10px}
+.cap-hero h2 span{color:var(--a)}
+.cap-hero>p{color:var(--m);max-width:480px;margin:0 auto}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:28px;text-align:left}
+.cf{background:rgba(0,0,0,.35);border:1px solid var(--b);border-radius:8px;padding:16px}
+.cf h4{font-size:12px;font-weight:700;color:var(--a2);margin-bottom:6px}
+.cf p{font-size:12px;color:var(--m)}
+.qg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.q{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:20px}
+.q h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--a);margin-bottom:12px}
+.q ul{padding-left:16px}
+.q li{font-size:13px;color:#bbb;margin-bottom:5px}
+footer{text-align:center;padding:52px 24px;color:var(--m);font-size:14px;border-top:1px solid var(--b)}
+footer strong{color:var(--a)}
+@media(max-width:600px){.db{padding:20px}.dh{padding:20px}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">⚡ 2-Week Build-First Program</div>
+  <h1>JavaScript:<br><span>Zero to Job-Ready</span></h1>
+  <p>Every concept is taught with annotated code examples — then immediately applied in a build challenge. Zero "go read the docs."</p>
+  <div class="stats">
+    <div><div class="sn">14</div><div class="sl">Days</div></div>
+    <div><div class="sn">5+</div><div class="sl">Portfolio Projects</div></div>
+    <div><div class="sn">30+</div><div class="sl">Build Challenges</div></div>
+    <div><div class="sn">1</div><div class="sl">Full-Stack Capstone</div></div>
+  </div>
+</div>
+
+<nav class="top">
+  <a href="#mindset">🧠 Mindset</a>
+  <a href="#w1">Week 1</a>
+  <a href="#d1">D1</a><a href="#d2">D2</a><a href="#d3">D3</a><a href="#d4">D4</a>
+  <a href="#d5">D5</a><a href="#d6">D6</a><a href="#d7">D7</a>
+  <a href="#w2">Week 2</a>
+  <a href="#d8">D8</a><a href="#d9">D9</a><a href="#d10">D10</a>
+  <a href="#d11">D11</a><a href="#d12">D12</a><a href="#d13">D13</a><a href="#d14">D14</a>
+  <a href="#capstone">Capstone</a><a href="#projects">Projects</a><a href="#interview">Interview</a>
+</nav>
+<!-- MINDSET -->
+<section class="sec" id="mindset"><div class="wrap">
+  <h2 class="sec-t">🧠 Before Day 1: The Developer Mindset</h2>
+  <p class="sec-s">The reason you freeze when building alone isn't that you don't know enough. It's that you don't have a process for when things break.</p>
+
+  <div class="fw">
+    <h3>🔥 The Stuck Loop — Your Debugging Protocol</h3>
+    <ol>
+      <li><strong>State the problem out loud.</strong> Write: "I am trying to ___ and it is failing because ___." Vagueness is where bugs hide.</li>
+      <li><strong>Read the error message — actually read it.</strong> File name, line number, error type. The answer is almost always there.</li>
+      <li><strong>Console.log the thing you're unsure about.</strong> Not what you think it is — what it actually is at runtime.</li>
+      <li><strong>Rubber duck it.</strong> Explain your code line by line as if to a 10-year-old. The bug usually surfaces here.</li>
+      <li><strong>Binary search your own code.</strong> Comment out half. Does it work? Bug is in the removed half. Narrow it down.</li>
+      <li><strong>Google the exact error + "JavaScript".</strong> Read the answer. Understand why it works before you copy it.</li>
+      <li><strong>Walk away for 10 minutes</strong> after 30 minutes stuck. Your brain pattern-matches in the background.</li>
+    </ol>
+  </div>
+
+  <div class="fw">
+    <h3>💡 Build Before You're Ready</h3>
+    <ol>
+      <li><strong>Read the concept from this course — 10 minutes max.</strong></li>
+      <li><strong>Close the course. Open a blank file. Write the code from memory.</strong> It will be wrong. That's the entire point.</li>
+      <li><strong>Use the error messages to guide you</strong>, not the docs. The error tells you exactly what's broken.</li>
+      <li><strong>Get one tiny thing working.</strong> Ugly is fine. Move on from there.</li>
+      <li><strong>Add one feature. Break it. Fix it.</strong> This cycle is the actual job.</li>
+    </ol>
+  </div>
+
+  <div class="blk bda">
+    <div class="bl">📌 Daily Ritual — Non-Negotiable</div>
+    <h4>The 5-Minute Dev Log</h4>
+    <p>After every coding session, write in a text file: What did I build? What broke and how did I fix it? What am I still confused about? What will I build tomorrow to reinforce this?</p>
+    <p style="margin-top:8px;color:#888">This log becomes the source material for every "describe a challenge you faced" interview question. It compounds.</p>
+  </div>
+</div></section>
+<!-- WEEK 1 -->
+<section class="sec w1" id="w1"><div class="wrap">
+  <div class="wp">Week 1</div>
+  <h2 class="sec-t">Modern JavaScript Fundamentals</h2>
+  <p class="sec-s">ES6+, the DOM, async/await, real APIs — every concept is taught inline with code, then immediately applied.</p>
+
+  <!-- DAY 1 -->
+  <div class="day w1" id="d1">
+    <div class="dh">
+      <div class="db-badge">D1</div>
+      <div class="dm">
+        <h3>ES6+ Syntax That Actually Matters</h3>
+        <p>const/let, arrow functions, destructuring, template literals, spread &amp; rest</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag td">Debug</span><span class="tag tg">Git Setup</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>1. const and let — Never use var again</h4>
+        <p><code>var</code> is function-scoped and gets hoisted to the top of its function. This causes subtle bugs because it leaks out of blocks like <code>if</code> and <code>for</code>. <code>let</code> and <code>const</code> are block-scoped — they only exist inside the <code>{}</code> they were declared in. Rule: use <code>const</code> always. Switch to <code>let</code> only when you know you'll reassign.</p>
+<pre><span class="cm">// var leaks out of blocks — causes real bugs</span>
+<span class="kw">for</span> (<span class="kw">var</span> i = <span class="num">0</span>; i &lt; <span class="num">3</span>; i++) {}
+console.<span class="fn">log</span>(i)  <span class="cm">// 3 — escaped the for block!</span>
+
+<span class="cm">// let/const stay inside their block</span>
+<span class="kw">for</span> (<span class="kw">let</span> j = <span class="num">0</span>; j &lt; <span class="num">3</span>; j++) {}
+console.<span class="fn">log</span>(j)  <span class="cm">// ReferenceError: j is not defined</span>
+
+<span class="kw">const</span> name = <span class="str">"Alex"</span>
+name = <span class="str">"Bob"</span>    <span class="cm">// TypeError: Assignment to constant variable</span>
+
+<span class="kw">let</span> score = <span class="num">0</span>
+score += <span class="num">10</span>     <span class="cm">// fine — let can be reassigned</span></pre>
+
+        <h4>2. Arrow Functions</h4>
+        <p>Shorter syntax. When the body is a single expression you can drop the <code>return</code> keyword and the braces entirely. They also don't bind their own <code>this</code> — which you'll see matters on Day 3.</p>
+<pre><span class="cm">// Traditional function</span>
+<span class="kw">function</span> <span class="fn">double</span>(n) { <span class="kw">return</span> n * <span class="num">2</span> }
+
+<span class="cm">// Arrow function — same thing</span>
+<span class="kw">const</span> <span class="fn">double</span> = (n) => { <span class="kw">return</span> n * <span class="num">2</span> }
+
+<span class="cm">// Implicit return — skip return + braces for a single expression</span>
+<span class="kw">const</span> <span class="fn">double</span> = n => n * <span class="num">2</span>
+
+<span class="cm">// Returning an object? Wrap it in () so JS doesn't confuse {} with a block</span>
+<span class="kw">const</span> <span class="fn">makeUser</span> = name => ({ name, active: <span class="kw">true</span> })</pre>
+
+        <h4>3. Template Literals</h4>
+        <p>Backtick strings. Embed any JavaScript expression with <code>${}</code>. Supports multi-line strings natively.</p>
+<pre><span class="kw">const</span> user = <span class="str">"Sam"</span>, score = <span class="num">42</span>
+
+<span class="cm">// Old way — fragile, easy to misplace quotes/spaces</span>
+<span class="kw">const</span> msg = <span class="str">"Hello "</span> + user + <span class="str">", score: "</span> + score
+
+<span class="cm">// Template literal — any expression inside ${}</span>
+<span class="kw">const</span> msg = <span class="str">`Hello ${user}, score: ${score}`</span>
+<span class="kw">const</span> msg = <span class="str">`Result: ${score > 40 ? "Pass" : "Fail"}`</span>
+<span class="kw">const</span> html = <span class="str">`
+  &lt;div&gt;
+    &lt;h2&gt;${user}&lt;/h2&gt;
+    &lt;p&gt;Score: ${score}&lt;/p&gt;
+  &lt;/div&gt;
+`</span></pre>
+
+        <h4>4. Destructuring</h4>
+        <p>Pull values out of objects and arrays without repetitive dot notation. You'll see this in every real codebase — especially with API responses and function parameters.</p>
+<pre><span class="kw">const</span> user = { name: <span class="str">"Alex"</span>, age: <span class="num">28</span>, address: { city: <span class="str">"Berlin"</span> } }
+
+<span class="cm">// Object destructuring</span>
+<span class="kw">const</span> { name, age } = user                <span class="cm">// name="Alex", age=28</span>
+
+<span class="cm">// Rename on destructure (new name on the right of the colon)</span>
+<span class="kw">const</span> { name: userName } = user           <span class="cm">// userName="Alex"</span>
+
+<span class="cm">// Default value — used only if the property is undefined</span>
+<span class="kw">const</span> { role = <span class="str">"guest"</span> } = user          <span class="cm">// "guest" — user has no role</span>
+
+<span class="cm">// Nested — dig into nested objects</span>
+<span class="kw">const</span> { address: { city } } = user        <span class="cm">// city="Berlin"</span>
+
+<span class="cm">// Array destructuring — position-based</span>
+<span class="kw">const</span> [first, , third, ...rest] = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>]
+<span class="cm">// first=10, third=30, rest=[40]  (the , , skips an item)</span>
+
+<span class="cm">// In function parameters — very common in React and modern JS</span>
+<span class="kw">function</span> <span class="fn">greet</span>({ name, role = <span class="str">"guest"</span> }) {
+  <span class="kw">return</span> <span class="str">`Hello ${name}, role: ${role}`</span>
+}</pre>
+
+        <h4>5. Spread and Rest</h4>
+        <p>The <code>...</code> operator. As <strong>spread</strong> it expands an iterable. As <strong>rest</strong> it collects remaining items. Same symbol, context determines meaning.</p>
+<pre><span class="cm">// SPREAD — expand into individual items</span>
+<span class="kw">const</span> a = [<span class="num">1</span>, <span class="num">2</span>], b = [<span class="num">3</span>, <span class="num">4</span>]
+<span class="kw">const</span> all = [...a, ...b]                  <span class="cm">// [1,2,3,4]</span>
+
+<span class="cm">// Spread to copy + override an object (original unchanged)</span>
+<span class="kw">const</span> defaults = { theme: <span class="str">"dark"</span>, lang: <span class="str">"en"</span> }
+<span class="kw">const</span> prefs    = { ...defaults, lang: <span class="str">"fr"</span> }
+<span class="cm">// { theme:"dark", lang:"fr" } — later values win</span>
+
+<span class="cm">// REST — collect the remaining arguments into an array</span>
+<span class="kw">function</span> <span class="fn">sum</span>(...nums) {
+  <span class="kw">return</span> nums.<span class="fn">reduce</span>((acc, n) => acc + n, <span class="num">0</span>)
+}
+<span class="fn">sum</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>)  <span class="cm">// 10 — nums = [1,2,3,4]</span></pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenge — Git Setup + Profile Generator</div>
+        <p><strong>First:</strong> <code>mkdir js-course && cd js-course && git init && touch day1.js</code>. Create a GitHub repo and push it up. Every day you commit. No exceptions.</p>
+        <p><strong>Build</strong> a <code>formatProfile(user)</code> function that:</p>
+        <ol>
+          <li>Destructures <code>{ name, age, hobbies, address: { city } }</code> with <code>age</code> defaulting to <code>"unknown"</code></li>
+          <li>Uses spread to merge a <code>defaults</code> object into the user</li>
+          <li>Uses <code>.map()</code> with an arrow function to prefix each hobby with a bullet</li>
+          <li>Returns a multi-line template literal</li>
+          <li>Call it on 3 different user objects (some with missing fields)</li>
+          <li>Commit: <code>git commit -m "feat: day 1 profile generator"</code></li>
+        </ol>
+      </div>
+
+      <div class="blk bd">
+        <div class="bl">🐛 Debug This — Find and Fix All 5 Bugs</div>
+<pre><span class="kw">var</span> user = { name: <span class="str">"Alex"</span>, scores: [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>] }
+
+<span class="kw">const</span> { <span class="broken">Name</span>, scores } = user              <span class="cm">// bug 1</span>
+<span class="kw">const</span> doubled = scores.<span class="fn">map</span>(<span class="broken">score => { score * 2 }</span>)  <span class="cm">// bug 2</span>
+<span class="kw">const</span> greeting = <span class="broken">"Hello " + Name + "!"</span>      <span class="cm">// bug 3</span>
+<span class="kw">const</span> copy = <span class="broken">[scores]</span>                       <span class="cm">// bug 4: [[10,20,30]] not a copy</span>
+<span class="kw">const</span> [top] = <span class="broken">scores.sort()</span>                 <span class="cm">// bug 5: sort is wrong for numbers</span></pre>
+        <p>Name each bug, explain why it's wrong, fix the whole file.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day w1" id="d2">
+    <div class="dh">
+      <div class="db-badge">D2</div>
+      <div class="dm">
+        <h3>Array Methods &amp; Data Transformation</h3>
+        <p>map, filter, reduce, find — transforming data is 70% of frontend work</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag td">Debug</span><span class="tag ti">Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>Why these methods exist</h4>
+        <p>You constantly receive arrays from APIs and need to transform them. These methods handle 90% of that. They are all <em>pure</em> — they return a new array without modifying the original. Exception: <code>sort()</code> mutates in place.</p>
+
+        <h4>map() — Transform every item into something new</h4>
+<pre><span class="kw">const</span> prices = [<span class="num">10</span>, <span class="num">25</span>, <span class="num">50</span>]
+<span class="kw">const</span> withTax = prices.<span class="fn">map</span>(p => p * <span class="num">1.2</span>)   <span class="cm">// [12, 30, 60] — prices unchanged</span>
+
+<span class="cm">// Real use: reshape API objects to what your UI needs</span>
+<span class="kw">const</span> users = [{ id: <span class="num">1</span>, first_name: <span class="str">"Alex"</span> }, { id: <span class="num">2</span>, first_name: <span class="str">"Sam"</span> }]
+<span class="kw">const</span> names  = users.<span class="fn">map</span>(u => u.first_name)   <span class="cm">// ["Alex", "Sam"]</span>
+<span class="kw">const</span> opts   = users.<span class="fn">map</span>(u => ({ value: u.id, label: u.first_name }))</pre>
+
+        <h4>filter() — Keep only items that pass a test</h4>
+<pre><span class="kw">const</span> products = [
+  { name: <span class="str">"Laptop"</span>, price: <span class="num">999</span>, inStock: <span class="kw">true</span>  },
+  { name: <span class="str">"Desk"</span>,   price: <span class="num">349</span>, inStock: <span class="kw">false</span> },
+  { name: <span class="str">"Chair"</span>,  price: <span class="num">199</span>, inStock: <span class="kw">true</span>  },
+]
+<span class="kw">const</span> available = products.<span class="fn">filter</span>(p => p.inStock)
+<span class="kw">const</span> goodDeal  = products.<span class="fn">filter</span>(p => p.inStock && p.price &lt; <span class="num">500</span>)</pre>
+
+        <h4>reduce() — Collapse an array to a single value</h4>
+        <p>The accumulator starts as your initial value (second argument). Whatever you return becomes the next accumulator. This is the most powerful and most misunderstood method.</p>
+<pre><span class="cm">// Sum — start acc at 0</span>
+<span class="kw">const</span> total = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>].<span class="fn">reduce</span>((acc, n) => acc + n, <span class="num">0</span>)  <span class="cm">// 60</span>
+
+<span class="cm">// Group by property — start acc as empty object</span>
+<span class="kw">const</span> items = [
+  { cat: <span class="str">"tech"</span>, name: <span class="str">"Laptop"</span> },
+  { cat: <span class="str">"home"</span>, name: <span class="str">"Lamp"</span>   },
+  { cat: <span class="str">"tech"</span>, name: <span class="str">"Phone"</span>  },
+]
+<span class="kw">const</span> grouped = items.<span class="fn">reduce</span>((acc, item) => {
+  <span class="kw">if</span> (!acc[item.cat]) acc[item.cat] = []
+  acc[item.cat].<span class="fn">push</span>(item.name)
+  <span class="kw">return</span> acc
+}, {})
+<span class="cm">// { tech: ["Laptop","Phone"], home: ["Lamp"] }</span></pre>
+
+        <h4>find() and findIndex()</h4>
+<pre><span class="kw">const</span> users = [{ id:<span class="num">1</span>, name:<span class="str">"Alex"</span> }, { id:<span class="num">2</span>, name:<span class="str">"Sam"</span> }]
+<span class="kw">const</span> user  = users.<span class="fn">find</span>(u => u.id === <span class="num">2</span>)       <span class="cm">// { id:2, name:"Sam" }</span>
+<span class="kw">const</span> index = users.<span class="fn">findIndex</span>(u => u.id === <span class="num">2</span>)  <span class="cm">// 1</span>
+<span class="cm">// find returns undefined if nothing matches — always check before using</span>
+<span class="kw">if</span> (user) console.<span class="fn">log</span>(user.name)</pre>
+
+        <h4>sort() — the trap</h4>
+<pre><span class="cm">// ⚠️ sort() mutates the original array</span>
+<span class="cm">// ⚠️ Without a comparator it sorts as strings, not numbers</span>
+[<span class="num">10</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="num">20</span>].<span class="fn">sort</span>()             <span class="cm">// [1,10,2,20] — WRONG</span>
+[<span class="num">10</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="num">20</span>].<span class="fn">sort</span>((a,b) => a-b)  <span class="cm">// [1,2,10,20] — correct</span>
+
+<span class="cm">// Chain them together for powerful one-liners</span>
+<span class="kw">const</span> result = products
+  .<span class="fn">filter</span>(p => p.inStock)
+  .<span class="fn">map</span>(p => p.name)
+  .<span class="fn">sort</span>((a,b) => a.<span class="fn">localeCompare</span>(b))</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenge — Product Dashboard (no for loops)</div>
+<pre><span class="kw">const</span> products = [
+  { id:<span class="num">1</span>, name:<span class="str">"Laptop"</span>,  price:<span class="num">999</span>, inStock:<span class="kw">true</span>,  category:<span class="str">"tech"</span>      },
+  { id:<span class="num">2</span>, name:<span class="str">"Desk"</span>,    price:<span class="num">349</span>, inStock:<span class="kw">false</span>, category:<span class="str">"furniture"</span> },
+  { id:<span class="num">3</span>, name:<span class="str">"Phone"</span>,   price:<span class="num">699</span>, inStock:<span class="kw">true</span>,  category:<span class="str">"tech"</span>      },
+  { id:<span class="num">4</span>, name:<span class="str">"Chair"</span>,   price:<span class="num">199</span>, inStock:<span class="kw">true</span>,  category:<span class="str">"furniture"</span> },
+]</pre>
+        <p>Write functions for each (single expression, chained methods):</p>
+        <ol>
+          <li>All in-stock products</li>
+          <li>Names of tech products, sorted A–Z</li>
+          <li>Total value of in-stock inventory</li>
+          <li>Most expensive product (use <code>reduce</code>)</li>
+          <li>An <code>{ id: name }</code> lookup object using <code>reduce</code></li>
+          <li>Products grouped by category</li>
+        </ol>
+      </div>
+
+      <div class="blk bd">
+        <div class="bl">🐛 Debug This</div>
+<pre><span class="cm">// Bug 1: always returns [] — why?</span>
+<span class="kw">const</span> evens = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>].<span class="fn">filter</span>(<span class="broken">n => { n % 2 === 0 }</span>)
+
+<span class="cm">// Bug 2: returns [undefined, undefined, ...]</span>
+<span class="kw">const</span> doubled = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>].<span class="fn">map</span>(<span class="broken">n => { n * 2 }</span>)
+
+<span class="cm">// Bug 3: wrong numeric sort order</span>
+<span class="kw">const</span> sorted = [<span class="num">10</span>, <span class="num">2</span>, <span class="num">30</span>].<span class="fn">sort</span>()
+
+<span class="cm">// Bug 4: TypeError — reduce needs an initial value here</span>
+<span class="kw">const</span> names = [{ name:<span class="str">"A"</span> },{ name:<span class="str">"B"</span> }].<span class="fn">reduce</span>(<span class="broken">(acc, item) => {
+  acc.<span class="fn">push</span>(item.name); <span class="kw">return</span> acc
+}</span>)</pre>
+      </div>
+
+      <div class="blk bi">
+        <div class="bl">🎯 Mock Interview — Answer Out Loud First</div>
+        <ol>
+          <li>"Difference between <code>map</code> and <code>forEach</code>? When to use each?"</li>
+          <li>"Implement <code>Array.map</code> from scratch using only <code>reduce</code>."</li>
+          <li>"Why does <code>[1,10,2,20].sort()</code> return <code>[1,10,2,20]</code>?"</li>
+          <li>"Remove duplicates from an array without using <code>Set</code>."</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day w1" id="d3">
+    <div class="dh">
+      <div class="db-badge">D3</div>
+      <div class="dm">
+        <h3>DOM Manipulation &amp; Events</h3>
+        <p>Query, create, modify, delete — making things happen in the browser</p>
+        <div class="tags"><span class="tag tp">Project 1</span><span class="tag tb">Build</span><span class="tag td">Debug</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>The DOM is a JavaScript object tree</h4>
+        <p>When the browser parses HTML it creates a tree of JavaScript objects — one per element. Every tag becomes a node you can read, modify, create, or remove. It's just objects and methods.</p>
+
+        <h4>Selecting elements</h4>
+<pre><span class="cm">// querySelector — first match or null</span>
+<span class="kw">const</span> btn   = document.<span class="fn">querySelector</span>(<span class="str">'#submit'</span>)      <span class="cm">// by ID</span>
+<span class="kw">const</span> input = document.<span class="fn">querySelector</span>(<span class="str">'.search-box'</span>)  <span class="cm">// by class</span>
+<span class="kw">const</span> el    = document.<span class="fn">querySelector</span>(<span class="str">'nav h1'</span>)       <span class="cm">// CSS selector</span>
+
+<span class="cm">// querySelectorAll — all matches as a NodeList</span>
+<span class="cm">// Convert to array first to use .map()/.filter()</span>
+<span class="kw">const</span> items = [...document.<span class="fn">querySelectorAll</span>(<span class="str">'.item'</span>)]</pre>
+
+        <h4>Creating and inserting elements</h4>
+<pre><span class="cm">// Pattern: Create → Configure → Attach</span>
+<span class="kw">const</span> li = document.<span class="fn">createElement</span>(<span class="str">'li'</span>)
+li.textContent = <span class="str">'Buy milk'</span>   <span class="cm">// SAFE — auto-escapes &lt;script&gt; etc.</span>
+<span class="cm">// li.innerHTML = userText    // DANGEROUS if text is user input (XSS)</span>
+li.classList.<span class="fn">add</span>(<span class="str">'task'</span>)
+li.dataset.id = <span class="str">'42'</span>         <span class="cm">// sets data-id="42"</span>
+document.<span class="fn">querySelector</span>(<span class="str">'.list'</span>).<span class="fn">appendChild</span>(li)</pre>
+
+        <h4>Modifying elements</h4>
+<pre><span class="cm">// Classes</span>
+el.classList.<span class="fn">add</span>(<span class="str">'active'</span>)
+el.classList.<span class="fn">remove</span>(<span class="str">'active'</span>)
+el.classList.<span class="fn">toggle</span>(<span class="str">'active'</span>)    <span class="cm">// add if absent, remove if present</span>
+el.classList.<span class="fn">contains</span>(<span class="str">'active'</span>) <span class="cm">// true or false</span>
+
+<span class="cm">// data-* attributes</span>
+el.dataset.id       <span class="cm">// reads data-id</span>
+el.dataset.userId   <span class="cm">// reads data-user-id (auto-camelCased)</span>
+
+el.<span class="fn">remove</span>()          <span class="cm">// removes element from DOM</span></pre>
+
+        <h4>Event delegation — the most important pattern here</h4>
+        <p>Don't attach listeners to every child. Attach one listener to the parent. When a child is clicked, the event bubbles up to the parent. Works for dynamically added children too — because the parent already exists.</p>
+<pre><span class="cm">// ❌ 100 items = 100 listeners, breaks for new items added later</span>
+document.<span class="fn">querySelectorAll</span>(<span class="str">'.delete-btn'</span>)
+  .<span class="fn">forEach</span>(btn => btn.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="fn">handleDelete</span>))
+
+<span class="cm">// ✅ One listener on parent — works for any number of children, including future ones</span>
+document.<span class="fn">querySelector</span>(<span class="str">'.task-list'</span>).<span class="fn">addEventListener</span>(<span class="str">'click'</span>, (e) => {
+  <span class="cm">// e.target = the exact element that was clicked</span>
+  <span class="kw">if</span> (e.target.<span class="fn">matches</span>(<span class="str">'.delete-btn'</span>)) {
+    <span class="kw">const</span> id = e.target.<span class="fn">closest</span>(<span class="str">'li'</span>).dataset.id  <span class="cm">// walk up to the li</span>
+    <span class="fn">deleteTask</span>(id)
+  }
+  <span class="kw">if</span> (e.target.<span class="fn">matches</span>(<span class="str">'.task-text'</span>)) {
+    <span class="fn">toggleTask</span>(e.target.<span class="fn">closest</span>(<span class="str">'li'</span>).dataset.id)
+  }
+})
+
+<span class="cm">// e.preventDefault() — stops the browser's default action</span>
+form.<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, e => { e.<span class="fn">preventDefault</span>(); <span class="fn">handleSubmit</span>() })</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Portfolio Project 1 — Task Manager (No Frameworks)</div>
+        <p>Build in order. Commit after each step.</p>
+        <ol>
+          <li>HTML skeleton: input, button, empty <code>&lt;ul&gt;</code></li>
+          <li>Add task on click — create <code>&lt;li&gt;</code>, append, clear input</li>
+          <li>Add task on Enter key — listen for <code>keydown</code>, check <code>e.key === 'Enter'</code></li>
+          <li>Delete task — event delegation on the list (not individual buttons)</li>
+          <li>Toggle complete — click text, add/remove CSS class</li>
+          <li>Priority dropdown (low/med/high) with color-coded left border</li>
+          <li>Filter buttons: All / Active / Completed</li>
+          <li>"X tasks remaining" counter — updates on every change</li>
+        </ol>
+      </div>
+
+      <div class="blk bd">
+        <div class="bl">🐛 Debug This</div>
+<pre><span class="kw">const</span> list = document.<span class="fn">querySelector</span>(<span class="str">'.task-list'</span>)
+
+document.<span class="fn">querySelector</span>(<span class="str">'#add-btn'</span>).<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+  <span class="kw">const</span> li = document.<span class="fn">createElement</span>(<span class="str">'li'</span>)
+  li.<span class="broken">innerHTML</span> = <span class="str">`&lt;li&gt;${input.value}&lt;/li&gt;`</span>  <span class="cm">// bug 1</span>
+  list.<span class="fn">appendChild</span>(li)
+})
+
+list.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, e => {
+  <span class="broken">e.target.<span class="fn">remove</span>()</span>  <span class="cm">// bug 2: removes text node, not the li</span>
+})
+
+<span class="kw">function</span> <span class="fn">filter</span>(type) {            <span class="cm">// bug 3: receives event, not a string</span>
+  console.<span class="fn">log</span>(<span class="str">`filtering: ${type}`</span>)
+}
+document.<span class="fn">querySelectorAll</span>(<span class="str">'.filter-btn'</span>)
+  .<span class="fn">forEach</span>(btn => btn.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="fn">filter</span>))</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day w1" id="d4">
+    <div class="dh">
+      <div class="db-badge">D4</div>
+      <div class="dm">
+        <h3>Async JavaScript — Callbacks → Promises → Async/Await</h3>
+        <p>The mental model that unlocks everything once it clicks</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag td">Debug</span><span class="tag ti">Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>The problem: JavaScript is single-threaded</h4>
+        <p>JS processes one thing at a time. If it blocked waiting for a network request, your entire page would freeze. The solution: schedule work for later and continue running. When the work finishes, come back to it.</p>
+
+        <h4>The Event Loop — how "later" actually works</h4>
+<pre><span class="cm">// Synchronous code runs immediately on the call stack</span>
+<span class="cm">// Callbacks/promises go into a queue, processed only when the stack empties</span>
+
+console.<span class="fn">log</span>(<span class="str">'1'</span>)
+<span class="fn">setTimeout</span>(() => console.<span class="fn">log</span>(<span class="str">'2'</span>), <span class="num">0</span>)   <span class="cm">// queued even with 0ms delay</span>
+console.<span class="fn">log</span>(<span class="str">'3'</span>)
+<span class="cm">// Output: 1, 3, 2 — the stack runs to completion first</span></pre>
+
+        <h4>Callbacks — the original pattern (and why they break down)</h4>
+<pre><span class="cm">// Callback hell — each step nested inside the previous one</span>
+<span class="fn">getUser</span>(id, (user) => {
+  <span class="fn">getOrders</span>(user.id, (orders) => {
+    <span class="fn">getProduct</span>(orders[<span class="num">0</span>].productId, (product) => {
+      <span class="cm">// Error handling is a nightmare here</span>
+      console.<span class="fn">log</span>(product)
+    })
+  })
+})</pre>
+
+        <h4>Promises — a model for future values</h4>
+        <p>A Promise represents a value that doesn't exist yet. States: <em>pending</em>, <em>fulfilled</em>, <em>rejected</em>. You rarely create them manually — APIs return them. But knowing how they're built helps you understand them.</p>
+<pre><span class="cm">// Create a Promise</span>
+<span class="kw">function</span> <span class="fn">delay</span>(ms) {
+  <span class="kw">return new</span> Promise((resolve, reject) => {
+    <span class="fn">setTimeout</span>(resolve, ms)  <span class="cm">// call resolve() to fulfill, reject() to fail</span>
+  })
+}
+
+<span class="cm">// Consume with .then() and .catch()</span>
+<span class="fn">delay</span>(<span class="num">1000</span>)
+  .<span class="fn">then</span>(() => <span class="fn">fetchUser</span>(<span class="num">1</span>))
+  .<span class="fn">then</span>(user => console.<span class="fn">log</span>(user))
+  .<span class="fn">catch</span>(err => console.<span class="fn">error</span>(err))</pre>
+
+        <h4>Async/Await — same thing, readable syntax</h4>
+        <p>Not a new system. Same Promises, same event loop. <code>async</code> makes a function always return a Promise. <code>await</code> pauses that function until the Promise resolves. Reads like synchronous code.</p>
+<pre><span class="kw">async function</span> <span class="fn">loadOrder</span>(userId) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> user    = <span class="kw">await</span> <span class="fn">getUser</span>(userId)      <span class="cm">// pauses here until resolved</span>
+    <span class="kw">const</span> orders  = <span class="kw">await</span> <span class="fn">getOrders</span>(user.id)
+    <span class="kw">const</span> product = <span class="kw">await</span> <span class="fn">getProduct</span>(orders[<span class="num">0</span>].productId)
+    <span class="kw">return</span> product
+  } <span class="kw">catch</span> (err) {
+    <span class="cm">// catches ANY failure from any await in the try block</span>
+    console.<span class="fn">error</span>(<span class="str">'Failed:'</span>, err)
+    <span class="kw">throw</span> err   <span class="cm">// re-throw so the caller knows</span>
+  }
+}
+
+<span class="cm">// ⚠️ async functions ALWAYS return a Promise, even if you return a plain value</span>
+<span class="kw">async function</span> <span class="fn">getName</span>() { <span class="kw">return</span> <span class="str">"Alex"</span> }
+<span class="fn">getName</span>()        <span class="cm">// Promise{"Alex"} — NOT "Alex"</span>
+<span class="kw">await</span> <span class="fn">getName</span>()  <span class="cm">// "Alex"</span>
+
+<span class="cm">// Run operations in parallel instead of sequentially</span>
+<span class="kw">const</span> [user, posts] = <span class="kw">await</span> Promise.<span class="fn">all</span>([<span class="fn">fetchUser</span>(id), <span class="fn">fetchPosts</span>(id)])
+<span class="cm">// Both fire at once. Resolves when both complete. Rejects if either fails.</span>
+<span class="cm">// Use Promise.allSettled to handle partial failures gracefully.</span></pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenges</div>
+        <h4>Part 1: Convert callback hell to async/await</h4>
+        <p>Take the nested callback example above and rewrite it using async/await with proper try/catch. Test both the success path and the failure path.</p>
+        <h4 style="margin-top:14px">Part 2: Visual countdown timer</h4>
+        <ol>
+          <li>Write <code>delay(ms)</code> — returns a Promise that resolves after ms milliseconds</li>
+          <li>Write <code>async countdown(n)</code> — waits 1 second between each number</li>
+          <li>Instead of logging, update a DOM element so the number is visible on screen</li>
+        </ol>
+      </div>
+
+      <div class="blk bd">
+        <div class="bl">🐛 Debug This</div>
+<pre><span class="kw">async function</span> <span class="fn">getUser</span>(id) {
+  <span class="kw">const</span> res  = <span class="broken">fetch</span>(`/api/users/${id}`)   <span class="cm">// bug 1: missing await</span>
+  <span class="kw">const</span> data = <span class="broken">res.json()</span>                   <span class="cm">// bug 2: res is a Promise here</span>
+  <span class="kw">return</span> data
+}
+<span class="cm">// Bug 3: getUser is async — what's wrong with this?</span>
+<span class="kw">const</span> user = <span class="fn">getUser</span>(<span class="num">1</span>)
+console.<span class="fn">log</span>(<span class="broken">user.name</span>)  <span class="cm">// accessing .name on a Promise</span>
+<span class="cm">// Bug 4: no error handling anywhere. What happens on network failure?</span></pre>
+      </div>
+
+      <div class="blk bi">
+        <div class="bl">🎯 Interview Questions</div>
+        <ol>
+          <li>"Explain the event loop to someone who doesn't code."</li>
+          <li>"What's the difference between <code>Promise.all</code> and <code>Promise.allSettled</code>?"</li>
+          <li>"What does <code>async</code> do to a function's return value?"</li>
+          <li>"What happens if you <code>await</code> a value that isn't a Promise?"</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day w1" id="d5">
+    <div class="dh">
+      <div class="db-badge">D5</div>
+      <div class="dm">
+        <h3>The Fetch API &amp; Real Data</h3>
+        <p>HTTP, JSON, error handling, loading states — Portfolio Project 2</p>
+        <div class="tags"><span class="tag tp">Project 2</span><span class="tag tb">Build</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>How an HTTP request works</h4>
+        <p>Your browser sends a request with a method (GET, POST, etc.) and a URL. The server responds with a <strong>status code</strong> (200 = OK, 404 = not found, 500 = server error) and a body (usually JSON). <code>fetch()</code> returns a Promise resolving to a Response — you then call <code>.json()</code> on it (also async) to get the actual data.</p>
+
+        <h4>The correct fetch pattern — commit this to memory</h4>
+<pre><span class="kw">async function</span> <span class="fn">fetchData</span>(url) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url)
+
+    <span class="cm">// ⚠️ fetch only throws on NETWORK failure (no internet, DNS failure)</span>
+    <span class="cm">// For 404, 500, etc. — res.ok is false but NO exception is thrown</span>
+    <span class="cm">// You MUST check res.ok manually. res.ok is true for 200-299.</span>
+    <span class="kw">if</span> (!res.ok) {
+      <span class="kw">throw new</span> Error(<span class="str">`HTTP ${res.status}: ${res.statusText}`</span>)
+    }
+
+    <span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>()
+    <span class="kw">return</span> data
+
+  } <span class="kw">catch</span> (err) {
+    console.<span class="fn">error</span>(<span class="str">'Fetch failed:'</span>, err.message)
+    <span class="kw">throw</span> err   <span class="cm">// re-throw so caller can handle it in the UI</span>
+  }
+}</pre>
+
+        <h4>Sending data with POST/PATCH</h4>
+<pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/recipes'</span>, {
+  method: <span class="str">'POST'</span>,
+  headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> }, <span class="cm">// required</span>
+  body: JSON.<span class="fn">stringify</span>({ title: <span class="str">'Pasta'</span>, ingredients: [<span class="str">'flour'</span>] })
+})</pre>
+
+        <h4>UI states you must always handle</h4>
+<pre><span class="kw">async function</span> <span class="fn">loadData</span>() {
+  container.innerHTML = <span class="str">'&lt;p&gt;Loading...&lt;/p&gt;'</span>   <span class="cm">// 1. Loading</span>
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> data = <span class="kw">await</span> <span class="fn">fetchData</span>(<span class="str">'/api/items'</span>)
+
+    <span class="kw">if</span> (data.length === <span class="num">0</span>) {                     <span class="cm">// 2. Empty</span>
+      container.innerHTML = <span class="str">'&lt;p&gt;Nothing here yet.&lt;/p&gt;'</span>
+      <span class="kw">return</span>
+    }
+
+    <span class="fn">render</span>(data)                                  <span class="cm">// 3. Success</span>
+
+  } <span class="kw">catch</span> (err) {                                 <span class="cm">// 4. Error</span>
+    container.innerHTML = <span class="str">`&lt;p class="error"&gt;Failed: ${err.message}&lt;/p&gt;`</span>
+  }
+}
+
+<span class="cm">// Debounce — wait until user stops typing before firing the request</span>
+<span class="kw">function</span> <span class="fn">debounce</span>(fn, delay) {
+  <span class="kw">let</span> timer
+  <span class="kw">return</span> (...args) => {
+    <span class="fn">clearTimeout</span>(timer)
+    timer = <span class="fn">setTimeout</span>(() => <span class="fn">fn</span>(...args), delay)
+  }
+}
+input.<span class="fn">addEventListener</span>(<span class="str">'input'</span>, <span class="fn">debounce</span>(e => <span class="fn">search</span>(e.target.value), <span class="num">500</span>))</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Portfolio Project 2 — GitHub Profile Viewer</div>
+        <ol>
+          <li>Debounced search bar (500ms) — calls <code>https://api.github.com/users/{username}</code></li>
+          <li>Display: avatar, name, bio, followers, public repos, location</li>
+          <li>Fetch their top 6 repos sorted by star count</li>
+          <li>Visible loading state while fetching</li>
+          <li>Three distinct error messages: 404, network failure, empty input</li>
+          <li>Cache results in a <code>Map</code> — re-searching a name returns instantly without re-fetching</li>
+        </ol>
+      </div>
+
+      <div class="blk bt">
+        <div class="bl">💡 When Your API Call Isn't Working</div>
+        <ol>
+          <li>DevTools → Network tab. Does the request appear at all?</li>
+          <li>Click the request. What status code? What does the response body say?</li>
+          <li>Paste the URL directly in a browser tab. Does it return data?</li>
+          <li>Are you checking <code>res.ok</code>? A 404 will NOT throw on its own.</li>
+          <li>Is <code>Content-Type: application/json</code> set on POST requests?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day w1" id="d6">
+    <div class="dh">
+      <div class="db-badge">D6</div>
+      <div class="dm">
+        <h3>ES6 Modules &amp; App Architecture</h3>
+        <p>Stop putting everything in one file — think in modules like a real developer</p>
+        <div class="tags"><span class="tag tb">Refactor</span><span class="tag tg">Git Branching</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>Why modules matter</h4>
+        <p>When your app is one 500-line file, your UI code, data logic, network calls, and storage are all tangled together. A bug in one place can silently break everything. Modules force single responsibility — each file declares exactly what it exports and imports.</p>
+
+        <h4>Named exports and imports</h4>
+<pre><span class="cm">// utils.js — pure functions only (no DOM, no fetch)</span>
+<span class="kw">export function</span> <span class="fn">formatDate</span>(d) {
+  <span class="kw">return new</span> Date(d).<span class="fn">toLocaleDateString</span>(<span class="str">'en-US'</span>, { month:<span class="str">'short'</span>, day:<span class="str">'numeric'</span> })
+}
+<span class="kw">export const</span> <span class="fn">capitalize</span> = s => s[<span class="num">0</span>].<span class="fn">toUpperCase</span>() + s.<span class="fn">slice</span>(<span class="num">1</span>)
+
+<span class="cm">// api.js — all fetch calls live here, nothing else</span>
+<span class="kw">import</span> { <span class="fn">formatDate</span> } <span class="kw">from</span> <span class="str">'./utils.js'</span>
+<span class="kw">export async function</span> <span class="fn">fetchRecipes</span>() {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/recipes'</span>)
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> Error(res.status)
+  <span class="kw">const</span> items = <span class="kw">await</span> res.<span class="fn">json</span>()
+  <span class="kw">return</span> items.<span class="fn">map</span>(r => ({ ...r, dateFormatted: <span class="fn">formatDate</span>(r.created_at) }))
+}
+
+<span class="cm">// main.js — event listeners only, wires everything together</span>
+<span class="kw">import</span> { <span class="fn">fetchRecipes</span> } <span class="kw">from</span> <span class="str">'./api.js'</span>
+<span class="kw">import</span> { <span class="fn">renderList</span> } <span class="kw">from</span> <span class="str">'./ui.js'</span>
+<span class="kw">import</span> { <span class="fn">save</span>, <span class="fn">load</span> } <span class="kw">from</span> <span class="str">'./storage.js'</span></pre>
+
+        <h4>localStorage — the right way</h4>
+        <p>localStorage only stores strings. Always serialize with <code>JSON.stringify</code>, deserialize with <code>JSON.parse</code>. Always wrap in try/catch — it throws in private browsing mode and when storage is full.</p>
+<pre><span class="cm">// storage.js</span>
+<span class="kw">export function</span> <span class="fn">save</span>(key, value) {
+  <span class="kw">try</span> {
+    localStorage.<span class="fn">setItem</span>(key, JSON.<span class="fn">stringify</span>(value))
+  } <span class="kw">catch</span> (err) {
+    console.<span class="fn">warn</span>(<span class="str">'localStorage unavailable:'</span>, err)
+  }
+}
+
+<span class="kw">export function</span> <span class="fn">load</span>(key, fallback = <span class="kw">null</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> raw = localStorage.<span class="fn">getItem</span>(key)
+    <span class="kw">return</span> raw !== <span class="kw">null</span> ? JSON.<span class="fn">parse</span>(raw) : fallback
+  } <span class="kw">catch</span> {
+    <span class="kw">return</span> fallback  <span class="cm">// corrupted data — return fallback</span>
+  }
+}
+
+<span class="kw">export</span> <span class="kw">const</span> <span class="fn">remove</span> = key => localStorage.<span class="fn">removeItem</span>(key)</pre>
+
+        <h4>The module structure for a frontend app</h4>
+<pre><span class="cm">src/</span>
+<span class="cm">  utils.js    ← pure helper functions. No side effects.</span>
+<span class="cm">  storage.js  ← localStorage wrappers only</span>
+<span class="cm">  api.js      ← all fetch calls. Nothing else.</span>
+<span class="cm">  ui.js       ← DOM rendering functions. No fetch, no storage.</span>
+<span class="cm">  state.js    ← the app's in-memory data (source of truth)</span>
+<span class="cm">  main.js     ← event listeners, wires all modules together</span></pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Refactor Day 3's Task Manager into Modules</div>
+        <ol>
+          <li>Create a branch: <code>git checkout -b feature/modules</code></li>
+          <li>Create: <code>tasks.js</code>, <code>storage.js</code>, <code>ui.js</code>, <code>main.js</code></li>
+          <li><code>tasks.js</code>: pure functions — addTask, deleteTask, toggleTask, filterTasks. Zero DOM, zero storage.</li>
+          <li><code>storage.js</code>: today's save/load/remove pattern</li>
+          <li><code>ui.js</code>: renderList(tasks), updateCount(n) — DOM only</li>
+          <li><code>main.js</code>: event listeners that call tasks.js → storage.js → ui.js in sequence</li>
+          <li>Tasks survive page refreshes via localStorage</li>
+          <li><code>git checkout main && git merge feature/modules && git branch -d feature/modules</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day w1" id="d7">
+    <div class="dh">
+      <div class="db-badge">D7</div>
+      <div class="dm">
+        <h3>Solo Build Day — Weather Dashboard</h3>
+        <p>No step-by-step. Plan it, architect it, ship it.</p>
+        <div class="tags"><span class="tag tp">Project 3</span><span class="tag tb">Solo Build</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="blk bt">
+        <div class="bl">💡 Before Writing Any Code — 15 Minutes of Planning</div>
+        <ol>
+          <li>Look at the OpenWeather API response shape. What data do you get? What's the structure?</li>
+          <li>What state does the app hold in memory? (current city, unit preference, search history)</li>
+          <li>Sketch your module structure on paper. Which files? What does each one own?</li>
+          <li>Write pseudocode for the main flow: user types city → you do what, step by step?</li>
+        </ol>
+        <p>Only start coding after you can answer all four. Coding without a plan is how you get stuck.</p>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Portfolio Project 3 — Weather Dashboard</div>
+        <ul>
+          <li>Search any city → current weather: temp, humidity, wind, condition icon, "feels like"</li>
+          <li>5-day forecast in a visual card row</li>
+          <li>Celsius/Fahrenheit toggle — all values update without re-fetching</li>
+          <li>Recent searches — last 5 cities as clickable chips stored in localStorage</li>
+          <li>Three error messages: city not found, network offline, empty input</li>
+          <li>Responsive — looks good on mobile and desktop</li>
+        </ul>
+        <p style="margin-top:10px;font-size:13px"><strong>Sign up at openweathermap.org</strong> (free tier). Store your key in <code>.env</code>, add <code>.env</code> to <code>.gitignore</code>. Commit after every working feature.</p>
+      </div>
+
+      <div class="blk bda">
+        <div class="bl">📌 Week 1 Honesty Check</div>
+        <p>Close everything. From memory only, write:</p>
+        <ol>
+          <li>A <code>fetchData(url)</code> function with proper error handling</li>
+          <li>An event delegation handler on a list</li>
+          <li>A storage module with save, load, and remove</li>
+          <li>A debounce function</li>
+        </ol>
+        <p style="margin-top:8px">If any of these stop you, you don't own them yet. Rebuild that concept from scratch before Day 8.</p>
+      </div>
+    </div>
+  </div>
+
+</div></section>
+EOF
+echo "Week 1 done"<!-- WEEK 2 -->
+<section class="sec w2" id="w2"><div class="wrap">
+  <div class="wp">Week 2</div>
+  <h2 class="sec-t">Node.js, Backend &amp; Full-Stack</h2>
+  <p class="sec-s">Server-side JavaScript, Express, SQL, authentication, and a deployed full-stack app.</p>
+
+  <!-- DAY 8 -->
+  <div class="day w2" id="d8">
+    <div class="dh">
+      <div class="db-badge">D8</div>
+      <div class="dm">
+        <h3>Node.js — JavaScript Without a Browser</h3>
+        <p>CommonJS modules, the file system, environment variables, npm</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag td">Debug</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>What Node actually is</h4>
+        <p>Node.js is Google's V8 engine (same one Chrome uses) running directly on your machine. You get access to the file system, networking, and the OS. But you lose all browser APIs — no <code>document</code>, no <code>window</code>, no DOM. Different environment, same language.</p>
+
+        <h4>CommonJS modules — Node's built-in module system</h4>
+<pre><span class="cm">// In Node, every file is a module.</span>
+<span class="cm">// Export with module.exports. Import with require().</span>
+
+<span class="cm">// math.js</span>
+<span class="kw">function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b }
+<span class="kw">const</span> PI = <span class="num">3.14159</span>
+module.exports = { add, PI }
+
+<span class="cm">// app.js</span>
+<span class="kw">const</span> { <span class="fn">add</span>, PI }  = <span class="fn">require</span>(<span class="str">'./math'</span>)   <span class="cm">// your file — relative path</span>
+<span class="kw">const</span> fs            = <span class="fn">require</span>(<span class="str">'fs'</span>)        <span class="cm">// built-in Node module</span>
+<span class="kw">const</span> path          = <span class="fn">require</span>(<span class="str">'path'</span>)      <span class="cm">// built-in Node module</span>
+<span class="kw">const</span> express       = <span class="fn">require</span>(<span class="str">'express'</span>)  <span class="cm">// npm package</span></pre>
+
+        <h4>The file system — reading and writing files</h4>
+<pre><span class="kw">const</span> fs   = <span class="fn">require</span>(<span class="str">'fs'</span>)
+<span class="kw">const</span> path = <span class="fn">require</span>(<span class="str">'path'</span>)
+
+<span class="cm">// __dirname = absolute path to the current file's directory</span>
+<span class="cm">// Always use path.join to build paths — handles OS differences</span>
+<span class="kw">const</span> filePath = path.<span class="fn">join</span>(__dirname, <span class="str">'data.json'</span>)
+
+<span class="cm">// Synchronous — blocks until done. Fine for startup, bad inside request handlers.</span>
+<span class="kw">const</span> raw  = fs.<span class="fn">readFileSync</span>(filePath, <span class="str">'utf-8'</span>)
+<span class="kw">const</span> data = JSON.<span class="fn">parse</span>(raw)
+fs.<span class="fn">writeFileSync</span>(filePath, JSON.<span class="fn">stringify</span>(data, <span class="kw">null</span>, <span class="num">2</span>))  <span class="cm">// pretty-printed</span>
+
+<span class="cm">// Check if a file exists before reading</span>
+<span class="kw">const</span> exists = fs.<span class="fn">existsSync</span>(filePath)</pre>
+
+        <h4>Environment variables — never hardcode secrets</h4>
+<pre><span class="cm">// .env (never commit this file)</span>
+<span class="cm">PORT=3000</span>
+<span class="cm">API_KEY=abc123secret</span>
+<span class="cm">DB_PATH=./app.db</span>
+
+<span class="cm">// .gitignore (commit this)</span>
+<span class="cm">node_modules/</span>
+<span class="cm">.env</span>
+
+<span class="cm">// app.js — load env vars before anything else</span>
+<span class="fn">require</span>(<span class="str">'dotenv'</span>).<span class="fn">config</span>()
+<span class="kw">const</span> port = process.env.PORT || <span class="num">3000</span>   <span class="cm">// process.env values are always strings</span>
+
+<span class="cm">// process.argv — command line arguments</span>
+<span class="cm">// node app.js add "Buy milk"</span>
+<span class="cm">// process.argv = ["node", "app.js", "add", "Buy milk"]</span>
+<span class="kw">const</span> [,, command, ...args] = process.argv  <span class="cm">// skip "node" and script path</span></pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenge — CLI Notes App</div>
+        <p>A command-line notes manager using only Node core modules (no npm packages).</p>
+<pre>node notes.js add <span class="str">"Buy groceries"</span>
+node notes.js list
+node notes.js delete <span class="num">2</span>
+node notes.js search <span class="str">"groceries"</span>
+node notes.js clear</pre>
+        <ol>
+          <li>Parse <code>process.argv</code> to extract command and arguments</li>
+          <li>Store notes in <code>notes.json</code> — read/write with <code>fs</code></li>
+          <li>Each note: <code>{ id, text, createdAt }</code></li>
+          <li>Handle edge cases: file doesn't exist (first run), invalid ID, no command given</li>
+          <li><code>search</code> filters notes whose text includes the query (case-insensitive)</li>
+          <li>Use <code>path.join(__dirname, 'notes.json')</code> — never a hardcoded relative path</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 9 -->
+  <div class="day w2" id="d9">
+    <div class="dh">
+      <div class="db-badge">D9</div>
+      <div class="dm">
+        <h3>Express.js — Build Your First REST API</h3>
+        <p>Routes, middleware, req/res, status codes, CORS, validation</p>
+        <div class="tags"><span class="tag tp">Project 4 Starts</span><span class="tag tb">Build</span><span class="tag td">Debug</span><span class="tag ti">Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>What Express does</h4>
+        <p>Node's built-in <code>http</code> module is very low-level. Express wraps it with clean routing, middleware support, and response helpers. Every web framework in every language (Django, Rails, Laravel) works on the same idea: map URL patterns + HTTP methods to handler functions.</p>
+
+        <h4>Setup, routes, and parameters</h4>
+<pre><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>)
+<span class="kw">const</span> app = <span class="fn">express</span>()
+
+<span class="cm">// Middleware comes BEFORE routes — order matters</span>
+app.<span class="fn">use</span>(express.<span class="fn">json</span>())    <span class="cm">// parses JSON request bodies into req.body</span>
+
+<span class="cm">// Route: method + path + handler</span>
+app.<span class="fn">get</span>(<span class="str">'/users'</span>, (req, res) => {
+  res.<span class="fn">json</span>(users)           <span class="cm">// sends JSON with 200 status</span>
+})
+
+<span class="cm">// Route parameters — :id is a wildcard, accessed via req.params.id</span>
+app.<span class="fn">get</span>(<span class="str">'/users/:id'</span>, (req, res) => {
+  <span class="kw">const</span> id   = <span class="fn">parseInt</span>(req.params.id)  <span class="cm">// ⚠️ req.params are always strings</span>
+  <span class="kw">const</span> user = users.<span class="fn">find</span>(u => u.id === id)
+  <span class="kw">if</span> (!user) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> })
+  res.<span class="fn">json</span>(user)
+})
+
+<span class="cm">// Query params — /users?role=admin&limit=10 → req.query</span>
+app.<span class="fn">get</span>(<span class="str">'/users'</span>, (req, res) => {
+  <span class="kw">const</span> { role, limit = <span class="str">'20'</span> } = req.query
+  <span class="kw">const</span> filtered = role ? users.<span class="fn">filter</span>(u => u.role === role) : users
+  res.<span class="fn">json</span>(filtered.<span class="fn">slice</span>(<span class="num">0</span>, <span class="fn">parseInt</span>(limit)))
+})
+
+<span class="cm">// Creating a resource — use 201 Created, not 200</span>
+app.<span class="fn">post</span>(<span class="str">'/users'</span>, (req, res) => {
+  <span class="kw">const</span> { name, email } = req.body
+  <span class="kw">if</span> (!name || !email) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'name and email required'</span> })
+  }
+  <span class="kw">const</span> user = { id: Date.<span class="fn">now</span>(), name, email }
+  users.<span class="fn">push</span>(user)
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>(user)
+})
+
+<span class="cm">// Delete — use 204 No Content (no body)</span>
+app.<span class="fn">delete</span>(<span class="str">'/users/:id'</span>, (req, res) => {
+  <span class="kw">const</span> index = users.<span class="fn">findIndex</span>(u => u.id === +req.params.id)
+  <span class="kw">if</span> (index === -<span class="num">1</span>) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> })
+  users.<span class="fn">splice</span>(index, <span class="num">1</span>)
+  res.<span class="fn">status</span>(<span class="num">204</span>).<span class="fn">send</span>()
+})
+
+app.<span class="fn">listen</span>(<span class="num">3000</span>, () => console.<span class="fn">log</span>(<span class="str">'Running on port 3000'</span>))</pre>
+
+        <h4>Middleware — the most important concept in Express</h4>
+        <p>Middleware is any function with <code>(req, res, next)</code>. It runs in the order it's defined. It can modify <code>req</code>, send a response (ending the chain), or call <code>next()</code> to pass control forward. If a middleware doesn't call <code>next()</code> and doesn't send a response, the request hangs.</p>
+<pre><span class="cm">// Logger — runs before every route</span>
+app.<span class="fn">use</span>((req, res, next) => {
+  console.<span class="fn">log</span>(<span class="str">`${req.method} ${req.path} — ${new Date().toISOString()}`</span>)
+  <span class="fn">next</span>()  <span class="cm">// MUST call next() or the request hangs</span>
+})
+
+<span class="cm">// Validation middleware — only for specific routes</span>
+<span class="kw">function</span> <span class="fn">validateRecipe</span>(req, res, next) {
+  <span class="kw">const</span> { title, ingredients } = req.body
+  <span class="kw">if</span> (!title || !ingredients) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'title and ingredients required'</span> })
+  }
+  <span class="fn">next</span>()
+}
+app.<span class="fn">post</span>(<span class="str">'/recipes'</span>, <span class="fn">validateRecipe</span>, (req, res) => { <span class="cm">/* ... */</span> })
+
+<span class="cm">// CORS — allows your frontend (different origin) to call your API</span>
+<span class="kw">const</span> cors = <span class="fn">require</span>(<span class="str">'cors'</span>)
+app.<span class="fn">use</span>(<span class="fn">cors</span>({ origin: <span class="str">'http://localhost:5500'</span> }))
+
+<span class="cm">// Global error handler — 4 params, must be LAST</span>
+app.<span class="fn">use</span>((err, req, res, next) => {
+  console.<span class="fn">error</span>(err.stack)
+  res.<span class="fn">status</span>(err.status || <span class="num">500</span>).<span class="fn">json</span>({ error: err.message })
+})</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Portfolio Project 4 — Recipe REST API</div>
+<pre>npm install express cors dotenv
+npm install -D nodemon</pre>
+        <ol>
+          <li>All 5 routes: <code>GET /recipes</code>, <code>GET /recipes/:id</code>, <code>POST /recipes</code>, <code>PATCH /recipes/:id</code>, <code>DELETE /recipes/:id</code></li>
+          <li>Custom logger middleware (method, path, timestamp)</li>
+          <li>Validation middleware for POST/PATCH</li>
+          <li>Query param filter: <code>GET /recipes?category=italian</code></li>
+          <li>Correct status codes: 200, 201, 400, 404, 204</li>
+          <li>Global error handler as last middleware</li>
+          <li>Test every route in Thunder Client or Postman — screenshot your tests</li>
+        </ol>
+      </div>
+
+      <div class="blk bd">
+        <div class="bl">🐛 Debug This Express App</div>
+<pre><span class="kw">const</span> app = <span class="fn">require</span>(<span class="str">'express'</span>)()
+
+<span class="cm">// Bug 1: POST body is always undefined — why?</span>
+app.<span class="fn">post</span>(<span class="str">'/users'</span>, (req, res) => {
+  <span class="kw">const</span> { name } = <span class="broken">req.body</span>
+  res.<span class="fn">json</span>({ name })
+})
+
+<span class="cm">// Bug 2: find() never matches — params are strings, IDs are numbers</span>
+app.<span class="fn">get</span>(<span class="str">'/users/:id'</span>, (req, res) => {
+  <span class="kw">const</span> user = users.<span class="fn">find</span>(u => u.id === <span class="broken">req.params.id</span>)
+  res.<span class="fn">json</span>(user)
+})
+
+<span class="cm">// Bug 3: wrong way to combine status + JSON</span>
+app.<span class="fn">post</span>(<span class="str">'/items'</span>, (req, res) => {
+  res.<span class="fn">send</span>(<span class="broken">201, { created: true }</span>)
+})
+
+<span class="cm">// Bug 4: middleware defined AFTER routes — it never runs</span>
+app.<span class="fn">get</span>(<span class="str">'/test'</span>, (req, res) => res.<span class="fn">send</span>(<span class="str">'ok'</span>))
+app.<span class="fn">use</span>(<span class="broken">express.<span class="fn">json</span>()</span>)
+
+app.<span class="fn">listen</span>(<span class="num">3000</span>)</pre>
+      </div>
+
+      <div class="blk bi">
+        <div class="bl">🎯 Interview Questions</div>
+        <ol>
+          <li>"What is middleware in Express? Walk me through the request lifecycle."</li>
+          <li>"What's the difference between <code>res.json()</code> and <code>res.send()</code>?"</li>
+          <li>"Why do we need CORS? When does a browser block a request?"</li>
+          <li>"What HTTP status code do you return for a validation error, and why not 500?"</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 10 -->
+  <div class="day w2" id="d10">
+    <div class="dh">
+      <div class="db-badge">D10</div>
+      <div class="dm">
+        <h3>SQL &amp; SQLite — Real Persistence</h3>
+        <p>Tables, queries, JOINs, parameterized statements — add a real database</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag ti">Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>Why SQL?</h4>
+        <p>In-memory arrays disappear when the server restarts. SQL databases persist to disk and give you structured querying, constraints, and relationships. SQLite is a file-based database — no server to install, perfect for learning and small apps.</p>
+
+        <h4>Defining tables and types</h4>
+<pre><span class="cm">-- SQL uses its own comment syntax</span>
+<span class="cm">-- CREATE TABLE defines the schema — columns, types, constraints</span>
+
+CREATE TABLE users (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,  <span class="cm">-- auto ID</span>
+  name       TEXT    NOT NULL,                   <span class="cm">-- required</span>
+  email      TEXT    UNIQUE NOT NULL,            <span class="cm">-- unique + required</span>
+  created_at TEXT    DEFAULT (datetime(<span class="str">'now'</span>))  <span class="cm">-- auto timestamp</span>
+);
+
+CREATE TABLE recipes (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  title       TEXT    NOT NULL,
+  ingredients TEXT    NOT NULL,
+  category    TEXT    DEFAULT <span class="str">'other'</span>,
+  user_id     INTEGER REFERENCES users(id) ON DELETE CASCADE  <span class="cm">-- foreign key</span>
+);</pre>
+
+        <h4>CRUD queries</h4>
+<pre><span class="cm">-- SELECT</span>
+SELECT * FROM recipes;
+SELECT title, category FROM recipes WHERE category = <span class="str">'italian'</span>;
+SELECT * FROM recipes ORDER BY title ASC LIMIT <span class="num">10</span>;
+
+<span class="cm">-- INSERT</span>
+INSERT INTO recipes (title, ingredients, user_id)
+VALUES (<span class="str">'Pasta'</span>, <span class="str">'["flour","eggs"]'</span>, <span class="num">1</span>);
+
+<span class="cm">-- UPDATE</span>
+UPDATE recipes SET title = <span class="str">'Carbonara'</span> WHERE id = <span class="num">3</span>;
+
+<span class="cm">-- DELETE</span>
+DELETE FROM recipes WHERE id = <span class="num">3</span>;
+
+<span class="cm">-- JOIN — combine rows from two tables on a matching column</span>
+SELECT recipes.title, users.name AS author
+FROM recipes
+JOIN users ON recipes.user_id = users.id
+WHERE recipes.category = <span class="str">'italian'</span>;</pre>
+
+        <h4>Using SQLite in Node with better-sqlite3</h4>
+        <p><code>better-sqlite3</code> is synchronous (no callbacks or Promises needed) and very fast. Ideal for learning and production small-scale apps.</p>
+<pre><span class="kw">const</span> Database = <span class="fn">require</span>(<span class="str">'better-sqlite3'</span>)
+<span class="kw">const</span> db = <span class="kw">new</span> <span class="fn">Database</span>(<span class="str">'./app.db'</span>)
+
+<span class="cm">// Create table on startup — IF NOT EXISTS prevents errors on re-run</span>
+db.<span class="fn">exec</span>(<span class="str">`
+  CREATE TABLE IF NOT EXISTS recipes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    ingredients TEXT NOT NULL,
+    category TEXT DEFAULT 'other'
+  )
+`</span>)
+
+<span class="cm">// ALWAYS use parameterized queries — the ? placeholders prevent SQL injection</span>
+<span class="cm">// NEVER use string interpolation: `WHERE id = ${req.params.id}` ← DANGEROUS</span>
+
+<span class="cm">// .get(id) — returns one matching row, or undefined</span>
+<span class="kw">const</span> recipe = db.<span class="fn">prepare</span>(<span class="str">'SELECT * FROM recipes WHERE id = ?'</span>).<span class="fn">get</span>(id)
+
+<span class="cm">// .all() — returns an array of all matching rows</span>
+<span class="kw">const</span> recipes = db.<span class="fn">prepare</span>(<span class="str">'SELECT * FROM recipes WHERE category = ?'</span>).<span class="fn">all</span>(category)
+
+<span class="cm">// .run() — for INSERT, UPDATE, DELETE</span>
+<span class="cm">// returns { changes: 1, lastInsertRowid: 5 }</span>
+<span class="kw">const</span> result = db
+  .<span class="fn">prepare</span>(<span class="str">'INSERT INTO recipes (title, ingredients) VALUES (?, ?)'</span>)
+  .<span class="fn">run</span>(title, JSON.<span class="fn">stringify</span>(ingredients))
+
+<span class="kw">const</span> newId = result.lastInsertRowid  <span class="cm">// use this to return the created resource</span></pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenge — Add a Database to Your Recipe API</div>
+<pre>npm install better-sqlite3</pre>
+        <ol>
+          <li>Create <code>db.js</code> — initialize the database, create tables with <code>IF NOT EXISTS</code></li>
+          <li>Create <code>recipes</code> and <code>categories</code> tables (linked by foreign key)</li>
+          <li>Replace every in-memory array operation in your routes with a <code>better-sqlite3</code> query</li>
+          <li>Add <code>GET /recipes?category=italian</code> filtering using a <code>WHERE</code> clause</li>
+          <li>Write a <code>seed.js</code> script that inserts 5 sample recipes — run it once with <code>node seed.js</code></li>
+          <li>Build a JOIN query: <code>GET /recipes</code> returns recipe + category name (not just category_id)</li>
+        </ol>
+      </div>
+
+      <div class="blk bi">
+        <div class="bl">🎯 Interview Questions</div>
+        <ol>
+          <li>"What is SQL injection and how do parameterized queries prevent it?"</li>
+          <li>"What is a foreign key? What does <code>ON DELETE CASCADE</code> do?"</li>
+          <li>"What's the difference between <code>INNER JOIN</code> and <code>LEFT JOIN</code>?"</li>
+          <li>"When would you choose a relational database over MongoDB?"</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 11 -->
+  <div class="day w2" id="d11">
+    <div class="dh">
+      <div class="db-badge">D11</div>
+      <div class="dm">
+        <h3>Authentication — JWT &amp; Password Hashing</h3>
+        <p>How login actually works: bcrypt, tokens, protected routes</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag ti">Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>Why you never store plain passwords</h4>
+        <p>If your database is breached, plain passwords expose users on every other site where they reuse that password. bcrypt hashes passwords with a one-way algorithm plus a random salt — you literally cannot reverse it. Even if two users have the same password, their hashes are different because of the salt.</p>
+
+        <h4>bcrypt — hashing and verifying</h4>
+<pre><span class="kw">const</span> bcrypt = <span class="fn">require</span>(<span class="str">'bcryptjs'</span>)
+
+<span class="cm">// REGISTER — hash before saving to database</span>
+<span class="kw">const</span> saltRounds = <span class="num">12</span>   <span class="cm">// higher = slower = harder to brute-force</span>
+<span class="kw">const</span> hashed = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(plaintextPassword, saltRounds)
+<span class="cm">// "$2a$12$..." — a long string. Store this in your DB, never the original.</span>
+
+<span class="cm">// LOGIN — compare plain input against the stored hash</span>
+<span class="kw">const</span> isValid = <span class="kw">await</span> bcrypt.<span class="fn">compare</span>(plaintextPassword, hashedFromDB)
+<span class="cm">// true or false — bcrypt handles the salt internally</span></pre>
+
+        <h4>JWTs — stateless authentication</h4>
+        <p>After login the server creates a signed token containing the user's ID. The client stores it and sends it in every request. The server verifies the signature — if valid, the user is authenticated. No session storage needed on the server.</p>
+<pre><span class="kw">const</span> jwt = <span class="fn">require</span>(<span class="str">'jsonwebtoken'</span>)
+<span class="kw">const</span> SECRET = process.env.JWT_SECRET  <span class="cm">// long random string, in .env</span>
+
+<span class="cm">// SIGN — create a token after successful login</span>
+<span class="kw">const</span> token = jwt.<span class="fn">sign</span>(
+  { userId: user.id, email: user.email },  <span class="cm">// payload — never include password</span>
+  SECRET,
+  { expiresIn: <span class="str">'7d'</span> }
+)
+<span class="cm">// "eyJhbGciOiJ..." — three base64 parts: header.payload.signature</span>
+
+<span class="cm">// VERIFY — check a token (done in middleware, not in routes)</span>
+<span class="kw">try</span> {
+  <span class="kw">const</span> payload = jwt.<span class="fn">verify</span>(token, SECRET)  <span class="cm">// throws if invalid or expired</span>
+  <span class="cm">// payload = { userId: 1, email: "...", iat: ..., exp: ... }</span>
+} <span class="kw">catch</span> (err) {
+  <span class="cm">// JsonWebTokenError: invalid signature</span>
+  <span class="cm">// TokenExpiredError: jwt expired</span>
+}</pre>
+
+        <h4>The authentication middleware pattern</h4>
+<pre><span class="cm">// middleware/authenticate.js</span>
+<span class="kw">function</span> <span class="fn">authenticate</span>(req, res, next) {
+  <span class="kw">const</span> header = req.headers.authorization  <span class="cm">// "Bearer eyJ..."</span>
+  <span class="kw">if</span> (!header?.startsWith(<span class="str">'Bearer '</span>)) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'No token'</span> })
+  }
+  <span class="kw">try</span> {
+    <span class="kw">const</span> payload = jwt.<span class="fn">verify</span>(header.<span class="fn">slice</span>(<span class="num">7</span>), process.env.JWT_SECRET)
+    req.user = payload   <span class="cm">// attach user info for downstream handlers</span>
+    <span class="fn">next</span>()
+  } <span class="kw">catch</span> {
+    res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Invalid or expired token'</span> })
+  }
+}
+
+<span class="cm">// Protect routes by adding authenticate before the handler</span>
+app.<span class="fn">post</span>(<span class="str">'/recipes'</span>, <span class="fn">authenticate</span>, (req, res) => {
+  <span class="cm">// req.user.userId available here</span>
+  <span class="kw">const</span> recipe = <span class="fn">createRecipe</span>({ ...req.body, userId: req.user.userId })
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>(recipe)
+})</pre>
+
+        <h4>The full register/login flow</h4>
+<pre>npm install bcryptjs jsonwebtoken
+
+<span class="cm">// POST /auth/register</span>
+app.<span class="fn">post</span>(<span class="str">'/auth/register'</span>, <span class="kw">async</span> (req, res, next) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { name, email, password } = req.body
+    <span class="kw">if</span> (!name || !email || !password) {
+      <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'All fields required'</span> })
+    }
+    <span class="kw">const</span> exists = db.<span class="fn">prepare</span>(<span class="str">'SELECT id FROM users WHERE email=?'</span>).<span class="fn">get</span>(email)
+    <span class="kw">if</span> (exists) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">409</span>).<span class="fn">json</span>({ error: <span class="str">'Email already in use'</span> })
+
+    <span class="kw">const</span> hashed = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(password, <span class="num">12</span>)
+    <span class="kw">const</span> { lastInsertRowid } = db
+      .<span class="fn">prepare</span>(<span class="str">'INSERT INTO users (name,email,password) VALUES (?,?,?)'</span>)
+      .<span class="fn">run</span>(name, email, hashed)
+
+    <span class="kw">const</span> token = jwt.<span class="fn">sign</span>({ userId: lastInsertRowid }, SECRET, { expiresIn: <span class="str">'7d'</span> })
+    res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({ token })
+  } <span class="kw">catch</span>(err) { <span class="fn">next</span>(err) }
+})</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenge — Add Auth to Your Recipe API</div>
+        <ol>
+          <li>Add <code>users</code> table: id, name, email, password (hashed), created_at</li>
+          <li><code>POST /auth/register</code> — validate, hash, create user, return JWT</li>
+          <li><code>POST /auth/login</code> — find user by email, compare password, return JWT on match</li>
+          <li><code>GET /auth/me</code> — protected route, return logged-in user info (no password field)</li>
+          <li>Add the <code>authenticate</code> middleware to your codebase</li>
+          <li>Protect POST, PATCH, DELETE recipe routes — only logged-in users may modify</li>
+          <li>Store <code>user_id</code> on each recipe to track who created it</li>
+        </ol>
+      </div>
+
+      <div class="blk bi">
+        <div class="bl">🎯 Interview Questions</div>
+        <ol>
+          <li>"What's the difference between authentication and authorization?"</li>
+          <li>"Why use bcrypt instead of SHA-256 for passwords?"</li>
+          <li>"What are the three parts of a JWT? What's in each?"</li>
+          <li>"What's the security risk of storing a JWT in localStorage?"</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 12 -->
+  <div class="day w2" id="d12">
+    <div class="dh">
+      <div class="db-badge">D12</div>
+      <div class="dm">
+        <h3>Frontend ↔ Backend Integration</h3>
+        <p>Connecting your JS frontend to your Node API — Portfolio Project 5</p>
+        <div class="tags"><span class="tag tp">Project 5</span><span class="tag tb">Build</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>The full-stack request cycle</h4>
+<pre><span class="cm">Browser                         Express Server              Database</span>
+<span class="cm">─────────────────────────────────────────────────────────────────────</span>
+<span class="cm">fetch('/api/recipes', {...}) →  app.post('/api/recipes')  →  db.run(...)</span>
+<span class="cm">                                                         ←  { lastInsertRowid: 5 }</span>
+<span class="cm">                            ←  res.status(201).json(r)</span>
+<span class="cm">const r = await res.json()  ←</span>
+<span class="cm">renderRecipe(r)</span></pre>
+
+        <h4>Sending the auth token from your frontend</h4>
+<pre><span class="cm">// After login — save the token</span>
+<span class="kw">const</span> { token } = <span class="kw">await</span> res.<span class="fn">json</span>()
+localStorage.<span class="fn">setItem</span>(<span class="str">'token'</span>, token)
+
+<span class="cm">// Helper that adds the auth header automatically</span>
+<span class="kw">async function</span> <span class="fn">authFetch</span>(url, options = {}) {
+  <span class="kw">const</span> token = localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>)
+  <span class="kw">return</span> <span class="fn">fetch</span>(url, {
+    ...options,
+    headers: {
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+      ...(token && { Authorization: <span class="str">`Bearer ${token}`</span> }),
+      ...options.headers,
+    },
+  })
+}
+<span class="cm">// Replace fetch() with authFetch() everywhere in your frontend</span></pre>
+
+        <h4>Managing auth state on the frontend</h4>
+<pre><span class="cm">// On page load — check if the token is still valid</span>
+<span class="kw">async function</span> <span class="fn">init</span>() {
+  <span class="kw">const</span> token = localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>)
+  <span class="kw">if</span> (!token) { <span class="fn">showLoginScreen</span>(); <span class="kw">return</span> }
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">authFetch</span>(<span class="str">'/auth/me'</span>)
+    <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> Error()   <span class="cm">// token expired or invalid</span>
+    <span class="kw">const</span> user = <span class="kw">await</span> res.<span class="fn">json</span>()
+    <span class="fn">showApp</span>(user)
+  } <span class="kw">catch</span> {
+    localStorage.<span class="fn">removeItem</span>(<span class="str">'token'</span>)  <span class="cm">// clear stale token</span>
+    <span class="fn">showLoginScreen</span>()
+  }
+}
+
+<span class="kw">function</span> <span class="fn">logout</span>() {
+  localStorage.<span class="fn">removeItem</span>(<span class="str">'token'</span>)
+  <span class="fn">showLoginScreen</span>()
+}</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Portfolio Project 5 — Full-Stack Recipe App</div>
+        <p>Build the vanilla JS frontend that connects to your Days 9–11 Recipe API.</p>
+        <ol>
+          <li><strong>Login/Register forms</strong> — call your auth endpoints, save JWT on success, show clear error messages on failure</li>
+          <li><strong>Auth check on page load</strong> — call <code>/auth/me</code>. Fail → login screen. Pass → show the app.</li>
+          <li><strong>Recipe list</strong> — fetch from API, render cards with title, category, and author name</li>
+          <li><strong>Create recipe form</strong> — POST to API with auth header, re-fetch and re-render on success</li>
+          <li><strong>Edit/Delete buttons</strong> — only shown for recipes the logged-in user owns (compare <code>userId</code>)</li>
+          <li><strong>Logout</strong> — clear token, return to login screen</li>
+          <li><strong>Loading and error states</strong> for every async operation — no blank screens, no silent failures</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 13 -->
+  <div class="day w2" id="d13">
+    <div class="dh">
+      <div class="db-badge">D13</div>
+      <div class="dm">
+        <h3>Error Handling, Code Quality &amp; Git Workflow</h3>
+        <p>The difference between code that works and code that survives production</p>
+        <div class="tags"><span class="tag tb">Build</span><span class="tag tg">Git</span><span class="tag ti">Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="teach">
+        <div class="tl">📖 Taught Here — Concept First, Then Build</div>
+
+        <h4>Global error handling on the backend</h4>
+<pre><span class="cm">// A custom error class — gives errors a status code and a clean type</span>
+<span class="kw">class</span> AppError <span class="kw">extends</span> Error {
+  <span class="fn">constructor</span>(message, status = <span class="num">500</span>) {
+    <span class="kw">super</span>(message)
+    <span class="kw">this</span>.status = status
+    <span class="kw">this</span>.name = <span class="str">'AppError'</span>
+  }
+}
+
+<span class="cm">// In routes: throw AppError and call next(err)</span>
+app.<span class="fn">get</span>(<span class="str">'/recipes/:id'</span>, (req, res, next) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> recipe = db.<span class="fn">prepare</span>(<span class="str">'SELECT * FROM recipes WHERE id=?'</span>).<span class="fn">get</span>(req.params.id)
+    <span class="kw">if</span> (!recipe) <span class="kw">throw new</span> <span class="fn">AppError</span>(<span class="str">'Recipe not found'</span>, <span class="num">404</span>)
+    res.<span class="fn">json</span>(recipe)
+  } <span class="kw">catch</span> (err) { <span class="fn">next</span>(err) }   <span class="cm">// passes to global error handler</span>
+})
+
+<span class="cm">// Global error handler — 4 params, must be registered LAST</span>
+app.<span class="fn">use</span>((err, req, res, next) => {
+  <span class="kw">const</span> status  = err.status || <span class="num">500</span>
+  <span class="kw">const</span> message = err.name === <span class="str">'AppError'</span> ? err.message : <span class="str">'Internal server error'</span>
+  console.<span class="fn">error</span>(<span class="str">`[${status}] ${err.message}`</span>)
+  res.<span class="fn">status</span>(status).<span class="fn">json</span>({ error: message })
+})
+
+<span class="cm">// 404 catch-all — routes that don't exist</span>
+app.<span class="fn">use</span>((req, res) => {
+  res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">`Route ${req.method} ${req.path} not found`</span> })
+})</pre>
+
+        <h4>Professional Git workflow</h4>
+<pre><span class="cm"># Start every feature on a branch</span>
+git checkout -b feature/recipe-search
+
+<span class="cm"># Stage interactively — commit only related changes together</span>
+git add -p   <span class="cm"># review each hunk, type y to stage, n to skip</span>
+
+<span class="cm"># Conventional commits — employers read these</span>
+git commit -m <span class="str">"feat: add recipe search by title and ingredient"</span>
+git commit -m <span class="str">"fix: search is now case-insensitive"</span>
+git commit -m <span class="str">"refactor: extract search query to helper function"</span>
+git commit -m <span class="str">"docs: update README with search endpoint example"</span>
+
+<span class="cm"># Merge and clean up</span>
+git checkout main
+git merge feature/recipe-search
+git branch -d feature/recipe-search
+git push</pre>
+      </div>
+
+      <div class="blk bb">
+        <div class="bl">🔨 Build Challenge — Harden Your Recipe API</div>
+        <ol>
+          <li>Replace all inline error responses with <code>AppError</code> + <code>next(err)</code></li>
+          <li>Add global error handler and 404 catch-all as the final middlewares</li>
+          <li>Add input validation to all POST/PATCH routes — check types, required fields, max lengths</li>
+          <li>Install <code>express-rate-limit</code> — limit to 100 requests per 15 minutes per IP</li>
+          <li>Write a proper <code>README.md</code>: description, setup steps, env var list, endpoint table with request/response examples</li>
+          <li>Add <code>.env.example</code> (same keys, empty values) — commit this, never <code>.env</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 14 -->
+  <div class="day w2" id="d14">
+    <div class="dh">
+      <div class="db-badge">D14</div>
+      <div class="dm">
+        <h3>Capstone Sprint — Polish, Deploy, Present</h3>
+        <p>Shipping is a skill. An undeployed project doesn't exist in a portfolio.</p>
+        <div class="tags"><span class="tag tp">Capstone</span><span class="tag tg">Deploy</span><span class="tag ti">Mock Interview</span></div>
+      </div>
+    </div>
+    <div class="db">
+      <div class="blk bt">
+        <div class="bl">💡 Deployment Checklist</div>
+        <ol>
+          <li><strong>Backend → Railway.app or Render.com</strong> — connect GitHub, set env vars in the dashboard</li>
+          <li><strong>Frontend → Netlify or Vercel</strong> — drag-and-drop build folder or connect GitHub</li>
+          <li>Update CORS to allow your deployed frontend's URL specifically</li>
+          <li>Update your frontend's API base URL to point to the deployed backend</li>
+          <li>Test the live app end-to-end: register → login → create data → delete data → logout</li>
+          <li>Add the live URL to your README and your GitHub repo's About section</li>
+        </ol>
+      </div>
+
+      <div class="blk bi">
+        <div class="bl">🎯 The Self-Interview — Record This on Your Phone</div>
+        <ol>
+          <li>"This app lets users ___. I built it with ___ because ___."</li>
+          <li>Open your code and walk through 3 specific functions: what they do, why you structured them that way</li>
+          <li>"Here's a bug I hit — this is exactly how I debugged and fixed it."</li>
+          <li>"What would I do differently if I rebuilt this from scratch?"</li>
+          <li>"How would I scale this to handle 10,000 concurrent users?"</li>
+        </ol>
+        <p style="margin-top:8px;font-size:13px">If you can answer all five confidently on camera, you're ready for a real technical interview. If you can't, those gaps are what you study next.</p>
+      </div>
+    </div>
+  </div>
+
+</div></section>
+<!-- CAPSTONE -->
+<section class="sec" id="capstone"><div class="wrap">
+  <div class="cap-hero">
+    <div class="badge">🏆 Final Project</div>
+    <h2>The <span>Full-Stack Capstone</span></h2>
+    <p>A production-pattern app demonstrating every skill from the course — your proof of work for interviews.</p>
+    <div class="cg">
+      <div class="cf"><h4>JWT Auth System</h4><p>Register, login, protected routes, token validation middleware</p></div>
+      <div class="cf"><h4>Full CRUD API</h4><p>Express + SQLite, proper status codes, multi-table JOINs</p></div>
+      <div class="cf"><h4>Relational Data</h4><p>Users → Boards → Links → Tags, foreign keys, cascade deletes</p></div>
+      <div class="cf"><h4>Vanilla JS Frontend</h4><p>Modular ES6, connected to your own API, no framework</p></div>
+      <div class="cf"><h4>Error Handling</h4><p>Global handler, custom errors, frontend loading/error states</p></div>
+      <div class="cf"><h4>Live Deployment</h4><p>Backend on Railway, frontend on Netlify. A real URL.</p></div>
+    </div>
+  </div>
+
+  <div class="pc pcap">
+    <div class="pn">Capstone Project</div>
+    <h3>LinkBoard — Social Link Curation Platform</h3>
+    <p>Users create boards of curated links — think personal Linktree crossed with a bookmark manager. Others can browse public boards and star links. Built and deployed end-to-end.</p>
+    <div class="pills">
+      <span class="pill">Node.js</span><span class="pill">Express</span><span class="pill">SQLite</span>
+      <span class="pill">JWT Auth</span><span class="pill">Vanilla JS</span><span class="pill">Railway</span><span class="pill">Netlify</span>
+    </div>
+    <div class="ps">
+      <h5>Build Order — Commit After Each Step</h5>
+      <ol>
+        <li>Database schema: <code>users</code>, <code>boards</code>, <code>links</code>, <code>tags</code>, <code>link_tags</code> (junction), <code>stars</code></li>
+        <li>Auth API: register, login, /me</li>
+        <li>Boards CRUD: GET all public, GET mine, POST, PATCH, DELETE</li>
+        <li>Links CRUD nested under boards: <code>/boards/:id/links</code></li>
+        <li>Tags: add tags to links, <code>GET /links?tag=productivity</code> filter</li>
+        <li>Stars: POST/DELETE <code>/links/:id/star</code>, star count returned on link</li>
+        <li>Frontend: login + register forms with real API calls</li>
+        <li>Frontend: dashboard — user's boards with link counts</li>
+        <li>Frontend: board detail — links with working star button</li>
+        <li>Frontend: public browse — search by tag</li>
+        <li>Polish: loading states, empty states, error messages, responsive layout</li>
+        <li>Deploy: backend to Railway, frontend to Netlify</li>
+        <li>README: live URL, screenshots, setup steps, full API endpoint table</li>
+      </ol>
+    </div>
+  </div>
+</div></section>
+
+<!-- 5 PROJECTS -->
+<section class="sec" id="projects"><div class="wrap">
+  <h2 class="sec-t" style="margin-bottom:8px">🗂 Your 5 Portfolio Projects</h2>
+  <p class="sec-s">Every one on GitHub with a live demo and README. These are your proof of work.</p>
+
+  <div class="pc p1">
+    <div class="pn">Project 1 · Day 3</div>
+    <h3>Interactive Task Manager</h3>
+    <p>Full-featured todo app with zero dependencies. Proves DOM mastery, event delegation, and clean vanilla JS architecture.</p>
+    <div class="pills"><span class="pill">DOM API</span><span class="pill">Event Delegation</span><span class="pill">CSS Classes</span><span class="pill">No Libraries</span></div>
+  </div>
+
+  <div class="pc p2">
+    <div class="pn">Project 2 · Day 5</div>
+    <h3>GitHub Profile Viewer</h3>
+    <p>Search real GitHub users. Display profiles and top repos. Debounced search, client-side caching with a Map, three distinct error states.</p>
+    <div class="pills"><span class="pill">Fetch API</span><span class="pill">Async/Await</span><span class="pill">Debounce</span><span class="pill">Client Cache</span></div>
+  </div>
+
+  <div class="pc p3">
+    <div class="pn">Project 3 · Day 7</div>
+    <h3>Weather Dashboard</h3>
+    <p>5-day forecast, Celsius/Fahrenheit toggle, localStorage search history. Your first fully solo build with no step-by-step instructions.</p>
+    <div class="pills"><span class="pill">ES6 Modules</span><span class="pill">OpenWeather API</span><span class="pill">localStorage</span><span class="pill">Responsive</span></div>
+  </div>
+
+  <div class="pc p4">
+    <div class="pn">Project 4 · Days 9–11</div>
+    <h3>Recipe REST API</h3>
+    <p>Production-pattern Express API. SQLite persistence, JWT authentication, middleware chain, input validation, rate limiting.</p>
+    <div class="pills"><span class="pill">Node.js</span><span class="pill">Express</span><span class="pill">SQLite</span><span class="pill">JWT</span><span class="pill">bcrypt</span></div>
+  </div>
+
+  <div class="pc p5">
+    <div class="pn">Project 5 · Day 12</div>
+    <h3>Full-Stack Recipe App</h3>
+    <p>Vanilla JS frontend wired to the Recipe API. Login, register, create, edit, delete — all with auth. Your first real full-stack app.</p>
+    <div class="pills"><span class="pill">Full-Stack</span><span class="pill">JWT Client Auth</span><span class="pill">authFetch</span><span class="pill">Conditional UI</span></div>
+  </div>
+</div></section>
+
+<!-- INTERVIEW BANK -->
+<section class="sec" id="interview"><div class="wrap">
+  <h2 class="sec-t" style="margin-bottom:8px">🎯 Interview Question Bank</h2>
+  <p class="sec-s">Answer each one out loud before looking it up. If you can't explain it to your rubber duck, you don't know it yet.</p>
+
+  <div class="qg">
+    <div class="q">
+      <h4>JS Core</h4>
+      <ul>
+        <li>What is hoisting? Give an example where it causes a bug.</li>
+        <li>Explain closures with a real example.</li>
+        <li>What is <code>this</code>? How does it behave in arrow vs regular functions?</li>
+        <li>Difference between <code>==</code> and <code>===</code>?</li>
+        <li>What is prototypal inheritance?</li>
+        <li>What is a higher-order function?</li>
+        <li>Difference between <code>null</code> and <code>undefined</code>?</li>
+      </ul>
+    </div>
+    <div class="q">
+      <h4>Async &amp; APIs</h4>
+      <ul>
+        <li>Explain the event loop.</li>
+        <li>What does <code>async</code> do to a function's return value?</li>
+        <li><code>Promise.all</code> vs <code>Promise.allSettled</code>?</li>
+        <li>When does <code>fetch()</code> throw vs not throw?</li>
+        <li>What is CORS and why does the browser enforce it?</li>
+        <li>HTTP status codes: 200, 201, 400, 401, 403, 404, 500?</li>
+        <li>What's the difference between GET and POST?</li>
+      </ul>
+    </div>
+    <div class="q">
+      <h4>Backend &amp; Node</h4>
+      <ul>
+        <li>What is middleware? Walk through the request lifecycle.</li>
+        <li>Explain JWT authentication end-to-end.</li>
+        <li>Why hash passwords? Why not encrypt?</li>
+        <li>What is SQL injection and how do you prevent it?</li>
+        <li>What is a foreign key?</li>
+        <li>SQL vs NoSQL — when to use each?</li>
+        <li>What is an environment variable and why use them?</li>
+      </ul>
+    </div>
+    <div class="q">
+      <h4>Live Coding</h4>
+      <ul>
+        <li>Write a debounce function from scratch.</li>
+        <li>Deep clone an object without <code>JSON.parse</code>.</li>
+        <li>Flatten a nested array recursively.</li>
+        <li>Group an array of objects by a property.</li>
+        <li>Implement <code>Promise.all</code> from scratch.</li>
+        <li>Find all duplicate values in an array.</li>
+        <li>Implement a simple event emitter class.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="blk bt" style="margin-top:24px">
+    <div class="bl">💡 STAR Framework for Behavioral Questions</div>
+    <p>"Tell me about a challenge you faced" / "Describe a bug you fixed" / "Tell me something that didn't go to plan"</p>
+    <ol style="margin-top:10px">
+      <li><strong>Situation</strong> — What were you building? What was the context?</li>
+      <li><strong>Task</strong> — What specific problem needed solving?</li>
+      <li><strong>Action</strong> — What exact steps did you take? (Vague answers lose interviews. Be specific.)</li>
+      <li><strong>Result</strong> — What happened? What did you learn? What would you change?</li>
+    </ol>
+    <p style="margin-top:10px;font-size:13px">Your daily dev log is the source material for every one of these. That's why you wrote it every day.</p>
+  </div>
+</div></section>
+
+<footer>
+  <p>Built for people who learn by <strong>doing</strong>, not watching.</p>
+  <p style="margin-top:10px;color:#444;font-size:12px">JS: Zero to Job-Ready · 14-Day Build-First Course</p>
+</footer>
+
+</body></html>

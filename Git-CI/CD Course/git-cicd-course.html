@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & CI/CD — From Zero to Senior Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --border: #2a2a3d;
+    --accent: #7c6aff;
+    --accent2: #ff6a6a;
+    --accent3: #6affb4;
+    --accent4: #ffc96a;
+    --text: #e8e8f0;
+    --text-muted: #8888aa;
+    --code-bg: #0d0d1a;
+    --git-color: #f05133;
+    --ci-color: #00bcd4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem 0;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .sidebar-logo {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-logo h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  .sidebar-logo p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .sidebar-section {
+    padding: 0.5rem 1rem 0.25rem 1.5rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+  }
+
+  .sidebar-section.git { color: var(--git-color); }
+  .sidebar-section.ci { color: var(--ci-color); }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1rem 0.4rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .sidebar a:hover, .sidebar a.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(124, 106, 255, 0.06);
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 280px;
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0a0a0f 0%, #111125 50%, #0a0f1a 100%);
+    padding: 5rem 4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(124,106,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(124,106,255,0.15);
+    border: 1px solid rgba(124,106,255,0.3);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 span.git { color: var(--git-color); }
+  .hero h1 span.ci { color: var(--ci-color); }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .hero-stat .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* CONTENT SECTIONS */
+  .content {
+    padding: 3rem 4rem;
+    max-width: 900px;
+  }
+
+  .module {
+    margin-bottom: 5rem;
+  }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .module-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .module h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .module h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 2rem 0 0.75rem;
+  }
+
+  .module p {
+    color: var(--text);
+    margin-bottom: 1rem;
+    opacity: 0.88;
+    font-size: 0.97rem;
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 1.25rem 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .code-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .code-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+
+  .code-dots span:nth-child(1) { background: #ff5f57; }
+  .code-dots span:nth-child(2) { background: #ffbd2e; }
+  .code-dots span:nth-child(3) { background: #28c840; }
+
+  .code-content {
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .code-content .comment { color: #4a5568; }
+  .code-content .cmd { color: #7c6aff; }
+  .code-content .str { color: #6affb4; }
+  .code-content .flag { color: #ffc96a; }
+  .code-content .out { color: #8888aa; }
+  .code-content .highlight { color: #ff6a6a; }
+  .code-content .key { color: #00bcd4; }
+
+  /* CALLOUT BOXES */
+  .callout {
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    margin: 1.25rem 0;
+    border-left: 3px solid;
+    font-size: 0.92rem;
+  }
+
+  .callout.info {
+    background: rgba(0, 188, 212, 0.07);
+    border-color: var(--ci-color);
+    color: #b0ecf4;
+  }
+
+  .callout.tip {
+    background: rgba(106, 255, 180, 0.06);
+    border-color: var(--accent3);
+    color: #b0f4d4;
+  }
+
+  .callout.warning {
+    background: rgba(255, 201, 106, 0.07);
+    border-color: var(--accent4);
+    color: #f4deb0;
+  }
+
+  .callout.danger {
+    background: rgba(255, 106, 106, 0.07);
+    border-color: var(--accent2);
+    color: #f4b0b0;
+  }
+
+  .callout strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  /* CONCEPT CARDS */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+
+  .concept-card .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .concept-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+
+  .concept-card p {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* STEP LIST */
+  .steps {
+    counter-reset: step-counter;
+    list-style: none;
+    margin: 1.25rem 0;
+  }
+
+  .steps li {
+    counter-increment: step-counter;
+    position: relative;
+    padding: 0.9rem 1rem 0.9rem 3.5rem;
+    margin-bottom: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.9;
+  }
+
+  .steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.6rem;
+    height: 1.6rem;
+    background: rgba(124,106,255,0.2);
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82em;
+    background: rgba(124,106,255,0.12);
+    border: 1px solid rgba(124,106,255,0.2);
+    color: #b0a0ff;
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  /* PART HEADERS */
+  .part-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .part-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .part-header.git-part::after {
+    background: radial-gradient(circle, rgba(240,81,51,0.12) 0%, transparent 70%);
+  }
+
+  .part-header.ci-part::after {
+    background: radial-gradient(circle, rgba(0,188,212,0.12) 0%, transparent 70%);
+  }
+
+  .part-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .part-badge.git { background: rgba(240,81,51,0.15); color: var(--git-color); border: 1px solid rgba(240,81,51,0.3); }
+  .part-badge.ci { background: rgba(0,188,212,0.12); color: var(--ci-color); border: 1px solid rgba(0,188,212,0.3); }
+
+  .part-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .part-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 560px;
+    margin: 0;
+  }
+
+  /* CHEAT SHEET TABLE */
+  .cheat-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.85rem;
+  }
+
+  .cheat-table th {
+    background: var(--surface2);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cheat-table td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(42,42,61,0.5);
+    vertical-align: top;
+  }
+
+  .cheat-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: #b0a0ff;
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+
+  .cheat-table td:last-child {
+    color: var(--text-muted);
+    font-size: 0.83rem;
+  }
+
+  .cheat-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* QUIZ BOXES */
+  .checkpoint {
+    background: linear-gradient(135deg, rgba(124,106,255,0.08), rgba(106,255,180,0.05));
+    border: 1px solid rgba(124,106,255,0.25);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .checkpoint h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .checkpoint ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .checkpoint ul li {
+    font-size: 0.87rem;
+    color: var(--text-muted);
+    padding-left: 1.3rem;
+    position: relative;
+  }
+
+  .checkpoint ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent3);
+  }
+
+  /* PIPELINE DIAGRAM */
+  .pipeline-diagram {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    padding: 1rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .pipeline-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+  }
+
+  .pipeline-stage .stage-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    min-width: 90px;
+  }
+
+  .pipeline-stage.success .stage-box { border-color: #6affb4; color: #6affb4; }
+  .pipeline-stage.test .stage-box { border-color: #7c6aff; color: #7c6aff; }
+  .pipeline-stage.build .stage-box { border-color: #ffc96a; color: #ffc96a; }
+  .pipeline-stage.deploy .stage-box { border-color: #00bcd4; color: #00bcd4; }
+
+  .pipeline-arrow {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: 0 0.3rem;
+    margin-top: -0.5rem;
+  }
+
+  .stage-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    text-align: center;
+  }
+
+  /* ANALOGY BOX */
+  .analogy {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .analogy-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .analogy-body h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--accent4);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  .analogy-body p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* FLOW CHART */
+  .flow {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .flow-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.87rem;
+  }
+
+  .flow-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .flow-connector {
+    width: 2px;
+    height: 16px;
+    background: var(--border);
+    margin-left: 1.85rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero { padding: 3rem 1.5rem; }
+    .content { padding: 2rem 1.5rem; }
+    .hero h1 { font-size: 2.2rem; }
+    .concept-grid { grid-template-columns: 1fr; }
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 280px; right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 200;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--ci-color));
+    width: 0%;
+    transition: width 0.1s ease;
+  }
+
+  /* FINAL BADGE */
+  .final-badge {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-top: 3rem;
+  }
+
+  .badge-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--ci-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  .final-badge h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .final-badge p {
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>Git &amp; CI/CD</h2>
+    <p>Zero → Senior Engineer</p>
+  </div>
+
+  <div class="sidebar-section">Introduction</div>
+  <a href="#intro">Why This Course?</a>
+  <a href="#mindset">The Right Mindset</a>
+
+  <div class="sidebar-section git">PART 1 — Git</div>
+  <a href="#git-what">What is Git?</a>
+  <a href="#git-setup">Setting Up Git</a>
+  <a href="#git-basics">Your First Repository</a>
+  <a href="#git-branches">Branching</a>
+  <a href="#git-remote">Remote Repositories</a>
+  <a href="#git-mistakes">Fixing Mistakes</a>
+  <a href="#git-conflicts">Merge Conflicts</a>
+  <a href="#git-advanced">Advanced Git</a>
+  <a href="#git-workflows">Real Workflows</a>
+  <a href="#git-cheatsheet">Git Cheat Sheet</a>
+
+  <div class="sidebar-section ci">PART 2 — CI/CD</div>
+  <a href="#cicd-what">What is CI/CD?</a>
+  <a href="#cicd-concepts">Core Concepts</a>
+  <a href="#cicd-first">Your First Pipeline</a>
+  <a href="#cicd-testing">Testing in CI</a>
+  <a href="#cicd-build">Build & Artifacts</a>
+  <a href="#cicd-deploy">Deployment</a>
+  <a href="#cicd-secrets">Secrets & Config</a>
+  <a href="#cicd-advanced">Advanced Pipelines</a>
+  <a href="#cicd-realworld">Real-World Examples</a>
+  <a href="#cicd-cheatsheet">CI/CD Cheat Sheet</a>
+
+  <div class="sidebar-section">Mastery</div>
+  <a href="#senior-patterns">Senior Patterns</a>
+  <a href="#completion">Completion</a>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">// complete course — 2025 edition</div>
+    <h1>Master <span class="git">Git</span> &amp; <span class="ci">CI/CD</span><br>From Scratch</h1>
+    <p>No fluff. No outdated PDFs. Real commands, real pipelines, real workflows used by senior engineers every day.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">2</div>
+        <div class="label">Complete Parts</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">20+</div>
+        <div class="label">Modules</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">50+</div>
+        <div class="label">Code Examples</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">∞</div>
+        <div class="label">References</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="content">
+
+    <!-- INTRO -->
+    <section class="module" id="intro">
+      <div class="module-header">
+        <span class="module-num">00</span>
+        <h2>Why This Course?</h2>
+      </div>
+
+      <p>Git and CI/CD are the two most foundational skills at any software job — and they're almost never taught properly. Most tutorials either dump too much on you at once, or skip the "why" entirely and just list commands. Neither approach sticks.</p>
+
+      <p>This course works differently. We start with <strong>mental models</strong> — real-world analogies that make the concepts click. Then we build up layer by layer, from the very first command to the patterns senior engineers use daily. By the end, nothing your colleagues say in standup will confuse you.</p>
+
+      <div class="callout info">
+        <strong>🎯 What you'll be able to do after this course</strong>
+        Confidently use Git in a team, understand and write CI/CD pipelines, read senior engineers' PRs and conversations, debug pipeline failures, and know what questions to ask when you're stuck.
+      </div>
+    </section>
+
+    <section class="module" id="mindset">
+      <div class="module-header">
+        <span class="module-num">01</span>
+        <h2>The Right Mindset</h2>
+      </div>
+
+      <p>Before any commands — let's set expectations. Git and CI/CD are <em>tools</em>. They have learning curves, and even senior engineers Google commands regularly. The goal isn't to memorize everything. The goal is to understand what's possible and know how to find the rest.</p>
+
+      <div class="analogy">
+        <div class="analogy-icon">🗺️</div>
+        <div class="analogy-body">
+          <h4>Think of it like driving</h4>
+          <p>You don't need to memorize every street before your first drive. You learn the rules of the road, understand your car's controls, and you figure out the rest as you go. Git is your car. CI/CD is the road system. This course teaches you to drive confidently.</p>
+        </div>
+      </div>
+
+      <p>Two rules as you learn: <strong>break things on purpose</strong> (that's how you understand them) and <strong>read the error messages</strong> (Git's errors are actually quite helpful once you know what you're looking for).</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ======================== PART 1: GIT ======================== -->
+
+    <div class="part-header git-part" id="git-part">
+      <div class="part-badge git">Part 01</div>
+      <h2>Git — Version Control</h2>
+      <p>Go from having no idea what a "commit" is, to branching, merging, rebasing, and handling everything a team throws at you.</p>
+    </div>
+
+    <!-- MODULE: What is Git -->
+    <section class="module" id="git-what">
+      <div class="module-header">
+        <span class="module-num">02</span>
+        <h2>What is Git?</h2>
+      </div>
+
+      <p>Git is a <strong>version control system</strong>. It tracks every change you make to files over time, lets you go back to any previous state, and lets multiple people work on the same codebase without destroying each other's work.</p>
+
+      <div class="analogy">
+        <div class="analogy-icon">📸</div>
+        <div class="analogy-body">
+          <h4>The Photo Album Analogy</h4>
+          <p>Imagine your project is a photo of a room. Every time you make a meaningful set of changes, you take a new photo (a "commit"). Git stores all those photos in order. You can flip back to any photo from the past. You can also create a parallel photo series (a "branch") where you experiment with redecorating — and merge it back into the main series when you're happy.</p>
+        </div>
+      </div>
+
+      <h3>Git vs GitHub — what's the difference?</h3>
+      <p>This confuses almost everyone starting out. They are completely different things:</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">🧰</div>
+          <h4>Git</h4>
+          <p>A program installed on your computer. It's the engine. It does the actual tracking, branching, and merging. Works completely offline.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">☁️</div>
+          <h4>GitHub</h4>
+          <p>A website that hosts your Git repositories online. It's like Dropbox for code — but with extra features for teams like Pull Requests, Issues, and Actions (CI/CD).</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🦊</div>
+          <h4>GitLab</h4>
+          <p>Another code hosting website, similar to GitHub. Many companies self-host it. Has its own built-in CI/CD system (GitLab CI).</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🪣</div>
+          <h4>Bitbucket</h4>
+          <p>Another hosting option, popular in corporate environments. Common with Atlassian tools like Jira and Confluence.</p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <strong>💡 The key insight</strong>
+        Git = the tool on your laptop. GitHub/GitLab/Bitbucket = the cloud home for your code. You can use Git without GitHub, but you can't use GitHub without Git.
+      </div>
+    </section>
+
+    <!-- MODULE: Setup -->
+    <section class="module" id="git-setup">
+      <div class="module-header">
+        <span class="module-num">03</span>
+        <h2>Setting Up Git</h2>
+      </div>
+
+      <p>Before anything else, let's get Git installed and configured on your machine.</p>
+
+      <h3>Installation</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — install git</div>
+        </div>
+        <div class="code-content"><span class="comment"># Mac (using Homebrew)</span>
+<span class="cmd">brew install git</span>
+
+<span class="comment"># Ubuntu / Debian Linux</span>
+<span class="cmd">sudo apt-get install git</span>
+
+<span class="comment"># Windows</span>
+<span class="comment"># Download from: https://git-scm.com/download/win</span>
+<span class="comment"># Or via winget:</span>
+<span class="cmd">winget install Git.Git</span>
+
+<span class="comment"># Verify installation</span>
+<span class="cmd">git --version</span>
+<span class="out">git version 2.43.0</span></div>
+      </div>
+
+      <h3>First-time configuration</h3>
+      <p>Git needs to know who you are. This info gets attached to every commit you make. Run these once — ever.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — configure git</div>
+        </div>
+        <div class="code-content"><span class="comment"># Set your name (shows up in commit history)</span>
+<span class="cmd">git config --global user.name <span class="str">"Your Name"</span></span>
+
+<span class="comment"># Set your email (should match your GitHub email)</span>
+<span class="cmd">git config --global user.email <span class="str">"you@email.com"</span></span>
+
+<span class="comment"># Set your preferred editor (VS Code shown here)</span>
+<span class="cmd">git config --global core.editor <span class="str">"code --wait"</span></span>
+
+<span class="comment"># Set the default branch name to "main" (modern standard)</span>
+<span class="cmd">git config --global init.defaultBranch main</span>
+
+<span class="comment"># Verify your config</span>
+<span class="cmd">git config --list</span></div>
+      </div>
+
+      <div class="callout tip">
+        <strong>💡 The --global flag</strong>
+        This saves the setting to your user profile, so it applies to ALL Git repos on your computer. You can override it per-project by running the same commands without <code>--global</code> inside a specific folder.
+      </div>
+    </section>
+
+    <!-- MODULE: Basics -->
+    <section class="module" id="git-basics">
+      <div class="module-header">
+        <span class="module-num">04</span>
+        <h2>Your First Repository</h2>
+      </div>
+
+      <p>A <strong>repository</strong> (repo) is just a folder that Git is tracking. Let's create one and understand the core Git loop.</p>
+
+      <h3>The Three Areas of Git</h3>
+      <p>This is the most important concept in Git. Almost all confusion comes from not understanding these three areas:</p>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-icon" style="background:rgba(255,201,106,0.15);border:1px solid rgba(255,201,106,0.4)">📁</div>
+          <div>
+            <strong>Working Directory</strong> — your actual files on disk. Where you edit code. Git watches this but doesn't track changes automatically.
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+        <div class="flow-item">
+          <div class="flow-icon" style="background:rgba(124,106,255,0.15);border:1px solid rgba(124,106,255,0.4)">🎭</div>
+          <div>
+            <strong>Staging Area (Index)</strong> — a "waiting room" for changes you're about to commit. You choose exactly what goes into the next snapshot.
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+        <div class="flow-item">
+          <div class="flow-icon" style="background:rgba(106,255,180,0.12);border:1px solid rgba(106,255,180,0.35)">📸</div>
+          <div>
+            <strong>Repository (History)</strong> — the permanent record of commits. Once something is committed, it's saved in history forever (unless you intentionally remove it).
+          </div>
+        </div>
+      </div>
+
+      <h3>Creating your first repo</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — your first repo</div>
+        </div>
+        <div class="code-content"><span class="comment"># Create a new folder and enter it</span>
+<span class="cmd">mkdir my-project</span>
+<span class="cmd">cd my-project</span>
+
+<span class="comment"># Initialize Git — this creates a hidden .git folder</span>
+<span class="cmd">git init</span>
+<span class="out">Initialized empty Git repository in /my-project/.git/</span>
+
+<span class="comment"># Create a file</span>
+<span class="cmd">echo <span class="str">"# My Project"</span> > README.md</span>
+
+<span class="comment"># Check the status — what does Git see?</span>
+<span class="cmd">git status</span>
+<span class="out">On branch main
+Untracked files:
+  (use "git add ..." to include in what will be committed)
+        README.md</span></div>
+      </div>
+
+      <p>Git sees the file but it's "untracked" — Git isn't watching it yet. Let's add it to the staging area, then commit it.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — stage and commit</div>
+        </div>
+        <div class="code-content"><span class="comment"># Stage the file (move it to the staging area)</span>
+<span class="cmd">git add README.md</span>
+
+<span class="comment"># Or stage EVERYTHING in the folder</span>
+<span class="cmd">git add .</span>
+
+<span class="comment"># Check status again — notice it changed</span>
+<span class="cmd">git status</span>
+<span class="out">Changes to be committed:
+  (use "git rm --cached ..." to unstage)
+        new file:   README.md</span>
+
+<span class="comment"># Commit with a message</span>
+<span class="cmd">git commit <span class="flag">-m</span> <span class="str">"Initial commit: add README"</span></span>
+<span class="out">[main (root-commit) a3f2c1d] Initial commit: add README
+ 1 file changed, 1 insertion(+)</span>
+
+<span class="comment"># See the commit history</span>
+<span class="cmd">git log</span>
+<span class="out">commit a3f2c1d...
+Author: Your Name &lt;you@email.com&gt;
+Date:   Mon Feb 23 2025
+
+    Initial commit: add README</span>
+
+<span class="comment"># Cleaner one-line log view</span>
+<span class="cmd">git log --oneline</span>
+<span class="out">a3f2c1d Initial commit: add README</span></div>
+      </div>
+
+      <h3>Writing good commit messages</h3>
+      <p>Commit messages are letters to your future self (and teammates). Bad messages make debugging a nightmare. Good messages are priceless.</p>
+
+      <div class="callout danger">
+        <strong>❌ Bad commit messages (do not do this)</strong>
+        "fix" / "stuff" / "asdfgh" / "changes" / "working now" / "lol"
+      </div>
+
+      <div class="callout tip">
+        <strong>✅ Good commit message format</strong>
+        Start with a verb in present tense. Short subject line (under 72 chars). Explain the WHY if it's not obvious. Examples: "Add user authentication endpoint" · "Fix race condition in cart checkout" · "Remove deprecated payment API calls"
+      </div>
+
+      <div class="checkpoint">
+        <h4>✔ Checkpoint — you should now understand</h4>
+        <ul>
+          <li>The difference between Git and GitHub</li>
+          <li>What a repository, commit, and staging area are</li>
+          <li>The flow: edit → git add → git commit</li>
+          <li>How to read git status and git log</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- MODULE: Branches -->
+    <section class="module" id="git-branches">
+      <div class="module-header">
+        <span class="module-num">05</span>
+        <h2>Branching — Working in Parallel</h2>
+      </div>
+
+      <p>Branching is the feature that makes Git genuinely powerful. A branch is simply a separate line of development — a copy of your code where you can make changes without affecting the "main" copy until you're ready.</p>
+
+      <div class="analogy">
+        <div class="analogy-icon">🌿</div>
+        <div class="analogy-body">
+          <h4>The Tree Analogy</h4>
+          <p>The <code>main</code> branch is your tree trunk — the stable, production-ready code. When you work on a new feature, you grow a new branch off the trunk. You can change that branch freely without affecting the trunk. When the feature is done and tested, you "merge" the branch back into the trunk.</p>
+        </div>
+      </div>
+
+      <h3>Creating and switching branches</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — branches</div>
+        </div>
+        <div class="code-content"><span class="comment"># See all branches (* = current branch)</span>
+<span class="cmd">git branch</span>
+<span class="out">* main</span>
+
+<span class="comment"># Create a new branch</span>
+<span class="cmd">git branch feature/user-login</span>
+
+<span class="comment"># Switch to it</span>
+<span class="cmd">git checkout feature/user-login</span>
+
+<span class="comment"># Or do both at once (modern, preferred way)</span>
+<span class="cmd">git checkout <span class="flag">-b</span> feature/user-login</span>
+<span class="out">Switched to a new branch 'feature/user-login'</span>
+
+<span class="comment"># Even newer syntax (Git 2.23+)</span>
+<span class="cmd">git switch <span class="flag">-c</span> feature/user-login</span></div>
+      </div>
+
+      <p>Now make some changes and commit them on this branch. Those commits only exist on this branch — main is untouched.</p>
+
+      <h3>Merging a branch</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — merging</div>
+        </div>
+        <div class="code-content"><span class="comment"># First, go back to main</span>
+<span class="cmd">git checkout main</span>
+
+<span class="comment"># Merge your feature branch into main</span>
+<span class="cmd">git merge feature/user-login</span>
+<span class="out">Updating a3f2c1d..7b4e9f2
+Fast-forward
+ login.js | 24 +++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)</span>
+
+<span class="comment"># Delete the branch after merging (cleanup)</span>
+<span class="cmd">git branch <span class="flag">-d</span> feature/user-login</span>
+<span class="out">Deleted branch feature/user-login (was 7b4e9f2).</span></div>
+      </div>
+
+      <h3>Branch naming conventions</h3>
+      <p>Good teams use consistent naming. The most common patterns you'll see in real jobs:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">branch naming patterns</div>
+        </div>
+        <div class="code-content"><span class="comment"># New features</span>
+feature/user-authentication
+feature/dark-mode
+feat/payment-integration
+
+<span class="comment"># Bug fixes</span>
+fix/login-redirect-bug
+bugfix/cart-price-calculation
+hotfix/critical-security-patch
+
+<span class="comment"># Other types</span>
+chore/update-dependencies
+docs/api-documentation
+refactor/cleanup-auth-module</div>
+      </div>
+    </section>
+
+    <!-- MODULE: Remotes -->
+    <section class="module" id="git-remote">
+      <div class="module-header">
+        <span class="module-num">06</span>
+        <h2>Remote Repositories — Working with GitHub</h2>
+      </div>
+
+      <p>Until now, everything has been local — just on your machine. Now let's push your code to GitHub so others can see it (and you can collaborate).</p>
+
+      <h3>Key remote commands</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — working with remotes</div>
+        </div>
+        <div class="code-content"><span class="comment"># Clone an existing repo from GitHub to your machine</span>
+<span class="cmd">git clone https://github.com/username/repo-name.git</span>
+
+<span class="comment"># Link your local repo to a remote (after creating on GitHub)</span>
+<span class="cmd">git remote add origin https://github.com/username/repo-name.git</span>
+
+<span class="comment"># See your remotes</span>
+<span class="cmd">git remote <span class="flag">-v</span></span>
+<span class="out">origin  https://github.com/username/repo-name.git (fetch)
+origin  https://github.com/username/repo-name.git (push)</span>
+
+<span class="comment"># Push your commits to GitHub (-u sets the "upstream" for tracking)</span>
+<span class="cmd">git push <span class="flag">-u</span> origin main</span>
+
+<span class="comment"># After first push, just do this</span>
+<span class="cmd">git push</span>
+
+<span class="comment"># Get changes others have pushed</span>
+<span class="cmd">git pull</span>
+
+<span class="comment"># Fetch without merging (safer — see changes before applying)</span>
+<span class="cmd">git fetch</span></div>
+      </div>
+
+      <h3>Pull Requests (PRs) — the team workflow</h3>
+      <p>In real jobs, you almost never push directly to <code>main</code>. Instead, you push your feature branch and open a <strong>Pull Request</strong>. A PR is a formal request to merge your branch, with a code review process attached.</p>
+
+      <ol class="steps">
+        <li>Create a feature branch: <code>git checkout -b feature/my-thing</code></li>
+        <li>Make changes, commit them, push the branch: <code>git push -u origin feature/my-thing</code></li>
+        <li>Go to GitHub → your repo → "Compare &amp; pull request"</li>
+        <li>Write a description of what you changed and why</li>
+        <li>Request reviews from teammates</li>
+        <li>Address review comments, push more commits if needed</li>
+        <li>Merge the PR once approved</li>
+        <li>Delete the branch (GitHub offers a button for this)</li>
+      </ol>
+
+      <div class="callout info">
+        <strong>ℹ️ Why PRs matter</strong>
+        Pull Requests aren't bureaucracy — they're how teams catch bugs before they reach production, share knowledge, and maintain code quality. Senior engineers spend significant time reviewing PRs. Getting good at writing and reviewing them is a huge career accelerator.
+      </div>
+
+      <h3>Keeping up with a busy team (fetch + rebase)</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — staying in sync</div>
+        </div>
+        <div class="code-content"><span class="comment"># You're on your feature branch, main has moved ahead.</span>
+<span class="comment"># Option 1: merge main into your branch</span>
+<span class="cmd">git checkout feature/my-thing</span>
+<span class="cmd">git merge main</span>
+
+<span class="comment"># Option 2: rebase your branch on top of main (cleaner history)</span>
+<span class="cmd">git fetch origin</span>
+<span class="cmd">git rebase origin/main</span>
+
+<span class="comment"># Most common shorthand to update and sync</span>
+<span class="cmd">git pull --rebase origin main</span></div>
+      </div>
+    </section>
+
+    <!-- MODULE: Fixing Mistakes -->
+    <section class="module" id="git-mistakes">
+      <div class="module-header">
+        <span class="module-num">07</span>
+        <h2>Fixing Mistakes — Git is Your Safety Net</h2>
+      </div>
+
+      <p>One of Git's superpowers is that almost nothing is truly permanent. Here's how to undo things at every stage.</p>
+
+      <h3>Unstage a file</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — fixing mistakes</div>
+        </div>
+        <div class="code-content"><span class="comment"># Oops, staged the wrong file</span>
+<span class="cmd">git restore --staged wrong-file.js</span>
+
+<span class="comment"># Discard changes in working directory (CAREFUL - permanent)</span>
+<span class="cmd">git restore wrong-file.js</span>
+
+<span class="comment"># Amend the last commit (change message or add missed file)</span>
+<span class="cmd">git add forgotten-file.js</span>
+<span class="cmd">git commit <span class="flag">--amend</span> <span class="flag">-m</span> <span class="str">"Better commit message"</span></span>
+<span class="comment"># ⚠️  Don't amend if you've already pushed to shared branch!</span>
+
+<span class="comment"># Undo last commit but KEEP the changes staged</span>
+<span class="cmd">git reset --soft HEAD~1</span>
+
+<span class="comment"># Undo last commit and UN-stage the changes (keep files)</span>
+<span class="cmd">git reset --mixed HEAD~1</span>
+
+<span class="comment"># Undo last commit and DISCARD all changes (nuclear option)</span>
+<span class="cmd">git reset --hard HEAD~1</span>
+
+<span class="comment"># Undo a commit safely (creates a new "reversal" commit)</span>
+<span class="comment"># Safe to use on shared branches!</span>
+<span class="cmd">git revert abc1234</span></div>
+      </div>
+
+      <h3>Stashing — temporarily set work aside</h3>
+      <p>You're mid-work on a feature, but someone needs you to urgently fix a bug on main. Stash saves your in-progress changes so you can come back to them.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — git stash</div>
+        </div>
+        <div class="code-content"><span class="comment"># Save current changes to a temporary "stash"</span>
+<span class="cmd">git stash</span>
+<span class="out">Saved working directory and index state WIP on main</span>
+
+<span class="comment"># Give your stash a name (helpful when you have multiple)</span>
+<span class="cmd">git stash push <span class="flag">-m</span> <span class="str">"half-done login feature"</span></span>
+
+<span class="comment"># See all stashes</span>
+<span class="cmd">git stash list</span>
+<span class="out">stash@{0}: On feature/login: half-done login feature
+stash@{1}: WIP on main: quick fix attempt</span>
+
+<span class="comment"># Get your stash back (and remove it from stash list)</span>
+<span class="cmd">git stash pop</span>
+
+<span class="comment"># Apply a specific stash without removing it</span>
+<span class="cmd">git stash apply stash@{1}</span></div>
+      </div>
+
+      <div class="callout warning">
+        <strong>⚠️ reset --hard is permanent</strong>
+        <code>git reset --hard</code> deletes your uncommitted changes with no recovery. Use it only when you're absolutely sure. <code>git revert</code> is almost always the safer choice for anything you've already committed.
+      </div>
+    </section>
+
+    <!-- MODULE: Conflicts -->
+    <section class="module" id="git-conflicts">
+      <div class="module-header">
+        <span class="module-num">08</span>
+        <h2>Merge Conflicts — Don't Panic</h2>
+      </div>
+
+      <p>A merge conflict happens when two branches change the same part of the same file in different ways, and Git doesn't know which version to keep. This is completely normal and expected in team work. Here's how to handle it calmly.</p>
+
+      <h3>What a conflict looks like</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">conflict markers in a file</div>
+        </div>
+        <div class="code-content"><span class="comment"># When you open the conflicted file, you'll see this:</span>
+
+function greetUser(name) {
+<span class="highlight">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+  return `Hello, ${name}! Welcome back.`;
+<span class="highlight">=======</span>
+  return `Hey ${name}! Good to see you.`;
+<span class="highlight">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/friendlier-greeting</span>
+}</code>
+
+<span class="comment"># HEAD = your current branch's version</span>
+<span class="comment"># The other side = the branch being merged in</span>
+<span class="comment"># The ======= line is the divider</span></div>
+      </div>
+
+      <h3>Resolving the conflict</h3>
+
+      <ol class="steps">
+        <li>Open the conflicted file in your editor. VS Code highlights conflicts nicely with "Accept Current", "Accept Incoming", "Accept Both" buttons.</li>
+        <li>Edit the file to be what you actually want. Remove the conflict markers (<code>&lt;&lt;&lt;</code>, <code>===</code>, <code>&gt;&gt;&gt;</code>).</li>
+        <li>Save the file.</li>
+        <li>Stage the resolved file: <code>git add filename.js</code></li>
+        <li>Complete the merge: <code>git commit</code></li>
+      </ol>
+
+      <div class="callout tip">
+        <strong>💡 Pro tip: Use a merge tool</strong>
+        VS Code has a built-in merge editor. You can also use tools like <code>git mergetool</code>. But honestly, for most conflicts, just edit the file manually — it's the fastest way.
+      </div>
+
+      <h3>Avoiding conflicts</h3>
+      <p>You can't avoid them forever, but you can minimize them: keep branches short-lived, pull from main frequently, communicate with teammates about which files you're working on, and keep functions small so two people rarely edit the exact same lines.</p>
+    </section>
+
+    <!-- MODULE: Advanced -->
+    <section class="module" id="git-advanced">
+      <div class="module-header">
+        <span class="module-num">09</span>
+        <h2>Advanced Git — The Senior Toolkit</h2>
+      </div>
+
+      <p>These commands are what separate someone who "knows Git" from someone who's truly comfortable with it. You'll hear senior engineers use these regularly.</p>
+
+      <h3>Rebase — rewriting history</h3>
+      <p>Rebase takes your commits and replays them on top of another branch, as if you'd started your work from a different point. The result is a clean, linear history.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — rebase</div>
+        </div>
+        <div class="code-content"><span class="comment"># You're on feature/my-thing</span>
+<span class="comment"># main has had 3 new commits since you branched off</span>
+<span class="comment"># You want your commits to appear AFTER those 3</span>
+
+<span class="cmd">git rebase main</span>
+<span class="out">Successfully rebased and updated refs/heads/feature/my-thing.</span>
+
+<span class="comment"># Interactive rebase: clean up your last N commits before a PR</span>
+<span class="comment"># Opens an editor where you can squash, reorder, rename commits</span>
+<span class="cmd">git rebase <span class="flag">-i</span> HEAD~3</span>
+
+<span class="comment"># In the editor that opens, you'll see:</span>
+<span class="out">pick a1b2c3 Add login form
+pick d4e5f6 Fix typo in form
+pick g7h8i9 More login form tweaks
+
+# Commands: pick=keep, squash=combine with prev, reword=rename</span></div>
+      </div>
+
+      <div class="callout warning">
+        <strong>⚠️ Golden rule of rebasing</strong>
+        Never rebase a branch that other people are working on. Rebasing rewrites commit hashes, which will break everyone else's copy. Only rebase your own local/private branches.
+      </div>
+
+      <h3>Cherry-pick — stealing a specific commit</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — cherry-pick</div>
+        </div>
+        <div class="code-content"><span class="comment"># Take a specific commit from another branch and apply it here</span>
+<span class="comment"># Useful for hotfixes: "grab that fix from the feature branch"</span>
+
+<span class="cmd">git cherry-pick a1b2c3d</span>
+<span class="out">[main 8f7e6d5] Fix critical null pointer in checkout
+ Date: Mon Feb 23 2025
+ 1 file changed, 3 insertions(+), 1 deletion(-)</span></div>
+      </div>
+
+      <h3>Git log — advanced history reading</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — power log commands</div>
+        </div>
+        <div class="code-content"><span class="comment"># Visual branch graph in terminal</span>
+<span class="cmd">git log --oneline --graph --all</span>
+
+<span class="comment"># Who changed this file and when?</span>
+<span class="cmd">git log --oneline -- src/login.js</span>
+
+<span class="comment"># Who wrote each line of a file? (blame is not an accusation!)</span>
+<span class="cmd">git blame src/login.js</span>
+
+<span class="comment"># What changed between two commits or branches?</span>
+<span class="cmd">git diff main feature/my-thing</span>
+
+<span class="comment"># Search for when a word was added or removed</span>
+<span class="cmd">git log <span class="flag">-S</span> <span class="str">"payment_processor"</span> --oneline</span>
+
+<span class="comment"># Find which commit introduced a bug (binary search)</span>
+<span class="cmd">git bisect start</span>
+<span class="cmd">git bisect bad HEAD</span>
+<span class="cmd">git bisect good v1.0.0</span>
+<span class="comment"># Git checks out commits halfway through, you test and mark good/bad</span></div>
+      </div>
+
+      <h3>Tags — marking releases</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">terminal — tags</div>
+        </div>
+        <div class="code-content"><span class="comment"># Create a tag at the current commit</span>
+<span class="cmd">git tag v1.0.0</span>
+
+<span class="comment"># Annotated tag (preferred — includes message, author, date)</span>
+<span class="cmd">git tag <span class="flag">-a</span> v1.0.0 <span class="flag">-m</span> <span class="str">"Release version 1.0.0"</span></span>
+
+<span class="comment"># Push tags to GitHub (they don't push automatically)</span>
+<span class="cmd">git push origin v1.0.0</span>
+<span class="cmd">git push origin <span class="flag">--tags</span></span>
+
+<span class="comment"># List all tags</span>
+<span class="cmd">git tag</span></div>
+      </div>
+    </section>
+
+    <!-- MODULE: Workflows -->
+    <section class="module" id="git-workflows">
+      <div class="module-header">
+        <span class="module-num">10</span>
+        <h2>Real Workflows — How Teams Actually Work</h2>
+      </div>
+
+      <p>Knowing Git commands is one thing. Knowing how teams use Git together is what makes you productive on day one of a new job.</p>
+
+      <h3>Feature Branch Workflow (most common)</h3>
+      <p>This is what most startups and small-to-medium teams use. Main is always stable. All work happens in branches.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">daily workflow</div>
+        </div>
+        <div class="code-content"><span class="comment"># Start your day: update main</span>
+<span class="cmd">git checkout main</span>
+<span class="cmd">git pull</span>
+
+<span class="comment"># Create your branch for today's task</span>
+<span class="cmd">git checkout <span class="flag">-b</span> feature/add-dark-mode</span>
+
+<span class="comment"># Work, work, work... commit regularly</span>
+<span class="cmd">git add .</span>
+<span class="cmd">git commit <span class="flag">-m</span> <span class="str">"Add dark mode toggle to settings page"</span></span>
+
+<span class="comment"># Before pushing, rebase to include latest main changes</span>
+<span class="cmd">git fetch origin</span>
+<span class="cmd">git rebase origin/main</span>
+
+<span class="comment"># Push your branch</span>
+<span class="cmd">git push <span class="flag">-u</span> origin feature/add-dark-mode</span>
+
+<span class="comment"># Go to GitHub → open Pull Request</span>
+<span class="comment"># Get reviews → address feedback → merge → delete branch</span></div>
+      </div>
+
+      <h3>GitFlow (larger teams/enterprise)</h3>
+      <p>GitFlow adds structure with multiple long-lived branches. You'll see this at companies with scheduled release cycles.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">🏗️</div>
+          <h4>main</h4>
+          <p>Production-ready code only. Every commit is a release. Tagged with version numbers.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🔧</div>
+          <h4>develop</h4>
+          <p>Integration branch. All features merge here first before going to main.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">✨</div>
+          <h4>feature/*</h4>
+          <p>Branch off develop. One per feature. Merge back into develop when done.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🚑</div>
+          <h4>hotfix/*</h4>
+          <p>Branches off main for urgent production fixes. Merged into both main and develop.</p>
+        </div>
+      </div>
+
+      <h3>Trunk-Based Development (modern/fast teams)</h3>
+      <p>Everyone commits small changes directly to <code>main</code> (or very short-lived branches). Requires excellent automated testing and feature flags. Used by Google, Facebook, and most high-velocity engineering orgs.</p>
+    </section>
+
+    <!-- GIT CHEAT SHEET -->
+    <section class="module" id="git-cheatsheet">
+      <div class="module-header">
+        <span class="module-num">11</span>
+        <h2>Git Cheat Sheet</h2>
+      </div>
+
+      <p>Keep this as your quick reference. Bookmark it, print it, memorize it over time.</p>
+
+      <table class="cheat-table">
+        <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>git init</td><td>Create a new repo in current folder</td></tr>
+          <tr><td>git clone &lt;url&gt;</td><td>Copy a remote repo to your machine</td></tr>
+          <tr><td>git status</td><td>See what's changed / staged / untracked</td></tr>
+          <tr><td>git add .</td><td>Stage all changed files</td></tr>
+          <tr><td>git add &lt;file&gt;</td><td>Stage a specific file</td></tr>
+          <tr><td>git commit -m "msg"</td><td>Save staged changes to history</td></tr>
+          <tr><td>git log --oneline</td><td>View compact commit history</td></tr>
+          <tr><td>git branch</td><td>List all local branches</td></tr>
+          <tr><td>git checkout -b &lt;name&gt;</td><td>Create and switch to new branch</td></tr>
+          <tr><td>git checkout &lt;name&gt;</td><td>Switch to existing branch</td></tr>
+          <tr><td>git merge &lt;branch&gt;</td><td>Merge branch into current branch</td></tr>
+          <tr><td>git pull</td><td>Fetch + merge from remote</td></tr>
+          <tr><td>git push</td><td>Upload commits to remote</td></tr>
+          <tr><td>git push -u origin &lt;branch&gt;</td><td>Push new branch and set upstream</td></tr>
+          <tr><td>git fetch</td><td>Download changes without merging</td></tr>
+          <tr><td>git rebase &lt;branch&gt;</td><td>Replay commits on top of branch</td></tr>
+          <tr><td>git stash</td><td>Save uncommitted changes temporarily</td></tr>
+          <tr><td>git stash pop</td><td>Restore stashed changes</td></tr>
+          <tr><td>git diff</td><td>Show unstaged changes</td></tr>
+          <tr><td>git diff --staged</td><td>Show staged changes</td></tr>
+          <tr><td>git reset --soft HEAD~1</td><td>Undo last commit, keep staged</td></tr>
+          <tr><td>git reset --hard HEAD~1</td><td>Undo last commit, discard changes</td></tr>
+          <tr><td>git revert &lt;hash&gt;</td><td>Safely undo a commit (makes new commit)</td></tr>
+          <tr><td>git cherry-pick &lt;hash&gt;</td><td>Apply a specific commit to current branch</td></tr>
+          <tr><td>git blame &lt;file&gt;</td><td>Show who last edited each line</td></tr>
+          <tr><td>git tag -a v1.0 -m "msg"</td><td>Create an annotated version tag</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ======================== PART 2: CI/CD ======================== -->
+
+    <div class="part-header ci-part" id="cicd-part">
+      <div class="part-badge ci">Part 02</div>
+      <h2>CI/CD — Automated Pipelines</h2>
+      <p>Learn to build automated systems that test, build, and deploy your code every time you push — the backbone of modern software teams.</p>
+    </div>
+
+    <!-- MODULE: What is CI/CD -->
+    <section class="module" id="cicd-what">
+      <div class="module-header">
+        <span class="module-num">12</span>
+        <h2>What is CI/CD?</h2>
+      </div>
+
+      <p>CI/CD stands for <strong>Continuous Integration / Continuous Delivery (or Deployment)</strong>. It's the practice of automatically testing and deploying your code every time a change is pushed — instead of doing it manually and infrequently.</p>
+
+      <div class="analogy">
+        <div class="analogy-icon">🏭</div>
+        <div class="analogy-body">
+          <h4>The Assembly Line Analogy</h4>
+          <p>Before assembly lines, cars were built by hand, slowly, with lots of errors. CI/CD is the assembly line for software. Every time you push code, it automatically runs through quality checks (tests), assembly (build), and delivery (deploy). No human needs to manually trigger it. If something is wrong, the line stops and you get notified immediately.</p>
+        </div>
+      </div>
+
+      <h3>CI vs CD — what's the difference?</h3>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">🔄</div>
+          <h4>Continuous Integration (CI)</h4>
+          <p>Automatically run tests and checks every time someone pushes code. Goal: detect problems early, before they merge to main.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📦</div>
+          <h4>Continuous Delivery (CD)</h4>
+          <p>Automatically prepare a deployable build after CI passes. The code is always ready to deploy — but a human still clicks "deploy".</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🚀</div>
+          <h4>Continuous Deployment</h4>
+          <p>Like Delivery but fully automatic — every passing change automatically goes to production with zero human intervention.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🛡️</div>
+          <h4>The Combined Value</h4>
+          <p>Together they mean: you can push code 50 times a day and always know it works. Bugs get caught in minutes, not days.</p>
+        </div>
+      </div>
+
+      <h3>Why does this matter for you?</h3>
+      <p>At your first job, you will almost certainly encounter a CI/CD pipeline on your first day. When you open a PR, tests will automatically run. If they fail, you'll need to understand why. Knowing how pipelines work lets you fix them, improve them, and look extremely competent early on.</p>
+    </section>
+
+    <!-- MODULE: Core Concepts -->
+    <section class="module" id="cicd-concepts">
+      <div class="module-header">
+        <span class="module-num">13</span>
+        <h2>Core Concepts — The Vocabulary</h2>
+      </div>
+
+      <p>CI/CD tools have their own jargon. Once you know these terms, you can understand any pipeline — regardless of which tool (GitHub Actions, GitLab CI, Jenkins, CircleCI) it uses.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">🔁</div>
+          <h4>Pipeline</h4>
+          <p>The entire automated process from code push to deployment. A pipeline contains multiple stages that run in order.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📋</div>
+          <h4>Stage / Job</h4>
+          <p>A distinct phase of the pipeline (e.g., "test", "build", "deploy"). Each stage can have multiple steps. Jobs in the same stage may run in parallel.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">⚡</div>
+          <h4>Runner / Agent</h4>
+          <p>The server that actually executes your pipeline. GitHub provides cloud runners; companies sometimes use self-hosted runners.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🎯</div>
+          <h4>Trigger</h4>
+          <p>What starts the pipeline. Common triggers: push to a branch, pull request opened, a schedule (cron), or manual trigger.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📤</div>
+          <h4>Artifact</h4>
+          <p>A file produced during the pipeline (a compiled binary, test report, Docker image) that can be passed between stages or downloaded.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🔐</div>
+          <h4>Secret / Environment Variable</h4>
+          <p>Sensitive values (API keys, passwords) stored securely and injected into the pipeline at runtime. Never hardcoded in YAML files.</p>
+        </div>
+      </div>
+
+      <h3>What a pipeline looks like visually</h3>
+
+      <div class="pipeline-diagram">
+        <div class="pipeline-stage success">
+          <div class="stage-box">📥 Checkout</div>
+          <div class="stage-label">get code</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-stage test">
+          <div class="stage-box">🧪 Test</div>
+          <div class="stage-label">run tests</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-stage build">
+          <div class="stage-box">🔨 Build</div>
+          <div class="stage-label">compile</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-stage deploy">
+          <div class="stage-box">🚀 Deploy</div>
+          <div class="stage-label">ship it</div>
+        </div>
+      </div>
+
+      <p>If any stage fails, the pipeline stops and notifies you. Nothing broken reaches production.</p>
+    </section>
+
+    <!-- MODULE: First Pipeline -->
+    <section class="module" id="cicd-first">
+      <div class="module-header">
+        <span class="module-num">14</span>
+        <h2>Your First Pipeline — GitHub Actions</h2>
+      </div>
+
+      <p>We'll use <strong>GitHub Actions</strong> — it's built into GitHub, free for public repos, and extremely popular in 2025. The concepts transfer directly to GitLab CI and others.</p>
+
+      <p>GitHub Actions pipelines are defined in <strong>YAML files</strong> stored in your repo at <code>.github/workflows/</code>. When you push code, GitHub reads these files and runs them.</p>
+
+      <h3>Your first workflow file</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/main.yml</div>
+        </div>
+        <div class="code-content"><span class="comment"># The name of this workflow (shows in GitHub UI)</span>
+<span class="key">name:</span> <span class="str">CI Pipeline</span>
+
+<span class="comment"># When should this run?</span>
+<span class="key">on:</span>
+  <span class="key">push:</span>
+    <span class="key">branches:</span> [ main, develop ]
+  <span class="key">pull_request:</span>
+    <span class="key">branches:</span> [ main ]
+
+<span class="comment"># The actual work</span>
+<span class="key">jobs:</span>
+  <span class="comment"># "test" is the job name — you choose it</span>
+  <span class="key">test:</span>
+    <span class="comment"># Which type of machine to run on</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+
+    <span class="comment"># The steps to execute, in order</span>
+    <span class="key">steps:</span>
+      <span class="comment"># Step 1: Get your code</span>
+      - <span class="key">name:</span> Checkout code
+        <span class="key">uses:</span> actions/checkout@v4
+
+      <span class="comment"># Step 2: Set up Node.js</span>
+      - <span class="key">name:</span> Set up Node.js
+        <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="str">'20'</span>
+
+      <span class="comment"># Step 3: Install dependencies</span>
+      - <span class="key">name:</span> Install dependencies
+        <span class="key">run:</span> npm install
+
+      <span class="comment"># Step 4: Run tests</span>
+      - <span class="key">name:</span> Run tests
+        <span class="key">run:</span> npm test</div>
+      </div>
+
+      <p>That's it. Push this file to your repo and GitHub will automatically run it. You'll see results in the "Actions" tab.</p>
+
+      <h3>Understanding the YAML structure</h3>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">📋</div>
+          <h4>name:</h4>
+          <p>The display name for the workflow. Pick something descriptive.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🎯</div>
+          <h4>on:</h4>
+          <p>Defines triggers. You can trigger on push, pull_request, schedule, manual (workflow_dispatch), and more.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">💼</div>
+          <h4>jobs:</h4>
+          <p>Groups of steps. Jobs run in parallel by default. Add "needs: [other-job]" to sequence them.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">👟</div>
+          <h4>steps:</h4>
+          <p>Individual tasks within a job. Can use pre-built "actions" (uses:) or run shell commands (run:).</p>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>ℹ️ What are "actions"?</strong>
+        The <code>uses: actions/checkout@v4</code> line uses a pre-built, reusable piece of code from GitHub's marketplace. Think of them as plugins. There are thousands — for setting up languages, deploying to AWS, sending Slack notifications, and almost anything else you need.
+      </div>
+    </section>
+
+    <!-- MODULE: Testing -->
+    <section class="module" id="cicd-testing">
+      <div class="module-header">
+        <span class="module-num">15</span>
+        <h2>Testing in CI — Your Quality Gate</h2>
+      </div>
+
+      <p>The most valuable thing CI does is run your tests automatically and block bad code from merging. Here's how to set this up properly.</p>
+
+      <h3>Running tests for different languages</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/test.yml — multi-language examples</div>
+        </div>
+        <div class="code-content"><span class="comment">## NODE.JS / JAVASCRIPT</span>
+- <span class="key">name:</span> Run Node tests
+  <span class="key">run:</span> npm test
+
+<span class="comment">## PYTHON</span>
+- <span class="key">name:</span> Set up Python
+  <span class="key">uses:</span> actions/setup-python@v5
+  <span class="key">with:</span>
+    <span class="key">python-version:</span> <span class="str">'3.12'</span>
+
+- <span class="key">name:</span> Install dependencies
+  <span class="key">run:</span> pip install -r requirements.txt
+
+- <span class="key">name:</span> Run pytest
+  <span class="key">run:</span> pytest --tb=short
+
+<span class="comment">## JAVA / GRADLE</span>
+- <span class="key">name:</span> Set up JDK
+  <span class="key">uses:</span> actions/setup-java@v4
+  <span class="key">with:</span>
+    <span class="key">java-version:</span> <span class="str">'21'</span>
+    <span class="key">distribution:</span> <span class="str">'temurin'</span>
+
+- <span class="key">name:</span> Run tests
+  <span class="key">run:</span> ./gradlew test</div>
+      </div>
+
+      <h3>Test reports and coverage</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/test-with-coverage.yml</div>
+        </div>
+        <div class="code-content"><span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="str">'20'</span>
+
+      - <span class="key">run:</span> npm ci
+
+      <span class="comment"># Run tests with coverage report</span>
+      - <span class="key">name:</span> Run tests with coverage
+        <span class="key">run:</span> npm test -- --coverage
+
+      <span class="comment"># Upload coverage report as an artifact</span>
+      - <span class="key">name:</span> Upload coverage report
+        <span class="key">uses:</span> actions/upload-artifact@v4
+        <span class="key">if:</span> always()  <span class="comment"># upload even if tests fail</span>
+        <span class="key">with:</span>
+          <span class="key">name:</span> coverage-report
+          <span class="key">path:</span> coverage/</div>
+      </div>
+
+      <h3>Linting — checking code style</h3>
+      <p>Most teams also run a linter in CI. This enforces consistent code style so no one has to argue about formatting in code reviews.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">adding a lint job</div>
+        </div>
+        <div class="code-content"><span class="key">jobs:</span>
+  <span class="key">lint:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+      - <span class="key">run:</span> npm ci
+      - <span class="key">name:</span> Run ESLint
+        <span class="key">run:</span> npm run lint
+
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">needs:</span> lint  <span class="comment"># only run tests if lint passes</span>
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+      - <span class="key">run:</span> npm ci
+      - <span class="key">run:</span> npm test</div>
+      </div>
+    </section>
+
+    <!-- MODULE: Build -->
+    <section class="module" id="cicd-build">
+      <div class="module-header">
+        <span class="module-num">16</span>
+        <h2>Build &amp; Artifacts</h2>
+      </div>
+
+      <p>After tests pass, you often need to <strong>build</strong> your application — compile TypeScript, bundle a React app, package a JAR file. The output is an <strong>artifact</strong> that gets deployed.</p>
+
+      <h3>Build and cache dependencies</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/build.yml</div>
+        </div>
+        <div class="code-content"><span class="key">jobs:</span>
+  <span class="key">build:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="str">'20'</span>
+          <span class="key">cache:</span> <span class="str">'npm'</span>  <span class="comment"># caches node_modules — MUCH faster</span>
+
+      - <span class="key">run:</span> npm ci  <span class="comment"># ci is faster + stricter than npm install</span>
+
+      - <span class="key">name:</span> Build application
+        <span class="key">run:</span> npm run build
+
+      <span class="comment"># Save the built files for the deploy job</span>
+      - <span class="key">name:</span> Upload build artifact
+        <span class="key">uses:</span> actions/upload-artifact@v4
+        <span class="key">with:</span>
+          <span class="key">name:</span> dist-files
+          <span class="key">path:</span> dist/
+          <span class="key">retention-days:</span> 7</div>
+      </div>
+
+      <h3>Docker builds</h3>
+      <p>Many companies package their apps into Docker containers for consistent deployments. Here's how to build and push a Docker image in CI:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/docker.yml</div>
+        </div>
+        <div class="code-content"><span class="key">jobs:</span>
+  <span class="key">build-and-push:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+
+      <span class="comment"># Log in to Docker Hub using secrets</span>
+      - <span class="key">name:</span> Log in to Docker Hub
+        <span class="key">uses:</span> docker/login-action@v3
+        <span class="key">with:</span>
+          <span class="key">username:</span> <span class="highlight">${{ secrets.DOCKER_USERNAME }}</span>
+          <span class="key">password:</span> <span class="highlight">${{ secrets.DOCKER_PASSWORD }}</span>
+
+      <span class="comment"># Build and push the image</span>
+      - <span class="key">name:</span> Build and push Docker image
+        <span class="key">uses:</span> docker/build-push-action@v5
+        <span class="key">with:</span>
+          <span class="key">context:</span> .
+          <span class="key">push:</span> true
+          <span class="key">tags:</span> myuser/myapp:latest,myuser/myapp:${{ github.sha }}</div>
+      </div>
+    </section>
+
+    <!-- MODULE: Deploy -->
+    <section class="module" id="cicd-deploy">
+      <div class="module-header">
+        <span class="module-num">17</span>
+        <h2>Deployment — Shipping Your Code</h2>
+      </div>
+
+      <p>Deployment is the final stage — getting your built code running in production. The exact steps depend on your infrastructure, but the pattern is always the same: download the artifact, stop the old version, start the new one.</p>
+
+      <h3>Deploying to different environments</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/deploy.yml — staging + production</div>
+        </div>
+        <div class="code-content"><span class="key">on:</span>
+  <span class="key">push:</span>
+    <span class="key">branches:</span> [ main ]
+
+<span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">run:</span> npm ci && npm test
+
+  <span class="key">deploy-staging:</span>
+    <span class="key">needs:</span> test
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">environment:</span> staging  <span class="comment"># uses staging secrets</span>
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">name:</span> Deploy to staging
+        <span class="key">run:</span> |
+          echo "Deploying to staging..."
+          <span class="comment"># Your deploy commands here</span>
+        <span class="key">env:</span>
+          <span class="key">DEPLOY_URL:</span> <span class="highlight">${{ secrets.STAGING_URL }}</span>
+          <span class="key">API_KEY:</span> <span class="highlight">${{ secrets.STAGING_API_KEY }}</span>
+
+  <span class="key">deploy-production:</span>
+    <span class="key">needs:</span> deploy-staging
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">environment:</span> production  <span class="comment"># can require manual approval!</span>
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">name:</span> Deploy to production
+        <span class="key">run:</span> echo "Deploying to production!"</div>
+      </div>
+
+      <h3>Common deployment targets</h3>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">▲</div>
+          <h4>Vercel / Netlify</h4>
+          <p>Frontend deployment. Automatic on push — just connect your repo. Often zero config needed.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">☁️</div>
+          <h4>AWS / Azure / GCP</h4>
+          <p>Full cloud platforms. Use their official GitHub Actions to deploy to EC2, ECS, Lambda, App Service, Cloud Run etc.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">⚓</div>
+          <h4>Kubernetes (K8s)</h4>
+          <p>Container orchestration. CI builds a Docker image, CD updates the Kubernetes deployment manifest.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🛳️</div>
+          <h4>Heroku / Railway</h4>
+          <p>PaaS platforms. Simple git push or webhook-triggered deploys. Great for starting out.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE: Secrets -->
+    <section class="module" id="cicd-secrets">
+      <div class="module-header">
+        <span class="module-num">18</span>
+        <h2>Secrets &amp; Configuration</h2>
+      </div>
+
+      <p>Pipelines need API keys, passwords, tokens. <strong>Never</strong> put these directly in your YAML files or code. They'd be visible to everyone with repo access. Use GitHub's built-in secrets system instead.</p>
+
+      <h3>Setting up secrets in GitHub</h3>
+
+      <ol class="steps">
+        <li>Go to your repository on GitHub</li>
+        <li>Click Settings → Secrets and variables → Actions</li>
+        <li>Click "New repository secret"</li>
+        <li>Give it a name (e.g., <code>AWS_ACCESS_KEY</code>) and paste the value</li>
+        <li>Reference it in your workflow as <code>${{ secrets.AWS_ACCESS_KEY }}</code></li>
+      </ol>
+
+      <h3>Using secrets in workflows</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">using secrets safely</div>
+        </div>
+        <div class="code-content"><span class="key">steps:</span>
+  - <span class="key">name:</span> Deploy to AWS
+    <span class="key">env:</span>
+      <span class="key">AWS_ACCESS_KEY_ID:</span> <span class="highlight">${{ secrets.AWS_ACCESS_KEY_ID }}</span>
+      <span class="key">AWS_SECRET_ACCESS_KEY:</span> <span class="highlight">${{ secrets.AWS_SECRET_ACCESS_KEY }}</span>
+    <span class="key">run:</span> |
+      aws s3 sync ./dist s3://my-bucket
+
+  <span class="comment"># Environment variables (non-secret config)</span>
+  - <span class="key">name:</span> Build with env vars
+    <span class="key">env:</span>
+      <span class="key">NODE_ENV:</span> production
+      <span class="key">API_URL:</span> https://api.myapp.com
+    <span class="key">run:</span> npm run build</div>
+      </div>
+
+      <div class="callout danger">
+        <strong>🚨 Critical security rules</strong>
+        Never print secrets with echo. Never commit .env files with real values. Never store secrets in artifacts. GitHub automatically masks secrets in logs (shows *** instead), but only if you use the secrets context.
+      </div>
+
+      <h3>Environment-specific configuration</h3>
+      <p>GitHub Actions supports "Environments" (staging, production) — each with their own set of secrets and optional protection rules like requiring manual approval before deployment proceeds.</p>
+    </section>
+
+    <!-- MODULE: Advanced CI/CD -->
+    <section class="module" id="cicd-advanced">
+      <div class="module-header">
+        <span class="module-num">19</span>
+        <h2>Advanced Pipelines — Senior Level</h2>
+      </div>
+
+      <p>These are the patterns that make pipelines fast, maintainable, and powerful. You'll see these in mature engineering orgs.</p>
+
+      <h3>Matrix builds — test across multiple versions</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">matrix strategy</div>
+        </div>
+        <div class="code-content"><span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">strategy:</span>
+      <span class="key">matrix:</span>
+        <span class="key">node-version:</span> [18, 20, 22]
+        <span class="key">os:</span> [ubuntu-latest, windows-latest]
+
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="highlight">${{ matrix.node-version }}</span>
+      - <span class="key">run:</span> npm test
+
+<span class="comment"># This runs 6 jobs in parallel: 3 versions × 2 OSes</span></div>
+      </div>
+
+      <h3>Reusable workflows — DRY pipelines</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/reusable-test.yml</div>
+        </div>
+        <div class="code-content"><span class="comment"># Define a reusable workflow</span>
+<span class="key">on:</span>
+  <span class="key">workflow_call:</span>  <span class="comment"># this makes it reusable</span>
+    <span class="key">inputs:</span>
+      <span class="key">node-version:</span>
+        <span class="key">type:</span> string
+        <span class="key">default:</span> <span class="str">'20'</span>
+
+<span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="highlight">${{ inputs.node-version }}</span>
+      - <span class="key">run:</span> npm ci && npm test</div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">another workflow calling the reusable one</div>
+        </div>
+        <div class="code-content"><span class="key">jobs:</span>
+  <span class="key">run-tests:</span>
+    <span class="key">uses:</span> ./.github/workflows/reusable-test.yml
+    <span class="key">with:</span>
+      <span class="key">node-version:</span> <span class="str">'22'</span></div>
+      </div>
+
+      <h3>Caching — making pipelines fast</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">caching dependencies</div>
+        </div>
+        <div class="code-content"><span class="key">steps:</span>
+  <span class="comment"># Cache node_modules based on package-lock.json hash</span>
+  - <span class="key">name:</span> Cache dependencies
+    <span class="key">uses:</span> actions/cache@v4
+    <span class="key">with:</span>
+      <span class="key">path:</span> ~/.npm
+      <span class="key">key:</span> ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      <span class="key">restore-keys:</span> |
+        ${{ runner.os }}-node-
+
+  <span class="comment"># With cache hit, npm ci runs in seconds instead of minutes</span>
+  - <span class="key">run:</span> npm ci</div>
+      </div>
+
+      <h3>Conditional steps and jobs</h3>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">conditional execution</div>
+        </div>
+        <div class="code-content"><span class="key">steps:</span>
+  <span class="comment"># Only run on pull requests</span>
+  - <span class="key">name:</span> Comment on PR
+    <span class="key">if:</span> github.event_name == 'pull_request'
+    <span class="key">run:</span> echo "This is a PR!"
+
+  <span class="comment"># Only run if previous step failed</span>
+  - <span class="key">name:</span> Notify failure
+    <span class="key">if:</span> failure()
+    <span class="key">run:</span> echo "Something broke!"
+
+  <span class="comment"># Only deploy on pushes to main</span>
+  - <span class="key">name:</span> Deploy
+    <span class="key">if:</span> github.ref == 'refs/heads/main' && github.event_name == 'push'
+    <span class="key">run:</span> ./deploy.sh</div>
+      </div>
+    </section>
+
+    <!-- MODULE: Real World -->
+    <section class="module" id="cicd-realworld">
+      <div class="module-header">
+        <span class="module-num">20</span>
+        <h2>Real-World Examples</h2>
+      </div>
+
+      <p>Here's a complete, production-grade CI/CD pipeline for a Node.js web app. This is similar to what you'd find at a real startup.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-label">.github/workflows/production-pipeline.yml</div>
+        </div>
+        <div class="code-content"><span class="key">name:</span> Production Pipeline
+
+<span class="key">on:</span>
+  <span class="key">push:</span>
+    <span class="key">branches:</span> [ main ]
+  <span class="key">pull_request:</span>
+    <span class="key">branches:</span> [ main ]
+
+<span class="key">jobs:</span>
+
+  <span class="comment">## ── QUALITY CHECKS ─────────────────────────────</span>
+  <span class="key">quality:</span>
+    <span class="key">name:</span> Lint &amp; Type Check
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span>
+          <span class="key">node-version:</span> <span class="str">'20'</span>
+          <span class="key">cache:</span> <span class="str">'npm'</span>
+      - <span class="key">run:</span> npm ci
+      - <span class="key">run:</span> npm run lint
+      - <span class="key">run:</span> npm run typecheck
+
+  <span class="comment">## ── TESTS ───────────────────────────────────────</span>
+  <span class="key">test:</span>
+    <span class="key">name:</span> Tests
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">needs:</span> quality
+    <span class="key">services:</span>
+      <span class="comment"># Spin up a real Postgres for integration tests</span>
+      <span class="key">postgres:</span>
+        <span class="key">image:</span> postgres:16
+        <span class="key">env:</span>
+          <span class="key">POSTGRES_DB:</span> testdb
+          <span class="key">POSTGRES_PASSWORD:</span> test
+        <span class="key">ports:</span>
+          - 5432:5432
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span> { <span class="key">node-version:</span> <span class="str">'20'</span>, <span class="key">cache:</span> <span class="str">'npm'</span> }
+      - <span class="key">run:</span> npm ci
+      - <span class="key">run:</span> npm test -- --coverage
+        <span class="key">env:</span>
+          <span class="key">DATABASE_URL:</span> postgresql://postgres:test@localhost:5432/testdb
+
+  <span class="comment">## ── BUILD ────────────────────────────────────────</span>
+  <span class="key">build:</span>
+    <span class="key">name:</span> Build
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">needs:</span> test
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span> { <span class="key">node-version:</span> <span class="str">'20'</span>, <span class="key">cache:</span> <span class="str">'npm'</span> }
+      - <span class="key">run:</span> npm ci
+      - <span class="key">run:</span> npm run build
+      - <span class="key">uses:</span> actions/upload-artifact@v4
+        <span class="key">with:</span>
+          <span class="key">name:</span> dist
+          <span class="key">path:</span> dist/
+
+  <span class="comment">## ── DEPLOY ────────────────────────────────────────</span>
+  <span class="key">deploy:</span>
+    <span class="key">name:</span> Deploy to Production
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">needs:</span> build
+    <span class="key">if:</span> github.ref == 'refs/heads/main'  <span class="comment"># only on main</span>
+    <span class="key">environment:</span> production
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/download-artifact@v4
+        <span class="key">with:</span>
+          <span class="key">name:</span> dist
+      - <span class="key">name:</span> Deploy to AWS S3
+        <span class="key">run:</span> aws s3 sync . s3://my-production-bucket --delete
+        <span class="key">env:</span>
+          <span class="key">AWS_ACCESS_KEY_ID:</span> <span class="highlight">${{ secrets.AWS_KEY }}</span>
+          <span class="key">AWS_SECRET_ACCESS_KEY:</span> <span class="highlight">${{ secrets.AWS_SECRET }}</span></div>
+      </div>
+
+      <div class="callout tip">
+        <strong>💡 What to notice about this pipeline</strong>
+        Jobs run in sequence: quality → test → build → deploy. Each stage only runs if the previous passed. Deploy only runs on main branch. Real Postgres is available for integration tests. All secrets come from GitHub Secrets. Caching makes it fast.
+      </div>
+    </section>
+
+    <!-- CI/CD CHEAT SHEET -->
+    <section class="module" id="cicd-cheatsheet">
+      <div class="module-header">
+        <span class="module-num">21</span>
+        <h2>CI/CD Cheat Sheet</h2>
+      </div>
+
+      <table class="cheat-table">
+        <thead><tr><th>Concept / Syntax</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>on: push</td><td>Trigger when code is pushed</td></tr>
+          <tr><td>on: pull_request</td><td>Trigger on PR open/update</td></tr>
+          <tr><td>on: schedule</td><td>Cron-based trigger (e.g., nightly tests)</td></tr>
+          <tr><td>on: workflow_dispatch</td><td>Manual trigger button in GitHub UI</td></tr>
+          <tr><td>runs-on: ubuntu-latest</td><td>Run job on latest Ubuntu runner</td></tr>
+          <tr><td>needs: [other-job]</td><td>Wait for another job to finish first</td></tr>
+          <tr><td>uses: owner/action@v4</td><td>Use a pre-built action from marketplace</td></tr>
+          <tr><td>run: command</td><td>Execute a shell command</td></tr>
+          <tr><td>env: KEY: value</td><td>Set environment variable for a step</td></tr>
+          <tr><td>${{ secrets.NAME }}</td><td>Reference a stored secret</td></tr>
+          <tr><td>${{ github.sha }}</td><td>The commit hash that triggered the run</td></tr>
+          <tr><td>${{ github.ref }}</td><td>The branch/tag ref (e.g., refs/heads/main)</td></tr>
+          <tr><td>${{ matrix.value }}</td><td>Current value from a matrix strategy</td></tr>
+          <tr><td>if: github.ref == 'refs/heads/main'</td><td>Conditional: only on main branch</td></tr>
+          <tr><td>if: failure()</td><td>Conditional: only if a previous step failed</td></tr>
+          <tr><td>if: always()</td><td>Run even if previous steps failed</td></tr>
+          <tr><td>strategy: matrix:</td><td>Run job multiple times with different values</td></tr>
+          <tr><td>services:</td><td>Spin up Docker containers (DB, Redis) for tests</td></tr>
+          <tr><td>environment:</td><td>Use a named environment (with its own secrets)</td></tr>
+          <tr><td>upload-artifact</td><td>Save files from one job to pass to another</td></tr>
+          <tr><td>download-artifact</td><td>Retrieve files saved by upload-artifact</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider">
+
+    <!-- SENIOR PATTERNS -->
+    <section class="module" id="senior-patterns">
+      <div class="module-header">
+        <span class="module-num">22</span>
+        <h2>Senior Engineer Patterns</h2>
+      </div>
+
+      <p>These are the habits and patterns that distinguish senior engineers. Understanding them helps you participate in technical discussions and know where to grow.</p>
+
+      <h3>Git habits of senior engineers</h3>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">✂️</div>
+          <h4>Small, atomic commits</h4>
+          <p>Each commit does one thing. Easy to understand, easy to revert, easy to cherry-pick.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🧹</div>
+          <h4>Clean up before PRs</h4>
+          <p>Interactive rebase to squash "wip" commits, rename vague messages, remove dead ends.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📝</div>
+          <h4>Descriptive PR descriptions</h4>
+          <p>Explain the why, what changed, how to test, and any tradeoffs. Screenshots for UI changes.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🔍</div>
+          <h4>Review their own diffs</h4>
+          <p>Before requesting review, open the PR and read every line. Catch your own mistakes first.</p>
+        </div>
+      </div>
+
+      <h3>CI/CD principles senior engineers live by</h3>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="icon">⚡</div>
+          <h4>Fast feedback loops</h4>
+          <p>Pipelines should fail fast. Run cheap tests first. A 2-minute feedback loop beats a 20-minute one.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🔒</div>
+          <h4>Protected main branch</h4>
+          <p>Require passing CI before merging. Require at least one code review. Never force-push to main.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">📊</div>
+          <h4>Observability</h4>
+          <p>Track deployment frequency, failure rate, and mean time to recovery. These metrics tell you if CI/CD is working.</p>
+        </div>
+        <div class="concept-card">
+          <div class="icon">🏳️</div>
+          <h4>Feature flags</h4>
+          <p>Deploy dark (hidden) features to production but activate them separately. Enables true continuous deployment without risk.</p>
+        </div>
+      </div>
+
+      <h3>Conversations you'll now understand</h3>
+
+      <div class="callout info">
+        <strong>🗣 "The pipeline is red"</strong>
+        CI tests are failing. No one can merge until it's fixed. Check the Actions tab to see which step failed.
+      </div>
+      <div class="callout info">
+        <strong>🗣 "Rebase onto main before you push"</strong>
+        Your branch is behind — pull the latest main commits under yours so there are no conflicts in the PR.
+      </div>
+      <div class="callout info">
+        <strong>🗣 "Squash your commits"</strong>
+        You have 15 "wip" commits. Use interactive rebase to combine them into 2-3 meaningful commits before the PR.
+      </div>
+      <div class="callout info">
+        <strong>🗣 "Let's add a gate on that deploy"</strong>
+        Add a manual approval step before deploying to production so someone has to click "approve" in GitHub.
+      </div>
+      <div class="callout info">
+        <strong>🗣 "That should be in a secret, not hardcoded"</strong>
+        You put an API key directly in the workflow YAML. Move it to GitHub Secrets and reference it with $&#123;&#123; secrets.KEY &#125;&#125;.
+      </div>
+    </section>
+
+    <!-- COMPLETION -->
+    <section class="module" id="completion">
+      <div class="final-badge">
+        <div class="badge-circle">🎓</div>
+        <h2>Course Complete!</h2>
+        <p>You've gone from zero to understanding Git workflows, writing CI/CD pipelines, and knowing the patterns senior engineers use every day. Now the most important step: practice.</p>
+      </div>
+
+      <h3 style="margin-top:2.5rem">Your next steps</h3>
+
+      <ol class="steps">
+        <li><strong>Create a GitHub account</strong> if you haven't and push a real project — even a simple "Hello World" app. Get the muscle memory for git add → commit → push.</li>
+        <li><strong>Set up a real CI pipeline</strong> on one of your projects. Start with just running tests. Add steps over time.</li>
+        <li><strong>Contribute to an open source project</strong>. Read their CONTRIBUTING.md, fork it, make a change, open a PR. This is the fastest way to see real Git workflows in action.</li>
+        <li><strong>Break things intentionally</strong>. Try to create a merge conflict. Try to reset past a commit. Understanding how to recover builds real confidence.</li>
+        <li><strong>Read CI config files at work</strong>. When you start a job, read every line of the existing pipeline. Ask "why" about anything that doesn't make sense.</li>
+      </ol>
+
+      <div class="callout tip" style="margin-top:2rem">
+        <strong>💡 Final advice</strong>
+        Senior engineers are not people who never look things up. They're people who know what to look for and why. You now have that foundation. Every command you'll ever need is findable. Every pipeline problem is debuggable. Go build things.
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+  });
+
+  // Active sidebar link
+  const sections = document.querySelectorAll('section[id], div[id*="part"]');
+  const links = document.querySelectorAll('.sidebar a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.sidebar a[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

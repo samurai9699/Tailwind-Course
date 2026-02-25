@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vite Mastery — Zero to Pro with React</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #252535;
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cf4d4;
+    --text: #e8e8f0;
+    --muted: #7070a0;
+    --code-bg: #0d0d1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    display: flex;
+  }
+
+  /* ─── SIDEBAR ─── */
+  #sidebar {
+    width: 300px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent3);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .sidebar-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sidebar-progress {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+  .progress-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  nav { padding: 12px 0 24px; flex: 1; }
+
+  .nav-section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 24px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(124,92,252,0.08);
+  }
+  .nav-item.done { color: var(--accent3); }
+  .nav-item .num {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0.5;
+    min-width: 20px;
+  }
+  .nav-item.done .check::before { content: "✓"; color: var(--accent3); font-size: 12px; }
+
+  /* ─── MAIN ─── */
+  #main {
+    margin-left: 300px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(124,92,252,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: 200px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(92,244,212,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 40px; height: 1px;
+    background: var(--accent3);
+  }
+
+  .hero h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 28px;
+  }
+  .hero h2 span {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 580px;
+    margin-bottom: 48px;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 52px;
+  }
+  .stat-item { text-align: left; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    padding: 16px 32px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hero-cta:hover { background: #6a4aef; transform: translateY(-1px); }
+  .hero-cta .arrow { transition: transform 0.2s; }
+  .hero-cta:hover .arrow { transform: translateX(4px); }
+
+  /* ─── SECTION ─── */
+  .lesson-section {
+    padding: 80px 80px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .lesson-section:nth-child(even) { background: var(--surface); }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    max-width: 60px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .lesson-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    line-height: 1.15;
+  }
+
+  .lesson-section h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    margin: 40px 0 14px;
+    color: var(--text);
+  }
+
+  .lesson-section p {
+    color: #b0b0d0;
+    margin-bottom: 18px;
+    max-width: 780px;
+  }
+
+  .lesson-section ul, .lesson-section ol {
+    padding-left: 24px;
+    margin-bottom: 20px;
+    max-width: 760px;
+  }
+  .lesson-section li {
+    color: #b0b0d0;
+    margin-bottom: 8px;
+  }
+  .lesson-section li strong { color: var(--text); }
+
+  /* ─── CODE BLOCKS ─── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 24px 0;
+    overflow: hidden;
+    max-width: 860px;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #0f0f1e;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .code-copy {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .code-copy:hover { color: var(--text); border-color: var(--muted); }
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #c8c8e8;
+  }
+  .c-comment { color: #4a4a7a; }
+  .c-key { color: #fc5c7d; }
+  .c-str { color: #5cf4d4; }
+  .c-fn { color: #7c5cfc; }
+  .c-num { color: #f4c05c; }
+  .c-tag { color: #fc5c7d; }
+  .c-attr { color: #7c5cfc; }
+  .c-val { color: #5cf4d4; }
+
+  /* ─── CALLOUT BOXES ─── */
+  .callout {
+    border-left: 3px solid;
+    padding: 16px 20px;
+    border-radius: 0 6px 6px 0;
+    margin: 24px 0;
+    max-width: 780px;
+    font-size: 15.5px;
+  }
+  .callout p { margin: 0; color: inherit; }
+  .callout-icon { font-size: 18px; margin-bottom: 6px; display: block; }
+
+  .callout.info { border-color: var(--accent); background: rgba(124,92,252,0.08); color: #a898e0; }
+  .callout.tip  { border-color: var(--accent3); background: rgba(92,244,212,0.07); color: #7adcca; }
+  .callout.warn { border-color: #f4c05c; background: rgba(244,192,92,0.07); color: #d4a040; }
+  .callout.danger { border-color: var(--accent2); background: rgba(252,92,125,0.07); color: #e07090; }
+
+  /* ─── QUIZ ─── */
+  .quiz-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    margin: 32px 0;
+    max-width: 780px;
+  }
+  .quiz-box h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .quiz-box h4::before { content: "⚡ Quiz — "; color: var(--accent); }
+  .quiz-option {
+    display: block;
+    padding: 11px 16px;
+    margin: 8px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+  }
+  .quiz-option:hover { border-color: var(--accent); color: var(--text); }
+  .quiz-option.correct { border-color: var(--accent3); background: rgba(92,244,212,0.08); color: var(--accent3); }
+  .quiz-option.wrong { border-color: var(--accent2); background: rgba(252,92,125,0.08); color: var(--accent2); }
+  .quiz-feedback { margin-top: 12px; font-size: 14px; display: none; font-family: 'Lora', serif; font-style: italic; }
+  .quiz-feedback.show { display: block; }
+
+  /* ─── DONE BUTTON ─── */
+  .mark-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+    padding: 12px 24px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: none;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mark-done:hover { border-color: var(--accent3); color: var(--accent3); }
+  .mark-done.marked { border-color: var(--accent3); color: var(--accent3); background: rgba(92,244,212,0.05); }
+
+  /* ─── FILE TREE ─── */
+  .file-tree {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    max-width: 500px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  .ft-dir { color: var(--accent); }
+  .ft-file { color: #c8c8e8; }
+  .ft-comment { color: var(--muted); margin-left: 8px; font-size: 11px; }
+  .ft-indent { padding-left: 18px; }
+
+  /* ─── COMPARISON TABLE ─── */
+  .compare-table {
+    width: 100%;
+    max-width: 760px;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .compare-table th {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-align: left;
+  }
+  .compare-table td {
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    color: #b0b0d0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .compare-table tr:hover td { background: var(--surface2); }
+  .td-good { color: var(--accent3); }
+  .td-bad { color: var(--accent2); }
+
+  /* ─── MILESTONE ─── */
+  .milestone {
+    background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(92,244,212,0.07));
+    border: 1px solid rgba(124,92,252,0.3);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin: 40px 0;
+    max-width: 780px;
+  }
+  .milestone h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent3);
+    margin-bottom: 10px;
+  }
+  .milestone h3::before { content: "🏆 "; }
+  .milestone p { color: #a0a0c8; margin: 0; }
+
+  /* ─── FINAL CERT ─── */
+  .cert {
+    text-align: center;
+    padding: 100px 80px;
+    background: var(--surface);
+  }
+  .cert-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 60px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cert-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(124,92,252,0.15), transparent 60%);
+    pointer-events: none;
+  }
+  .cert h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 20px 0 12px;
+  }
+  .cert p { color: var(--muted); }
+  .cert-badge { font-size: 64px; display: block; margin-bottom: 8px; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    #sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; }
+    .hero, .lesson-section { padding: 50px 28px; }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * { animation: fadeUp 0.6s ease both; }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero h2 { animation-delay: 0.2s; }
+  .hero-desc { animation-delay: 0.3s; }
+  .hero-stats { animation-delay: 0.4s; }
+  .hero-cta { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     SIDEBAR
+════════════════════════════════ -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <span class="badge">Full Course</span>
+    <h1>Vite +<br>React Mastery</h1>
+  </div>
+  <div class="sidebar-progress">
+    <div class="progress-label">Your progress</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-count" id="progressCount">0 / 9 lessons done</div>
+  </div>
+  <nav>
+    <div class="nav-section-label">Introduction</div>
+    <a class="nav-item" href="#hero"><span class="num">00</span>Overview <span class="check" id="d0"></span></a>
+
+    <div class="nav-section-label">Foundations</div>
+    <a class="nav-item" href="#l1"><span class="num">01</span>What is Vite? <span class="check" id="d1"></span></a>
+    <a class="nav-item" href="#l2"><span class="num">02</span>Installation & Setup <span class="check" id="d2"></span></a>
+    <a class="nav-item" href="#l3"><span class="num">03</span>Project Structure <span class="check" id="d3"></span></a>
+
+    <div class="nav-section-label">Core Concepts</div>
+    <a class="nav-item" href="#l4"><span class="num">04</span>Dev Server & HMR <span class="check" id="d4"></span></a>
+    <a class="nav-item" href="#l5"><span class="num">05</span>Config Deep Dive <span class="check" id="d5"></span></a>
+    <a class="nav-item" href="#l6"><span class="num">06</span>Assets & CSS <span class="check" id="d6"></span></a>
+
+    <div class="nav-section-label">Advanced</div>
+    <a class="nav-item" href="#l7"><span class="num">07</span>Env Variables <span class="check" id="d7"></span></a>
+    <a class="nav-item" href="#l8"><span class="num">08</span>Building for Production <span class="check" id="d8"></span></a>
+    <a class="nav-item" href="#l9"><span class="num">09</span>Plugins & Ecosystem <span class="check" id="d9"></span></a>
+  </nav>
+</aside>
+
+<!-- ════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════ -->
+<main id="main">
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="hero">
+  <div class="hero-eyebrow">COMPLETE COURSE — 2025 EDITION</div>
+  <h2>Go from <span>clueless</span><br>to Vite master</h2>
+  <p class="hero-desc">
+    Everything you need to build blazing-fast React apps with Vite — explained clearly, step-by-step, with real code.
+  </p>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">9</div>
+      <div class="stat-label">Lessons</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">50+</div>
+      <div class="stat-label">Code examples</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Speed unlocked</div>
+    </div>
+  </div>
+  <a class="hero-cta" href="#l1">Start Learning <span class="arrow">→</span></a>
+</section>
+
+
+<!-- ════════════════
+     LESSON 1
+════════════════ -->
+<section class="lesson-section" id="l1">
+  <div class="section-label">Lesson 01</div>
+  <h2>What is Vite & Why Should You Care?</h2>
+
+  <p>Before touching any code, let's understand what Vite actually is and why the entire JavaScript community switched to it seemingly overnight.</p>
+
+  <h3>The Old World: Webpack & CRA</h3>
+  <p>For years, <strong>Create React App (CRA)</strong> was the go-to way to start a React project. It was powered by <strong>Webpack</strong> under the hood — a powerful but slow bundler. Every time you saved a file, Webpack had to re-process your entire application. On large projects, that meant waiting 30–60 seconds just to see your change.</p>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <p><strong>Create React App is now deprecated.</strong> The official React docs no longer recommend it. Vite is the modern replacement — and it's dramatically better.</p>
+  </div>
+
+  <h3>The New World: Vite</h3>
+  <p><strong>Vite</strong> (French for "fast", pronounced like "veet") was created by Evan You — the same person who built Vue.js. It takes a completely different approach:</p>
+  <ul>
+    <li><strong>In development:</strong> Vite serves your source files directly using native ES Modules in the browser. No bundling needed. The browser does the importing itself.</li>
+    <li><strong>In production:</strong> Vite bundles with <strong>Rollup</strong> — a highly optimized bundler — producing tight, fast output.</li>
+  </ul>
+
+  <h3>How much faster is it, really?</h3>
+  <table class="compare-table">
+    <thead>
+      <tr><th>Tool</th><th>Cold Start</th><th>Hot Reload</th><th>Build</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Webpack / CRA</td>
+        <td class="td-bad">20–60+ seconds</td>
+        <td class="td-bad">2–10 seconds</td>
+        <td class="td-bad">Slow</td>
+      </tr>
+      <tr>
+        <td>Vite</td>
+        <td class="td-good">&lt; 1 second</td>
+        <td class="td-good">Instant (HMR)</td>
+        <td class="td-good">Fast (Rollup)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Vite under the hood (simplified)</h3>
+  <p>Vite splits your code into two categories:</p>
+  <ul>
+    <li><strong>Dependencies</strong> (things in node_modules like React itself): Pre-bundled once using <strong>esbuild</strong>, which is written in Go and 10–100× faster than JavaScript-based bundlers.</li>
+    <li><strong>Your source code</strong> (components, pages, utils): Served as-is over native ESM. Vite transforms files on demand, only when the browser requests them.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <p>Think of Vite like a smart chef who preps your pantry items once (dependencies), then cooks your actual meal (your code) to order — rather than re-prepping everything every time you change a single ingredient.</p>
+  </div>
+
+  <div class="quiz-box">
+    <h4>What is Vite's primary advantage in development?</h4>
+    <button class="quiz-option" data-correct="false">It creates smaller bundle sizes than Webpack</button>
+    <button class="quiz-option" data-correct="true">It avoids bundling during dev by using native ES Modules in the browser</button>
+    <button class="quiz-option" data-correct="false">It automatically deploys your app to the cloud</button>
+    <div class="quiz-feedback" id="qf1"></div>
+  </div>
+
+  <button class="mark-done" data-lesson="1">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 2
+════════════════ -->
+<section class="lesson-section" id="l2">
+  <div class="section-label">Lesson 02</div>
+  <h2>Installation & Your First Vite + React App</h2>
+
+  <h3>Prerequisites</h3>
+  <ul>
+    <li>Node.js version <strong>18+</strong> (run <code>node -v</code> to check)</li>
+    <li>A terminal (PowerShell, bash, zsh — anything works)</li>
+    <li>VS Code (recommended)</li>
+  </ul>
+
+  <div class="callout info">
+    <span class="callout-icon">ℹ️</span>
+    <p>Don't have Node.js? Download it from <strong>nodejs.org</strong>. Get the LTS (Long Term Support) version.</p>
+  </div>
+
+  <h3>Create a new project</h3>
+  <p>Open your terminal and run this single command:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">npm</span> create vite@latest my-react-app -- --template react
+
+<span class="c-comment"># Or with yarn:</span>
+<span class="c-fn">yarn</span> create vite my-react-app --template react
+
+<span class="c-comment"># Or with pnpm (fastest):</span>
+<span class="c-fn">pnpm</span> create vite my-react-app --template react</pre>
+  </div>
+
+  <p>You can also run it interactively — Vite will prompt you for a project name and framework:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">npm</span> create vite@latest
+
+<span class="c-comment"># It will ask:
+# ✔ Project name: › my-app
+# ✔ Select a framework: › React
+# ✔ Select a variant: › JavaScript (or TypeScript)</span></pre>
+  </div>
+
+  <h3>Install and run</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">cd</span> my-react-app
+<span class="c-fn">npm</span> install     <span class="c-comment"># installs dependencies</span>
+<span class="c-fn">npm</span> run dev    <span class="c-comment"># starts the dev server</span></pre>
+  </div>
+
+  <p>Your terminal will show something like:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">output</span></div>
+    <pre>  VITE v5.x.x  ready in <span class="c-num">312</span> ms
+
+  ➜  Local:   http://localhost:<span class="c-num">5173</span>/
+  ➜  Network: use --host to expose</pre>
+  </div>
+
+  <p>Open <strong>http://localhost:5173</strong> and you should see a spinning Vite + React logo. That's your app running — in under half a second. Welcome to the future.</p>
+
+  <h3>Essential scripts</h3>
+  <table class="compare-table">
+    <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>npm run dev</td><td>Start local dev server with HMR</td></tr>
+      <tr><td>npm run build</td><td>Bundle your app for production</td></tr>
+      <tr><td>npm run preview</td><td>Preview the production build locally</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <p>Use <strong>pnpm</strong> if you can — it's significantly faster than npm and saves disk space by sharing packages across projects.</p>
+  </div>
+
+  <div class="quiz-box">
+    <h4>What port does Vite's dev server use by default?</h4>
+    <button class="quiz-option" data-correct="false">3000</button>
+    <button class="quiz-option" data-correct="false">8080</button>
+    <button class="quiz-option" data-correct="true">5173</button>
+    <button class="quiz-option" data-correct="false">4000</button>
+    <div class="quiz-feedback" id="qf2"></div>
+  </div>
+
+  <button class="mark-done" data-lesson="2">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 3
+════════════════ -->
+<section class="lesson-section" id="l3">
+  <div class="section-label">Lesson 03</div>
+  <h2>Project Structure — What Does Everything Mean?</h2>
+
+  <p>When you open your new project, you'll see this structure. Let's understand every single file and folder:</p>
+
+  <div class="file-tree">
+    <div class="ft-dir">my-react-app/</div>
+    <div class="ft-indent">
+      <div class="ft-dir">node_modules/ <span class="ft-comment">← installed packages (don't touch)</span></div>
+      <div class="ft-dir">public/ <span class="ft-comment">← static files, served as-is</span></div>
+      <div class="ft-indent">
+        <div class="ft-file">vite.svg <span class="ft-comment">← favicon</span></div>
+      </div>
+      <div class="ft-dir">src/ <span class="ft-comment">← YOUR code lives here</span></div>
+      <div class="ft-indent">
+        <div class="ft-dir">assets/ <span class="ft-comment">← images, fonts (processed by Vite)</span></div>
+        <div class="ft-file">App.css</div>
+        <div class="ft-file">App.jsx <span class="ft-comment">← root component</span></div>
+        <div class="ft-file">index.css <span class="ft-comment">← global styles</span></div>
+        <div class="ft-file">main.jsx <span class="ft-comment">← entry point</span></div>
+      </div>
+      <div class="ft-file">.gitignore</div>
+      <div class="ft-file">index.html <span class="ft-comment">← ⭐ THE entry HTML (not in public/!)</span></div>
+      <div class="ft-file">package.json</div>
+      <div class="ft-file">vite.config.js <span class="ft-comment">← Vite configuration</span></div>
+    </div>
+  </div>
+
+  <h3>⭐ index.html — The Most Important Difference</h3>
+  <p>In Webpack/CRA, <code>index.html</code> was hidden deep inside the tooling. In Vite, <strong>it lives at your project root</strong> and is your actual entry point. Vite treats it as source code:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">html — index.html</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="c-tag">&lt;html</span> <span class="c-attr">lang</span>=<span class="c-str">"en"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;head&gt;</span>
+    <span class="c-tag">&lt;meta</span> <span class="c-attr">charset</span>=<span class="c-str">"UTF-8"</span> <span class="c-tag">/&gt;</span>
+    <span class="c-tag">&lt;title&gt;</span>My Vite App<span class="c-tag">&lt;/title&gt;</span>
+  <span class="c-tag">&lt;/head&gt;</span>
+  <span class="c-tag">&lt;body&gt;</span>
+    <span class="c-tag">&lt;div</span> <span class="c-attr">id</span>=<span class="c-str">"root"</span><span class="c-tag">&gt;&lt;/div&gt;</span>
+    <span class="c-comment">&lt;!-- ⭐ This script tag is how Vite knows the entry point --&gt;</span>
+    <span class="c-tag">&lt;script</span> <span class="c-attr">type</span>=<span class="c-str">"module"</span> <span class="c-attr">src</span>=<span class="c-str">"/src/main.jsx"</span><span class="c-tag">&gt;&lt;/script&gt;</span>
+  <span class="c-tag">&lt;/body&gt;</span>
+<span class="c-tag">&lt;/html&gt;</span></pre>
+  </div>
+
+  <p>Notice <code>type="module"</code> — that's native ESM. Your browser literally understands this directly. No bundling magic needed in dev.</p>
+
+  <h3>src/main.jsx — The React Entry Point</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx — src/main.jsx</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> React <span class="c-key">from</span> <span class="c-str">'react'</span>
+<span class="c-key">import</span> ReactDOM <span class="c-key">from</span> <span class="c-str">'react-dom/client'</span>
+<span class="c-key">import</span> App <span class="c-key">from</span> <span class="c-str">'./App.jsx'</span>
+<span class="c-key">import</span> <span class="c-str">'./index.css'</span>
+
+ReactDOM.<span class="c-fn">createRoot</span>(document.<span class="c-fn">getElementById</span>(<span class="c-str">'root'</span>)).<span class="c-fn">render</span>(
+  <span class="c-tag">&lt;React.StrictMode&gt;</span>
+    <span class="c-tag">&lt;App /&gt;</span>
+  <span class="c-tag">&lt;/React.StrictMode&gt;</span>
+)</pre>
+  </div>
+
+  <h3>public/ vs src/assets/ — What's the Difference?</h3>
+  <table class="compare-table">
+    <thead><tr><th>Folder</th><th>Processed by Vite?</th><th>Use for</th></tr></thead>
+    <tbody>
+      <tr><td>public/</td><td class="td-bad">No — served as-is</td><td>Favicons, robots.txt, files you need at exact paths</td></tr>
+      <tr><td>src/assets/</td><td class="td-good">Yes — optimized</td><td>Images, SVGs, fonts used inside components</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <p>Files in <code>public/</code> are NOT imported in JS — they're referenced by absolute URL like <code>/logo.png</code>. Files in <code>src/assets/</code> ARE imported in JS and get hashed filenames for caching.</p>
+  </div>
+
+  <button class="mark-done" data-lesson="3">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 4
+════════════════ -->
+<section class="lesson-section" id="l4">
+  <div class="section-label">Lesson 04</div>
+  <h2>Dev Server & Hot Module Replacement (HMR)</h2>
+
+  <p>HMR is one of Vite's killer features. It updates <em>only the changed module</em> in your browser without doing a full page refresh — keeping your app state intact.</p>
+
+  <h3>How HMR Works in Vite</h3>
+  <p>When you save a file:</p>
+  <ol>
+    <li>Vite detects the change via file system watchers.</li>
+    <li>It re-transforms only the changed module and its direct dependents.</li>
+    <li>It sends an update to the browser over a <strong>WebSocket</strong> connection.</li>
+    <li>The browser swaps out only the changed module — your component state stays alive.</li>
+  </ol>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <p>HMR means if you have a form with typed text and you update the form's CSS, your text stays there. No refresh, no lost state. This is a massive productivity win.</p>
+  </div>
+
+  <h3>Configuring the Dev Server</h3>
+  <p>You can customize the dev server in <code>vite.config.js</code>:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — vite.config.js</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> { defineConfig } <span class="c-key">from</span> <span class="c-str">'vite'</span>
+<span class="c-key">import</span> react <span class="c-key">from</span> <span class="c-str">'@vitejs/plugin-react'</span>
+
+<span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  plugins: [<span class="c-fn">react</span>()],
+  server: {
+    port: <span class="c-num">3000</span>,        <span class="c-comment">// change the default port</span>
+    open: <span class="c-key">true</span>,         <span class="c-comment">// auto-open browser on start</span>
+    host: <span class="c-key">true</span>,         <span class="c-comment">// expose to network (for mobile testing)</span>
+    strictPort: <span class="c-key">true</span>,   <span class="c-comment">// fail if port is taken (don't increment)</span>
+  }
+})</pre>
+  </div>
+
+  <h3>Proxying API Requests</h3>
+  <p>One of the most important dev server features: proxying API calls to avoid CORS issues during development.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — vite.config.js</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  server: {
+    proxy: {
+      <span class="c-comment">// Requests to /api/... will be forwarded to your backend</span>
+      <span class="c-str">'/api'</span>: {
+        target: <span class="c-str">'http://localhost:8000'</span>,
+        changeOrigin: <span class="c-key">true</span>,
+        rewrite: (path) => path.<span class="c-fn">replace</span>(<span class="c-str">/^\/api/</span>, <span class="c-str">''</span>)
+      }
+    }
+  }
+})</pre>
+  </div>
+
+  <p>Now <code>fetch('/api/users')</code> in your React code will actually hit <code>http://localhost:8000/users</code> — no CORS errors, no backend config needed.</p>
+
+  <div class="quiz-box">
+    <h4>What communication mechanism does Vite's HMR use to push updates to the browser?</h4>
+    <button class="quiz-option" data-correct="false">HTTP long polling</button>
+    <button class="quiz-option" data-correct="true">WebSocket</button>
+    <button class="quiz-option" data-correct="false">Server-Sent Events only</button>
+    <div class="quiz-feedback" id="qf4"></div>
+  </div>
+
+  <button class="mark-done" data-lesson="4">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 5
+════════════════ -->
+<section class="lesson-section" id="l5">
+  <div class="section-label">Lesson 05</div>
+  <h2>vite.config.js — Deep Dive</h2>
+
+  <p>The config file is the brain of your Vite setup. Let's explore the most important options you'll actually use.</p>
+
+  <h3>The Anatomy of vite.config.js</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — vite.config.js (full annotated)</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> { defineConfig } <span class="c-key">from</span> <span class="c-str">'vite'</span>
+<span class="c-key">import</span> react <span class="c-key">from</span> <span class="c-str">'@vitejs/plugin-react'</span>
+<span class="c-key">import</span> { resolve } <span class="c-key">from</span> <span class="c-str">'path'</span>
+
+<span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  <span class="c-comment">// ─── Plugins ──────────────────────────────────────</span>
+  plugins: [<span class="c-fn">react</span>()],
+
+  <span class="c-comment">// ─── Path Aliases (VERY useful!) ──────────────────</span>
+  resolve: {
+    alias: {
+      <span class="c-str">'@'</span>: resolve(__dirname, <span class="c-str">'./src'</span>),
+      <span class="c-str">'@components'</span>: resolve(__dirname, <span class="c-str">'./src/components'</span>),
+      <span class="c-str">'@hooks'</span>: resolve(__dirname, <span class="c-str">'./src/hooks'</span>),
+      <span class="c-str">'@utils'</span>: resolve(__dirname, <span class="c-str">'./src/utils'</span>),
+    }
+  },
+
+  <span class="c-comment">// ─── CSS Options ──────────────────────────────────</span>
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: <span class="c-str">`@import "@/styles/variables.scss";`</span>
+      }
+    }
+  },
+
+  <span class="c-comment">// ─── Build Options ────────────────────────────────</span>
+  build: {
+    outDir: <span class="c-str">'dist'</span>,         <span class="c-comment">// output folder</span>
+    sourcemap: <span class="c-key">true</span>,       <span class="c-comment">// generate source maps</span>
+    minify: <span class="c-str">'esbuild'</span>,     <span class="c-comment">// or 'terser' for smaller (slower)</span>
+    chunkSizeWarningLimit: <span class="c-num">1000</span> <span class="c-comment">// KB warning threshold</span>
+  },
+
+  <span class="c-comment">// ─── Server Options ───────────────────────────────</span>
+  server: {
+    port: <span class="c-num">5173</span>,
+    proxy: {
+      <span class="c-str">'/api'</span>: <span class="c-str">'http://localhost:8000'</span>
+    }
+  }
+})</pre>
+  </div>
+
+  <h3>Path Aliases — Stop Writing ../../../../</h3>
+  <p>Without aliases, imports look horrifying:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx — without aliases 😱</span></div>
+    <pre><span class="c-key">import</span> Button <span class="c-key">from</span> <span class="c-str">'../../../components/ui/Button'</span>
+<span class="c-key">import</span> { useAuth } <span class="c-key">from</span> <span class="c-str">'../../../../hooks/useAuth'</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx — with aliases 😍</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> Button <span class="c-key">from</span> <span class="c-str">'@components/ui/Button'</span>
+<span class="c-key">import</span> { useAuth } <span class="c-key">from</span> <span class="c-str">'@hooks/useAuth'</span></pre>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <p>If you use TypeScript, you must also add your aliases to <code>tsconfig.json</code> under <code>compilerOptions.paths</code> — Vite and TypeScript are separate and both need to know about aliases.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">json — tsconfig.json</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre>{
+  <span class="c-str">"compilerOptions"</span>: {
+    <span class="c-str">"baseUrl"</span>: <span class="c-str">"."</span>,
+    <span class="c-str">"paths"</span>: {
+      <span class="c-str">"@/*"</span>: [<span class="c-str">"./src/*"</span>],
+      <span class="c-str">"@components/*"</span>: [<span class="c-str">"./src/components/*"</span>]
+    }
+  }
+}</pre>
+  </div>
+
+  <button class="mark-done" data-lesson="5">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 6
+════════════════ -->
+<section class="lesson-section" id="l6">
+  <div class="section-label">Lesson 06</div>
+  <h2>Handling Assets & CSS</h2>
+
+  <h3>Importing Images</h3>
+  <p>Vite handles all common asset types natively. Import images directly in your JS/JSX:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> logo <span class="c-key">from</span> <span class="c-str">'./assets/logo.png'</span>
+<span class="c-key">import</span> icon <span class="c-key">from</span> <span class="c-str">'./assets/icon.svg'</span>
+
+<span class="c-key">function</span> <span class="c-fn">Header</span>() {
+  <span class="c-key">return</span> (
+    <span class="c-tag">&lt;header&gt;</span>
+      <span class="c-tag">&lt;img</span> <span class="c-attr">src</span>={logo} <span class="c-attr">alt</span>=<span class="c-str">"Logo"</span> <span class="c-tag">/&gt;</span>
+    <span class="c-tag">&lt;/header&gt;</span>
+  )
+}</pre>
+  </div>
+
+  <h3>Importing SVGs as React Components</h3>
+  <p>Install the plugin first:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">npm</span> install vite-plugin-svgr</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — vite.config.js</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> svgr <span class="c-key">from</span> <span class="c-str">'vite-plugin-svgr'</span>
+
+<span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  plugins: [<span class="c-fn">react</span>(), <span class="c-fn">svgr</span>()]
+})</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx — using SVG as component</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> { ReactComponent <span class="c-key">as</span> Logo } <span class="c-key">from</span> <span class="c-str">'./logo.svg'</span>
+
+<span class="c-key">function</span> <span class="c-fn">App</span>() {
+  <span class="c-key">return</span> <span class="c-tag">&lt;Logo</span> <span class="c-attr">className</span>=<span class="c-str">"logo"</span> <span class="c-attr">fill</span>=<span class="c-str">"currentColor"</span> <span class="c-tag">/&gt;</span>
+}</pre>
+  </div>
+
+  <h3>CSS Options in Vite</h3>
+
+  <p><strong>Plain CSS</strong> — just works out of the box. Import it directly:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx</span></div>
+    <pre><span class="c-key">import</span> <span class="c-str">'./App.css'</span></pre>
+  </div>
+
+  <p><strong>CSS Modules</strong> — automatically supported for any file ending in <code>.module.css</code>:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx — CSS Modules</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> styles <span class="c-key">from</span> <span class="c-str">'./Button.module.css'</span>
+
+<span class="c-key">function</span> <span class="c-fn">Button</span>({ children }) {
+  <span class="c-comment">// styles.btn becomes a unique hashed class name</span>
+  <span class="c-key">return</span> <span class="c-tag">&lt;button</span> <span class="c-attr">className</span>={styles.btn}<span class="c-tag">&gt;</span>{children}<span class="c-tag">&lt;/button&gt;</span>
+}</pre>
+  </div>
+
+  <p><strong>Sass/SCSS</strong> — install sass and it just works:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">npm</span> install -D sass
+
+<span class="c-comment"># Then just use .scss files anywhere</span></pre>
+  </div>
+
+  <p><strong>Tailwind CSS</strong> — the most popular option:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">npm</span> install -D tailwindcss postcss autoprefixer
+<span class="c-fn">npx</span> tailwindcss init -p</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — tailwind.config.js</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">export default</span> {
+  content: [<span class="c-str">"./index.html"</span>, <span class="c-str">"./src/**/*.{js,jsx,ts,tsx}"</span>],
+  theme: { extend: {} },
+  plugins: []
+}</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">css — src/index.css</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-str">@tailwind</span> base;
+<span class="c-str">@tailwind</span> components;
+<span class="c-str">@tailwind</span> utilities;</pre>
+  </div>
+
+  <button class="mark-done" data-lesson="6">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 7
+════════════════ -->
+<section class="lesson-section" id="l7">
+  <div class="section-label">Lesson 07</div>
+  <h2>Environment Variables</h2>
+
+  <p>Environment variables let you store configuration that changes between environments — like API URLs, API keys, and feature flags — without hardcoding them in your source code.</p>
+
+  <h3>How Vite Handles Env Variables</h3>
+  <p>Vite uses <code>.env</code> files. The key rule: <strong>only variables prefixed with <code>VITE_</code> are exposed to your client-side code.</strong> This prevents accidentally leaking server secrets.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">.env files (precedence order)</span></div>
+    <pre>.env                  <span class="c-comment"># loaded always</span>
+.env.local            <span class="c-comment"># loaded always, git-ignored</span>
+.env.development      <span class="c-comment"># loaded when NODE_ENV=development</span>
+.env.production       <span class="c-comment"># loaded when NODE_ENV=production</span>
+.env.development.local <span class="c-comment"># local overrides for dev</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">.env</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-comment"># ✅ Exposed to client (VITE_ prefix)</span>
+VITE_API_URL=https://api.example.com
+VITE_APP_TITLE=My Awesome App
+VITE_FEATURE_DARK_MODE=true
+
+<span class="c-comment"># ❌ NOT exposed to client (no VITE_ prefix)</span>
+DATABASE_PASSWORD=supersecret123
+SECRET_KEY=abc123</pre>
+  </div>
+
+  <h3>Accessing Variables in Your Code</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-comment">// Access via import.meta.env</span>
+<span class="c-key">const</span> apiUrl = import.meta.env.VITE_API_URL
+<span class="c-key">const</span> appTitle = import.meta.env.VITE_APP_TITLE
+
+<span class="c-comment">// Built-in variables</span>
+<span class="c-key">const</span> isDev = import.meta.env.DEV       <span class="c-comment">// true in dev</span>
+<span class="c-key">const</span> isProd = import.meta.env.PROD     <span class="c-comment">// true in prod</span>
+<span class="c-key">const</span> mode = import.meta.env.MODE       <span class="c-comment">// "development" or "production"</span>
+
+<span class="c-key">function</span> <span class="c-fn">App</span>() {
+  <span class="c-key">return</span> (
+    <span class="c-tag">&lt;div&gt;</span>
+      <span class="c-tag">&lt;h1&gt;</span>{import.meta.env.VITE_APP_TITLE}<span class="c-tag">&lt;/h1&gt;</span>
+      {import.meta.env.DEV &amp;&amp; <span class="c-tag">&lt;p&gt;</span>🔧 Dev Mode<span class="c-tag">&lt;/p&gt;</span>}
+    <span class="c-tag">&lt;/div&gt;</span>
+  )
+}</pre>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🔒</span>
+    <p><strong>Never</strong> put secrets (database passwords, private API keys) with the <code>VITE_</code> prefix. They will be bundled into your JavaScript and visible to anyone who views source. Only public-facing values belong in <code>VITE_</code> variables.</p>
+  </div>
+
+  <h3>TypeScript: Typing Your Env Variables</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">ts — src/vite-env.d.ts</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-comment">/// &lt;reference types="vite/client" /&gt;</span>
+
+<span class="c-key">interface</span> ImportMetaEnv {
+  <span class="c-key">readonly</span> VITE_API_URL: string
+  <span class="c-key">readonly</span> VITE_APP_TITLE: string
+  <span class="c-key">readonly</span> VITE_FEATURE_DARK_MODE: string
+}
+
+<span class="c-key">interface</span> ImportMeta {
+  <span class="c-key">readonly</span> env: ImportMetaEnv
+}</pre>
+  </div>
+
+  <button class="mark-done" data-lesson="7">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 8
+════════════════ -->
+<section class="lesson-section" id="l8">
+  <div class="section-label">Lesson 08</div>
+  <h2>Building for Production</h2>
+
+  <h3>Running the Build</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-fn">npm</span> run build
+
+<span class="c-comment"># Preview the built output locally</span>
+<span class="c-fn">npm</span> run preview</pre>
+  </div>
+
+  <p>Vite uses <strong>Rollup</strong> for production builds. The output lands in <code>dist/</code>:</p>
+
+  <div class="file-tree">
+    <div class="ft-dir">dist/</div>
+    <div class="ft-indent">
+      <div class="ft-dir">assets/</div>
+      <div class="ft-indent">
+        <div class="ft-file">index-Bxyz1234.js <span class="ft-comment">← hashed for cache busting</span></div>
+        <div class="ft-file">index-Axyz9876.css</div>
+        <div class="ft-file">vendor-Cdef5678.js <span class="ft-comment">← react + react-dom</span></div>
+      </div>
+      <div class="ft-file">index.html</div>
+    </div>
+  </div>
+
+  <h3>Code Splitting</h3>
+  <p>Vite automatically code-splits your app. You can take control with dynamic imports:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">jsx — React lazy loading</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> { lazy, Suspense } <span class="c-key">from</span> <span class="c-str">'react'</span>
+
+<span class="c-comment">// This creates a separate chunk — only loaded when needed</span>
+<span class="c-key">const</span> Dashboard = <span class="c-fn">lazy</span>(() =&gt; <span class="c-key">import</span>(<span class="c-str">'./pages/Dashboard'</span>))
+<span class="c-key">const</span> Settings = <span class="c-fn">lazy</span>(() =&gt; <span class="c-key">import</span>(<span class="c-str">'./pages/Settings'</span>))
+
+<span class="c-key">function</span> <span class="c-fn">App</span>() {
+  <span class="c-key">return</span> (
+    <span class="c-tag">&lt;Suspense</span> <span class="c-attr">fallback</span>={<span class="c-tag">&lt;div&gt;</span>Loading...<span class="c-tag">&lt;/div&gt;</span>}<span class="c-tag">&gt;</span>
+      <span class="c-comment">{/* Routes here */}</span>
+    <span class="c-tag">&lt;/Suspense&gt;</span>
+  )
+}</pre>
+  </div>
+
+  <h3>Manual Chunk Splitting</h3>
+  <p>Control how Vite groups your code into chunks for optimal loading:</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — vite.config.js</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          <span class="c-comment">// Bundle React separately — cached aggressively</span>
+          vendor: [<span class="c-str">'react'</span>, <span class="c-str">'react-dom'</span>],
+          <span class="c-comment">// Bundle routing separately</span>
+          router: [<span class="c-str">'react-router-dom'</span>],
+          <span class="c-comment">// Bundle UI library separately</span>
+          ui: [<span class="c-str">'@radix-ui/react-dialog'</span>, <span class="c-str">'@radix-ui/react-dropdown-menu'</span>]
+        }
+      }
+    }
+  }
+})</pre>
+  </div>
+
+  <h3>Deploying Your Build</h3>
+  <p>The <code>dist/</code> folder is a static site — drop it anywhere:</p>
+  <table class="compare-table">
+    <thead><tr><th>Platform</th><th>How to deploy</th></tr></thead>
+    <tbody>
+      <tr><td>Vercel</td><td>Connect repo → auto-detected, builds automatically</td></tr>
+      <tr><td>Netlify</td><td>Build command: <code>npm run build</code> | Publish dir: <code>dist</code></td></tr>
+      <tr><td>GitHub Pages</td><td>Use <code>gh-pages</code> npm package or GitHub Actions</td></tr>
+      <tr><td>Any server</td><td>Upload <code>dist/</code> contents to your web root</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <p>If you're deploying to a subdirectory (e.g., <code>example.com/myapp/</code>), set the <code>base</code> option in vite.config.js: <code>base: '/myapp/'</code>. Otherwise assets won't load.</p>
+  </div>
+
+  <button class="mark-done" data-lesson="8">Mark as done ✓</button>
+</section>
+
+
+<!-- ════════════════
+     LESSON 9
+════════════════ -->
+<section class="lesson-section" id="l9">
+  <div class="section-label">Lesson 09</div>
+  <h2>Plugins & The Vite Ecosystem</h2>
+
+  <p>Plugins extend Vite's capabilities. The Vite plugin API is based on Rollup's, so most Rollup plugins work in Vite too.</p>
+
+  <h3>The Official React Plugin</h3>
+  <p>You've already used this one. It enables JSX transformation and React Fast Refresh (HMR for React components):</p>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash</span></div>
+    <pre><span class="c-fn">npm</span> install -D @vitejs/plugin-react</pre>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">ℹ️</span>
+    <p>There's also <code>@vitejs/plugin-react-swc</code> which uses SWC (Rust-based) instead of Babel for even faster transforms. Drop-in replacement, highly recommended.</p>
+  </div>
+
+  <h3>Essential Plugins to Know</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">bash — must-have plugins</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-comment"># Faster React transforms (Rust-powered)</span>
+<span class="c-fn">npm</span> install -D @vitejs/plugin-react-swc
+
+<span class="c-comment"># SVGs as React components</span>
+<span class="c-fn">npm</span> install -D vite-plugin-svgr
+
+<span class="c-comment"># Generate compression (.gz and .br) for production</span>
+<span class="c-fn">npm</span> install -D vite-plugin-compression
+
+<span class="c-comment"># Visualize your bundle size (VERY useful)</span>
+<span class="c-fn">npm</span> install -D rollup-plugin-visualizer
+
+<span class="c-comment"># PWA support (service workers, offline)</span>
+<span class="c-fn">npm</span> install -D vite-plugin-pwa</pre>
+  </div>
+
+  <h3>Bundle Visualizer — See What's Making Your App Fat</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — vite.config.js</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-key">import</span> { visualizer } <span class="c-key">from</span> <span class="c-str">'rollup-plugin-visualizer'</span>
+
+<span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  plugins: [
+    <span class="c-fn">react</span>(),
+    <span class="c-fn">visualizer</span>({
+      open: <span class="c-key">true</span>,      <span class="c-comment">// auto-open the report in browser</span>
+      gzipSize: <span class="c-key">true</span>,  <span class="c-comment">// show gzip sizes</span>
+      filename: <span class="c-str">'bundle-report.html'</span>
+    })
+  ]
+})</pre>
+  </div>
+
+  <p>Run <code>npm run build</code> and a visual treemap of your bundle opens automatically. You'll instantly see which libraries are taking up the most space.</p>
+
+  <h3>Writing Your Own Plugin</h3>
+  <p>Plugins are just objects with lifecycle hooks. Here's a simple one that adds a build timestamp:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">js — custom plugin</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+    <pre><span class="c-comment">// A plugin that injects build time into your app</span>
+<span class="c-key">function</span> <span class="c-fn">buildTimestampPlugin</span>() {
+  <span class="c-key">return</span> {
+    name: <span class="c-str">'build-timestamp'</span>,
+    <span class="c-fn">transformIndexHtml</span>(html) {
+      <span class="c-key">return</span> html.<span class="c-fn">replace</span>(
+        <span class="c-str">'&lt;/head&gt;'</span>,
+        <span class="c-str">`&lt;meta name="build-time" content="${new Date().toISOString()}"&gt;&lt;/head&gt;`</span>
+      )
+    }
+  }
+}
+
+<span class="c-key">export default</span> <span class="c-fn">defineConfig</span>({
+  plugins: [<span class="c-fn">react</span>(), <span class="c-fn">buildTimestampPlugin</span>()]
+})</pre>
+  </div>
+
+  <div class="milestone">
+    <h3>You're Now a Vite Expert</h3>
+    <p>You understand how Vite works, how to configure it for any project, how to handle assets, environment variables, optimize production builds, and extend it with plugins. This knowledge makes you dangerous in the best possible way.</p>
+  </div>
+
+  <div class="quiz-box">
+    <h4>Which plugin would you use to see which packages are making your bundle large?</h4>
+    <button class="quiz-option" data-correct="false">vite-plugin-svgr</button>
+    <button class="quiz-option" data-correct="true">rollup-plugin-visualizer</button>
+    <button class="quiz-option" data-correct="false">vite-plugin-pwa</button>
+    <div class="quiz-feedback" id="qf9"></div>
+  </div>
+
+  <button class="mark-done" data-lesson="9">Mark as done ✓</button>
+</section>
+
+<!-- ════════════════
+     COMPLETION
+════════════════ -->
+<section class="cert" id="cert">
+  <div class="cert-inner">
+    <span class="cert-badge">⚡</span>
+    <h2>Course Complete!</h2>
+    <p>You now understand Vite from the inside out. Go build something fast.</p>
+    <br>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:8px;">
+      npm create vite@latest your-next-project -- --template react
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ─── QUIZ LOGIC ───────────────────────────────
+document.querySelectorAll('.quiz-box').forEach(box => {
+  const feedback = box.querySelector('.quiz-feedback');
+  box.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isCorrect = btn.dataset.correct === 'true';
+      box.querySelectorAll('.quiz-option').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+        else if (b === btn && !isCorrect) b.classList.add('wrong');
+      });
+      feedback.textContent = isCorrect
+        ? '✅ Correct! Great job.'
+        : '❌ Not quite — the correct answer is highlighted in green.';
+      feedback.style.color = isCorrect ? 'var(--accent3)' : 'var(--accent2)';
+      feedback.classList.add('show');
+    });
+  });
+});
+
+// ─── MARK DONE ───────────────────────────────
+let done = new Set();
+
+document.querySelectorAll('.mark-done').forEach(btn => {
+  const lessonNum = btn.dataset.lesson;
+  btn.addEventListener('click', () => {
+    if (done.has(lessonNum)) {
+      done.delete(lessonNum);
+      btn.textContent = 'Mark as done ✓';
+      btn.classList.remove('marked');
+    } else {
+      done.add(lessonNum);
+      btn.textContent = '✓ Completed';
+      btn.classList.add('marked');
+    }
+    updateProgress();
+    updateNav();
+  });
+});
+
+function updateProgress() {
+  const total = 9;
+  const count = done.size;
+  const pct = (count / total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${count} / ${total} lessons done`;
+}
+
+function updateNav() {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const href = item.getAttribute('href');
+    if (!href) return;
+    const match = href.match(/#l(\d+)/);
+    if (match) {
+      const n = match[1];
+      const checkEl = item.querySelector('.check');
+      if (checkEl) {
+        checkEl.textContent = done.has(n) ? '✓' : '';
+        checkEl.style.color = done.has(n) ? 'var(--accent3)' : '';
+      }
+    }
+  });
+}
+
+// ─── COPY CODE ───────────────────────────────
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 2000);
+  });
+}
+
+// ─── ACTIVE NAV ───────────────────────────────
+const sections = document.querySelectorAll('[id]');
+const navItems = document.querySelectorAll('.nav-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI/UX Design — Zero to Job-Ready</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #1e1e2e;
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cf8c8;
+    --text: #e8e8f0;
+    --muted: #6b6b85;
+    --gold: #f5c842;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(124,92,252,0.15) 0%, transparent 70%);
+    top: -200px; right: -200px;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(252,92,125,0.1) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,92,252,0.12);
+    border: 1px solid rgba(124,92,252,0.3);
+    color: #a98dfd;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    width: fit-content;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .stat { }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--accent);
+    animation: slideLine 2s ease infinite;
+  }
+
+  /* COURSE NAV */
+  .course-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .course-nav::-webkit-scrollbar { display: none; }
+
+  .nav-item {
+    flex-shrink: 0;
+    padding: 18px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 57px;
+    height: calc(100vh - 57px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    padding: 32px 0;
+  }
+
+  .sidebar-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 24px;
+    margin-bottom: 8px;
+    margin-top: 24px;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .sidebar-link.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(124,92,252,0.06);
+  }
+  .sidebar-link .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .sidebar-link.active .dot { background: var(--accent); }
+  .sidebar-link.done .dot { background: var(--accent3); }
+
+  /* CONTENT */
+  .content {
+    padding: 60px;
+    max-width: 860px;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .phase-badge.phase-1 { background: rgba(124,92,252,0.12); color: #a98dfd; }
+  .phase-badge.phase-2 { background: rgba(252,92,125,0.12); color: #fd8da0; }
+  .phase-badge.phase-3 { background: rgba(92,248,200,0.12); color: #5cf8c8; }
+  .phase-badge.phase-4 { background: rgba(245,200,66,0.12); color: #f5c842; }
+  .phase-badge.phase-5 { background: rgba(92,180,252,0.12); color: #5cb4fc; }
+  .phase-badge.phase-6 { background: rgba(252,180,92,0.12); color: #fcb45c; }
+  .phase-badge.phase-7 { background: rgba(200,92,252,0.12); color: #c85cfc; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-intro {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 620px;
+    font-weight: 300;
+  }
+
+  /* LESSON CARD */
+  .lesson {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .lesson::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .lesson:hover { border-color: rgba(124,92,252,0.3); transform: translateY(-2px); }
+  .lesson:hover::before { opacity: 1; }
+
+  .lesson-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .lesson h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .lesson p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+
+  /* KEY POINTS */
+  .key-points {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .key-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .key-point::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  /* CALLOUT BOX */
+  .callout {
+    background: rgba(124,92,252,0.08);
+    border: 1px solid rgba(124,92,252,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c4b5fd;
+  }
+
+  .callout.tip { background: rgba(92,248,200,0.06); border-color: rgba(92,248,200,0.2); color: #5cf8c8; }
+  .callout.warning { background: rgba(245,200,66,0.06); border-color: rgba(245,200,66,0.2); color: #f5c842; }
+  .callout.example { background: rgba(252,92,125,0.06); border-color: rgba(252,92,125,0.2); color: #fd8da0; }
+
+  .callout-label {
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* TOOL CARDS */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .tool-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .tool-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .tool-use {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* PRINCIPLE GRID */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .principle-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .principle-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .principle-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .principle-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* COLOR PALETTE DEMO */
+  .color-demo {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 60px;
+  }
+
+  .color-swatch {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* TYPOGRAPHY DEMO */
+  .type-demo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 20px 0;
+  }
+
+  .type-sample-display {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .type-sample-body {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* WIREFRAME DEMO */
+  .wireframe {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+
+  .wf-header {
+    height: 40px;
+    background: var(--border);
+    border-radius: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .wf-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .wf-line-short { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.15); }
+
+  .wf-hero-block {
+    height: 120px;
+    background: rgba(124,92,252,0.08);
+    border: 1px dashed rgba(124,92,252,0.3);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(124,92,252,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .wf-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .wf-card {
+    background: var(--border);
+    border-radius: 6px;
+    height: 80px;
+  }
+
+  /* EXERCISE BOX */
+  .exercise {
+    background: rgba(245,200,66,0.06);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+
+  .exercise-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .exercise-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+
+  .exercise p {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .exercise ul {
+    padding-left: 16px;
+  }
+
+  .exercise li {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .check-item input {
+    appearance: none;
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .check-item input:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .check-item input:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* NEXT BUTTON */
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #9b72fd);
+    color: white;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,92,252,0.3); }
+
+  .btn-ghost {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* RESOURCE LINKS */
+  .resources {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .resource-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+  .resource-link:hover { border-color: rgba(124,92,252,0.4); }
+
+  .resource-link span { color: var(--muted); font-size: 12px; }
+
+  /* QUIZ */
+  .quiz {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 28px 0;
+  }
+
+  .quiz-q {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .quiz-opt {
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-opt.correct { border-color: var(--accent3); color: var(--accent3); background: rgba(92,248,200,0.06); }
+  .quiz-opt.wrong { border-color: var(--accent2); color: var(--accent2); background: rgba(252,92,125,0.06); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideLine {
+    from { left: -100%; }
+    to { left: 100%; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero { padding: 60px 24px; }
+    .main { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content { padding: 32px 24px; }
+    .course-nav { padding: 0 24px; }
+    .principles-grid { grid-template-columns: 1fr; }
+    .wf-cards { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { flex-wrap: wrap; gap: 24px; }
+    .scroll-hint { left: 24px; }
+  }
+
+  /* PHASE INTRO */
+  .phase-intro {
+    background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(252,92,125,0.05));
+    border: 1px solid rgba(124,92,252,0.15);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+
+  .phase-intro h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .phase-intro p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .tag-beginner { background: rgba(92,248,200,0.1); color: #5cf8c8; }
+  .tag-intermediate { background: rgba(124,92,252,0.1); color: #a98dfd; }
+  .tag-advanced { background: rgba(252,92,125,0.1); color: #fd8da0; }
+  .tag-time { background: rgba(245,200,66,0.1); color: #f5c842; }
+
+  .reading-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* BIG QUOTE */
+  .big-quote {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.5;
+    padding: 32px 0;
+    border-top: 2px solid var(--accent);
+    margin: 32px 0;
+  }
+
+  .big-quote cite {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    font-style: normal;
+    margin-top: 12px;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+    margin: 24px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 28px;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-dot {
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .timeline-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* PORTFOLIO GRID */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .portfolio-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .portfolio-item::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -10px; right: 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 60px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+  }
+
+  .portfolio-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .portfolio-item p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">⚡ Complete Course — Updated 2025</div>
+  <h1>
+    Learn UI/UX
+    <span class="line2">Design</span>
+  </h1>
+  <p class="hero-sub">From completely clueless to confidently job-ready. A structured, no-fluff course covering everything you'll actually use in your first design role.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">7<span>+</span></div>
+      <div class="stat-label">Phases</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">40<span>+</span></div>
+      <div class="stat-label">Lessons</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">25<span>+</span></div>
+      <div class="stat-label">Exercises</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0<span>→</span></div>
+      <div class="stat-label">Prerequisites</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll to begin
+  </div>
+</section>
+
+<!-- COURSE NAV -->
+<nav class="course-nav" id="courseNav">
+  <div class="nav-item active" onclick="showSection('phase1', this)">🧠 Phase 1: Foundations</div>
+  <div class="nav-item" onclick="showSection('phase2', this)">🎨 Phase 2: Visual Design</div>
+  <div class="nav-item" onclick="showSection('phase3', this)">📐 Phase 3: UX Fundamentals</div>
+  <div class="nav-item" onclick="showSection('phase4', this)">🔧 Phase 4: Tools & Figma</div>
+  <div class="nav-item" onclick="showSection('phase5', this)">🔄 Phase 5: Design Process</div>
+  <div class="nav-item" onclick="showSection('phase6', this)">🧩 Phase 6: Design Systems</div>
+  <div class="nav-item" onclick="showSection('phase7', this)">💼 Phase 7: Job Ready</div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Your Progress</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="sidebarPhase1">
+      <div class="sidebar-section-title">Phase 1 — Foundations</div>
+      <div class="sidebar-link active" onclick="scrollToLesson('l1-1')"><div class="dot"></div>What is UI vs UX?</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l1-2')"><div class="dot"></div>How Users Think</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l1-3')"><div class="dot"></div>The Design Process</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l1-4')"><div class="dot"></div>Design Thinking</div>
+    </div>
+
+    <div id="sidebarPhase2" style="display:none">
+      <div class="sidebar-section-title">Phase 2 — Visual Design</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l2-1')"><div class="dot"></div>Color Theory</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l2-2')"><div class="dot"></div>Typography</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l2-3')"><div class="dot"></div>Spacing & Layout</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l2-4')"><div class="dot"></div>Visual Hierarchy</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l2-5')"><div class="dot"></div>Gestalt Principles</div>
+    </div>
+
+    <div id="sidebarPhase3" style="display:none">
+      <div class="sidebar-section-title">Phase 3 — UX Fundamentals</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l3-1')"><div class="dot"></div>User Research</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l3-2')"><div class="dot"></div>Personas</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l3-3')"><div class="dot"></div>User Flows & Journeys</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l3-4')"><div class="dot"></div>Information Architecture</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l3-5')"><div class="dot"></div>Wireframing</div>
+    </div>
+
+    <div id="sidebarPhase4" style="display:none">
+      <div class="sidebar-section-title">Phase 4 — Tools & Figma</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l4-1')"><div class="dot"></div>Designer's Toolkit</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l4-2')"><div class="dot"></div>Figma Basics</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l4-3')"><div class="dot"></div>Components & Variants</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l4-4')"><div class="dot"></div>Prototyping in Figma</div>
+    </div>
+
+    <div id="sidebarPhase5" style="display:none">
+      <div class="sidebar-section-title">Phase 5 — Design Process</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l5-1')"><div class="dot"></div>Usability Testing</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l5-2')"><div class="dot"></div>Iteration & Feedback</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l5-3')"><div class="dot"></div>Accessibility (A11y)</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l5-4')"><div class="dot"></div>Responsive Design</div>
+    </div>
+
+    <div id="sidebarPhase6" style="display:none">
+      <div class="sidebar-section-title">Phase 6 — Design Systems</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l6-1')"><div class="dot"></div>What is a Design System?</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l6-2')"><div class="dot"></div>Building a Style Guide</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l6-3')"><div class="dot"></div>Component Libraries</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l6-4')"><div class="dot"></div>Design Tokens</div>
+    </div>
+
+    <div id="sidebarPhase7" style="display:none">
+      <div class="sidebar-section-title">Phase 7 — Job Ready</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l7-1')"><div class="dot"></div>Building Your Portfolio</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l7-2')"><div class="dot"></div>Case Studies</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l7-3')"><div class="dot"></div>Interview Prep</div>
+      <div class="sidebar-link" onclick="scrollToLesson('l7-4')"><div class="dot"></div>First Job Survival</div>
+    </div>
+  </aside>
+
+  <!-- CONTENT AREA -->
+  <main class="content">
+
+    <!-- ==================== PHASE 1 ==================== -->
+    <section class="section active" id="phase1">
+      <div class="section-header">
+        <div class="phase-badge phase-1">Phase 1</div>
+        <h1 class="section-title">The Foundations</h1>
+        <p class="section-intro">Before touching any design tool, you need to understand what design actually is and how people think. This phase is the mental model that makes everything else click.</p>
+      </div>
+
+      <!-- LESSON 1.1 -->
+      <div class="lesson" id="l1-1">
+        <div class="lesson-num">Lesson 1.1</div>
+        <h3>UI vs UX — What's the actual difference?</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>This is the most confused topic in design. Most people use UI and UX interchangeably, but they describe fundamentally different things. Understanding the distinction is your first superpower.</p>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-icon">🖥️</div>
+            <div class="principle-name">UI — User Interface</div>
+            <div class="principle-desc">The visual layer. Everything you can see and touch: buttons, colors, fonts, icons, spacing, animations. It's the "what does it look like and feel like?"</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🧠</div>
+            <div class="principle-name">UX — User Experience</div>
+            <div class="principle-desc">The structural layer. How easy it is to achieve a goal. Navigation flow, logic, task completion. It's the "can I actually do what I came to do?"</div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">💡 The Best Analogy</span>
+          Think of a house. UX is the floor plan — where the rooms are, how you move between them. UI is the interior design — the furniture, paint, lighting, decor. A beautiful house with a terrible floor plan is frustrating to live in. A well-planned house that looks ugly makes no one want to stay.
+        </div>
+
+        <div class="key-points">
+          <div class="key-point">A product can have great UI but terrible UX (gorgeous app you can't figure out how to use)</div>
+          <div class="key-point">A product can have poor UI but great UX (ugly but incredibly easy to use)</div>
+          <div class="key-point">Your job is to nail both — but always UX first, then UI</div>
+          <div class="key-point">In small companies, one person often does both (UI/UX designer)</div>
+          <div class="key-point">At large companies, these can be separate roles (UX researcher, Visual designer, Interaction designer)</div>
+        </div>
+
+        <div class="big-quote">
+          "Design is not just what it looks like and feels like. Design is how it works."
+          <cite>— Steve Jobs</cite>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 1.1 — Train Your Eye</span>
+          </div>
+          <p>Open 3 apps on your phone (one you love, one you hate, one you're neutral about). For each app, write down:</p>
+          <ul>
+            <li>One thing that's visually good or bad (UI)</li>
+            <li>One thing that's easy or confusing to use (UX)</li>
+            <li>Which of the two needs more work?</li>
+          </ul>
+          <p>This exercise trains you to separate visual quality from usability — a skill most junior designers lack.</p>
+        </div>
+      </div>
+
+      <!-- LESSON 1.2 -->
+      <div class="lesson" id="l1-2">
+        <div class="lesson-num">Lesson 1.2</div>
+        <h3>How Users Actually Think</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Users don't read — they scan. They don't make decisions rationally — they're lazy, distracted, and they trust their gut. The sooner you accept this, the better your designs will become.</p>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-icon">👁️</div>
+            <div class="principle-name">F-Pattern & Z-Pattern</div>
+            <div class="principle-desc">Eye-tracking studies show users scan pages in an F or Z pattern — hitting the top, then the left side. Place the most important information there.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">⚡</div>
+            <div class="principle-name">Hick's Law</div>
+            <div class="principle-desc">More choices = more time to decide = more frustration. When designing menus, forms, or options — fewer is almost always better.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🧩</div>
+            <div class="principle-name">Cognitive Load</div>
+            <div class="principle-desc">The brain has limited processing capacity. Every element you add makes the user work harder. Your job: reduce cognitive load at every turn.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🎯</div>
+            <div class="principle-name">Fitts's Law</div>
+            <div class="principle-desc">The time to click a target depends on its size and distance. Make important buttons BIG and easy to reach — especially on mobile (thumb zones).</div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-label">✅ Practical Takeaway</span>
+          Never assume users will read your instructions or labels. Design as if every user is in a hurry, slightly distracted, and has never seen your product before. Because most of them are, and haven't.
+        </div>
+
+        <div class="key-points">
+          <div class="key-point">Users satisfice — they pick the first option that's "good enough," not the best one</div>
+          <div class="key-point">Users follow conventions — deviate from them only if you have a very good reason</div>
+          <div class="key-point">Error prevention beats error recovery — design so mistakes can't happen</div>
+          <div class="key-point">Recognition over recall — always show users what they can do, don't make them remember</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 1.2 — Cognitive Load Audit</span>
+          </div>
+          <p>Pick any settings screen in an app. Count every piece of text, icon, and control on the screen. Then ask: which of these items are truly necessary? Could any be removed, combined, or hidden behind progressive disclosure?</p>
+        </div>
+      </div>
+
+      <!-- LESSON 1.3 -->
+      <div class="lesson" id="l1-3">
+        <div class="lesson-num">Lesson 1.3</div>
+        <h3>The Design Process Overview</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Professional designers don't sit down and immediately design a beautiful screen. They follow a process. Here's the process you'll use in every job, every project, for the rest of your career.</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">1. Discover (Research)</div>
+            <div class="timeline-desc">Understand the problem before trying to solve it. Who are the users? What do they need? What pain points exist? Talk to real users, collect data.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">2. Define (Frame the Problem)</div>
+            <div class="timeline-desc">Synthesize your research into a clear problem statement. "Users need a way to X because Y." This is your design brief.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">3. Ideate (Brainstorm)</div>
+            <div class="timeline-desc">Generate as many solutions as possible without judging them. Sketching, crazy eights, mind maps. Quantity over quality at this stage.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">4. Prototype (Build a Draft)</div>
+            <div class="timeline-desc">Create a low-cost, testable version of your best idea. Start rough (paper/wireframe), get more polished as you validate.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">5. Test (Get Feedback)</div>
+            <div class="timeline-desc">Put your prototype in front of real users and watch what happens. What confuses them? Where do they get stuck?</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">6. Iterate (Refine)</div>
+            <div class="timeline-desc">Take what you learned from testing and improve your design. Repeat steps 3–6 until it works well. This loop never fully ends.</div>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-label">⚠️ Common Beginner Mistake</span>
+          Jumping straight to Figma without doing steps 1–3. You end up designing beautiful solutions to the wrong problem. Research first, always.
+        </div>
+      </div>
+
+      <!-- LESSON 1.4 -->
+      <div class="lesson" id="l1-4">
+        <div class="lesson-num">Lesson 1.4</div>
+        <h3>Design Thinking — The Designer's Mindset</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 7 min read</span>
+        </div>
+        <p>Design Thinking is more than a process — it's a way of approaching any problem. It's what separates designers who build what users need from those who just build what looks cool.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Empathy first:</strong> You are not your user. Suspend your assumptions and genuinely try to understand others' perspectives</div>
+          <div class="key-point"><strong>Embrace ambiguity:</strong> Most design problems don't have one correct answer. Get comfortable with "it depends"</div>
+          <div class="key-point"><strong>Fail fast, learn faster:</strong> A prototype that reveals a flaw in 2 days is better than a polished design that fails after 3 months</div>
+          <div class="key-point"><strong>Radical collaboration:</strong> Great design rarely comes from one person. Learn to accept critique and build on others' ideas</div>
+          <div class="key-point"><strong>Always ask "why":</strong> When you get a design request, ask why five times until you find the real underlying need</div>
+        </div>
+
+        <div class="callout example">
+          <span class="callout-label">📖 Real Example</span>
+          Client says: "Add a search bar to our homepage." You ask why. They say "users can't find products." You ask why again — turns out users are landing on the wrong page from Google Ads. The real fix is a better landing page, not a search bar. This is design thinking in action.
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 1.4 — The 5 Whys</span>
+          </div>
+          <p>Pick a frustrating experience you've had with any app. Write it down. Then ask "why does this problem exist?" 5 times, each time going deeper. By the 5th why, you'll usually find the real root cause — and that's what a designer should fix.</p>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <div></div>
+        <button class="btn btn-primary" onclick="showSection('phase2', document.querySelectorAll('.nav-item')[1])">
+          Phase 2: Visual Design →
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 2 ==================== -->
+    <section class="section" id="phase2">
+      <div class="section-header">
+        <div class="phase-badge phase-2">Phase 2</div>
+        <h1 class="section-title">Visual Design</h1>
+        <p class="section-intro">This is the "makes it look good" phase — but there's rigorous science behind every choice. Learn the principles that professional designers use to create interfaces that feel polished and purposeful.</p>
+      </div>
+
+      <!-- LESSON 2.1 -->
+      <div class="lesson" id="l2-1">
+        <div class="lesson-num">Lesson 2.1</div>
+        <h3>Color Theory for UI Designers</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 12 min read</span>
+        </div>
+        <p>Color is the most powerful and most misused tool in a designer's kit. It carries meaning, guides attention, conveys hierarchy, and triggers emotion. Here's how to use it intentionally.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>60-30-10 Rule:</strong> 60% dominant color (backgrounds), 30% secondary (surfaces, cards), 10% accent (CTAs, highlights)</div>
+          <div class="key-point"><strong>Limit your palette:</strong> Most great UI products use 2-3 core colors + neutrals. More colors = visual chaos</div>
+          <div class="key-point"><strong>Semantic colors:</strong> Use consistent color for meaning — green for success, red for error, yellow for warning, blue for info</div>
+          <div class="key-point"><strong>Contrast ratio:</strong> Text needs at least 4.5:1 contrast against its background (WCAG AA standard) — check every time</div>
+        </div>
+
+        <p style="color: var(--muted); font-size: 14px; margin-bottom: 8px;">Example color system — a modern dark interface palette:</p>
+        <div class="color-demo">
+          <div class="color-swatch" style="background:#0a0a0f; flex:3;">Background</div>
+          <div class="color-swatch" style="background:#111118; flex:2;">Surface</div>
+          <div class="color-swatch" style="background:#7c5cfc;">Accent</div>
+          <div class="color-swatch" style="background:#fc5c7d;">Highlight</div>
+          <div class="color-swatch" style="background:#5cf8c8; color: rgba(0,0,0,0.7);">Success</div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-label">🛠️ Tool Tip</span>
+          Use <strong>Coolors.co</strong> to generate palettes and <strong>Colour Contrast Checker</strong> (colourcontrast.cc) to verify accessibility. Never guess at contrast — always check.
+        </div>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Warm colors</strong> (red, orange, yellow) energize and draw attention — use for CTAs and alerts</div>
+          <div class="key-point"><strong>Cool colors</strong> (blue, purple, teal) convey trust and calm — common in finance, health, and productivity apps</div>
+          <div class="key-point"><strong>Neutrals</strong> are the foundation of every great UI — master shades of grey before anything else</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 2.1 — Build a Color System</span>
+          </div>
+          <p>Go to Figma (free) and create a color system with:</p>
+          <ul>
+            <li>A background color (very dark or very light)</li>
+            <li>A surface color (slightly lighter/darker than background)</li>
+            <li>One primary accent color</li>
+            <li>Semantic colors: error (red), success (green), warning (yellow)</li>
+            <li>At least 4 neutral greys for text hierarchy</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- LESSON 2.2 -->
+      <div class="lesson" id="l2-2">
+        <div class="lesson-num">Lesson 2.2</div>
+        <h3>Typography — The Soul of UI Design</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Typography is responsible for ~95% of design. Everything in a UI is text or relates to text. Getting typography right transforms mediocre work into professional work instantly.</p>
+
+        <div class="type-demo">
+          <div class="type-sample-display">Display Heading</div>
+          <div style="font-size: 22px; color: var(--text); margin-bottom: 6px; font-weight: 600;">Section Title / H2</div>
+          <div style="font-size: 16px; color: var(--text); margin-bottom: 6px; font-weight: 500;">Card Title / H3</div>
+          <div class="type-sample-body">Body text — the workhorse of your type system. Comfortable line-height (1.5–1.7x), 14–16px for most UIs, generous enough to breathe.</div>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 8px; font-weight: 400;">Caption / Helper text — smaller, muted, used for supporting context and metadata</div>
+        </div>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Type scale:</strong> Stick to a consistent scale — try 12, 14, 16, 20, 24, 32, 48px. Don't use arbitrary sizes</div>
+          <div class="key-point"><strong>Line height:</strong> Body text needs 1.5–1.7x line height. Headings can be tighter at 1.1–1.2x</div>
+          <div class="key-point"><strong>Font pairing:</strong> Max 2 fonts per project. One display/heading font, one readable body font</div>
+          <div class="key-point"><strong>Weight hierarchy:</strong> Use weight to show importance — 400 (regular) for body, 600-700 for titles, 800 for display</div>
+          <div class="key-point"><strong>Never use all caps for long text</strong> — it destroys readability. Use it only for small labels and tags</div>
+          <div class="key-point"><strong>Line length:</strong> Ideal readable width is 60–80 characters per line. Wider or narrower hurts reading flow</div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">🎓 Free Font Resources</span>
+          Google Fonts (fonts.google.com) is your best free source. Great pairings: Syne + DM Sans, Playfair Display + Source Sans, Space Mono + Inter.
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 2.2 — Build a Type System</span>
+          </div>
+          <p>In Figma, create a type scale using one font family. Define: Display, H1, H2, H3, Body Large, Body Regular, Caption, Label. Apply size, weight, line-height, and color for each. Save them as Text Styles.</p>
+        </div>
+      </div>
+
+      <!-- LESSON 2.3 -->
+      <div class="lesson" id="l2-3">
+        <div class="lesson-num">Lesson 2.3</div>
+        <h3>Spacing, Layout & The Grid</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Spacing is one of the most underrated skills in design. Beginners under-space everything. Seniors know that generous, consistent spacing makes interfaces feel premium and professional.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>8pt Grid System:</strong> All spacing should be multiples of 8 (8, 16, 24, 32, 48, 64px). This creates mathematical harmony</div>
+          <div class="key-point"><strong>Related items close together:</strong> Use proximity — elements that belong together should be visually grouped</div>
+          <div class="key-point"><strong>Breathing room:</strong> White space is NOT wasted space. It makes content legible and interfaces feel premium</div>
+          <div class="key-point"><strong>Consistent padding:</strong> Use the same padding inside components throughout your design</div>
+          <div class="key-point"><strong>12-column grid:</strong> Most web layouts use a 12-column grid — it divides into 2, 3, 4, and 6 evenly</div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-label">⚠️ The Cramping Trap</span>
+          The #1 sign of a junior designer: everything is too close together, margins are tiny, and the whole page feels suffocating. When in doubt — add more space. You can always tighten it later.
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 2.3 — Spacing Audit</span>
+          </div>
+          <p>Take any design you've made (or a screenshot of any app). Measure the spacing between elements. Are they consistent? Are they on the 8pt grid? Redesign one section with intentional, generous spacing and compare the two versions.</p>
+        </div>
+      </div>
+
+      <!-- LESSON 2.4 -->
+      <div class="lesson" id="l2-4">
+        <div class="lesson-num">Lesson 2.4</div>
+        <h3>Visual Hierarchy — Guiding the Eye</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Visual hierarchy is your ability to guide users through a design in the order you intend. Without it, users don't know where to look — and they leave. With it, they flow naturally toward the actions you want them to take.</p>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-icon">🔤</div>
+            <div class="principle-name">Size</div>
+            <div class="principle-desc">Bigger = more important. Headlines are bigger than body text. Primary actions are bigger than secondary ones.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🎨</div>
+            <div class="principle-name">Color & Contrast</div>
+            <div class="principle-desc">High-contrast elements attract attention first. Use your accent color sparingly — it should mark only the most important elements.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">⚖️</div>
+            <div class="principle-name">Weight</div>
+            <div class="principle-desc">Bold text reads before regular text. Use font weight to signal importance without changing size.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">📍</div>
+            <div class="principle-name">Position</div>
+            <div class="principle-desc">Top-left gets attention first (in LTR languages). Place the most critical information where the eye naturally lands.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSON 2.5 -->
+      <div class="lesson" id="l2-5">
+        <div class="lesson-num">Lesson 2.5</div>
+        <h3>Gestalt Principles in UI</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Gestalt is the psychological theory behind how humans perceive visual elements. These principles are baked into every great interface design — whether the designer knew it or not. Learn them consciously.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Proximity:</strong> Elements close together appear related. Use consistent spacing to group related UI elements</div>
+          <div class="key-point"><strong>Similarity:</strong> Elements that look alike are perceived as a group. Use consistent styling for the same type of component</div>
+          <div class="key-point"><strong>Continuation:</strong> The eye follows lines, curves, and patterns. Use alignment to guide attention across the screen</div>
+          <div class="key-point"><strong>Closure:</strong> The brain fills in gaps to complete shapes. Partial borders, open containers, and implied grids all work because of closure</div>
+          <div class="key-point"><strong>Figure/Ground:</strong> We naturally separate what we're looking at from the background. Cards, modals, and tooltips all rely on this</div>
+        </div>
+
+        <div class="callout example">
+          <span class="callout-label">📱 Real Example</span>
+          When you see a navigation bar at the bottom of an app with icons spaced equally, your brain groups them into one "navigation" unit (proximity + similarity). When one icon is highlighted, your brain knows it's the current state (similarity broken intentionally). All Gestalt in action.
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-ghost" onclick="showSection('phase1', document.querySelectorAll('.nav-item')[0])">← Phase 1</button>
+        <button class="btn btn-primary" onclick="showSection('phase3', document.querySelectorAll('.nav-item')[2])">Phase 3: UX Fundamentals →</button>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 3 ==================== -->
+    <section class="section" id="phase3">
+      <div class="section-header">
+        <div class="phase-badge phase-3">Phase 3</div>
+        <h1 class="section-title">UX Fundamentals</h1>
+        <p class="section-intro">This is where you learn to think about your user's entire journey — not just a single screen. UX is strategy. It's the backbone of every decision you'll make as a designer.</p>
+      </div>
+
+      <div class="lesson" id="l3-1">
+        <div class="lesson-num">Lesson 3.1</div>
+        <h3>User Research — Know Before You Design</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 12 min read</span>
+        </div>
+        <p>User research is how you replace assumptions with evidence. Without it, you're designing for yourself. With it, you're designing for the people who will actually use it.</p>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-icon">💬</div>
+            <div class="principle-name">User Interviews</div>
+            <div class="principle-desc">1-on-1 conversations to understand motivations, goals, and frustrations. Ask open-ended questions. Listen 80% of the time. Don't pitch your solution.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">👁️</div>
+            <div class="principle-name">Contextual Inquiry</div>
+            <div class="principle-desc">Watch users in their natural environment using the product (or competitor's product). What you observe is often different from what they tell you.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">📊</div>
+            <div class="principle-name">Surveys</div>
+            <div class="principle-desc">Quantitative research at scale. Great for validating hypotheses. Bad for discovering new insights. Combine with qualitative methods.</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-icon">🔍</div>
+            <div class="principle-name">Competitive Analysis</div>
+            <div class="principle-desc">Study how competitors solve the same problems. Identify patterns (don't break them unless you have a very good reason) and unmet needs.</div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-label">💡 Interview Golden Rules</span>
+          Never ask leading questions ("Don't you think it's confusing?"). Ask instead: "Tell me about the last time you tried to do X." Never mention your solution during research — you'll bias the answers. Ask about behavior, not opinions.
+        </div>
+      </div>
+
+      <div class="lesson" id="l3-2">
+        <div class="lesson-num">Lesson 3.2</div>
+        <h3>Personas — Designing for Real People</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>A persona is a fictional but research-based character that represents a segment of your users. It keeps your team aligned around who you're designing for — especially when debates arise.</p>
+
+        <div class="callout example">
+          <span class="callout-label">👤 Example Persona</span>
+          <strong>Amara, 28 — Marketing Manager in Nairobi</strong><br/>
+          Tech-comfortable but time-poor. Uses apps on the go on a 4G connection. Frustrated by apps that require too many steps. Goal: quickly track campaign performance without opening a laptop. Pain point: dashboards with too much data, unclear what to act on. Quote: "Just tell me what's important."
+        </div>
+
+        <div class="key-points">
+          <div class="key-point">Include: name, age, job, technical comfort level, goals, frustrations, and a real quote from research</div>
+          <div class="key-point">Base personas on patterns from multiple real user interviews — never make them up</div>
+          <div class="key-point">Keep 2–4 primary personas. More than that becomes unmanageable</div>
+          <div class="key-point">Refer back to your persona whenever you make a design decision: "Would Amara find this intuitive?"</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 3.2 — Create a Persona</span>
+          </div>
+          <p>Interview 2-3 people about how they use any app (food delivery, banking, social media). Find common patterns in their answers and create one persona based on that data. Include a photo from Unsplash, a name, and their goals, frustrations, and one quote.</p>
+        </div>
+      </div>
+
+      <div class="lesson" id="l3-3">
+        <div class="lesson-num">Lesson 3.3</div>
+        <h3>User Flows & Journey Maps</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Before designing a single screen, map out the path your user takes. A user flow shows every step from entry point to goal completion. A journey map adds emotion and context to that path.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>User Flow:</strong> A diagram showing every screen and decision point a user goes through to complete a task (e.g., checkout flow, onboarding flow)</div>
+          <div class="key-point"><strong>Task Flow:</strong> A simplified flow for one specific task — no branching, just the happy path</div>
+          <div class="key-point"><strong>Journey Map:</strong> A wider view — shows awareness → consideration → use → loyalty stages, with emotions at each stage</div>
+          <div class="key-point">Use simple shapes: rectangles for screens, diamonds for decisions, ovals for start/end points</div>
+          <div class="key-point">Always design the flow before the screens. Screen design is easier when you know the full journey</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 3.3 — Map a User Flow</span>
+          </div>
+          <p>Pick a simple task: "User signs up and completes their first action in a to-do app." Map every screen and decision in that flow using FigJam or any flowchart tool. How many steps does it take? Can you reduce any?</p>
+        </div>
+      </div>
+
+      <div class="lesson" id="l3-4">
+        <div class="lesson-num">Lesson 3.4</div>
+        <h3>Information Architecture</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Information Architecture (IA) is how content is organized and navigated. It's the skeleton of any digital product. Good IA is invisible — users just "know" where things are. Bad IA makes users feel lost.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Card Sorting:</strong> A research technique where users group content cards by how they think they relate — use this to design navigation menus</div>
+          <div class="key-point"><strong>Sitemap:</strong> A diagram of all the pages in a product and how they connect hierarchically</div>
+          <div class="key-point"><strong>Navigation patterns:</strong> Tab bars (mobile), hamburger menus, top navs, sidebars — choose based on content volume and usage frequency</div>
+          <div class="key-point"><strong>Mental models:</strong> Design your IA to match how users already think about the world, not how your database is structured</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="l3-5">
+        <div class="lesson-num">Lesson 3.5</div>
+        <h3>Wireframing — Think Before You Polish</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Wireframes are low-fidelity blueprints of screens. They let you solve layout and UX problems quickly — before investing time in visual design. The uglier the wireframe, the better the feedback (people critique structure, not aesthetics).</p>
+
+        <div class="wireframe">
+          <p style="font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Example: Landing Page Wireframe</p>
+          <div class="wf-header">
+            <div class="wf-dot" style="background:#3a3a4a"></div>
+            <div class="wf-dot" style="background:#3a3a4a"></div>
+            <div class="wf-dot" style="background:#3a3a4a"></div>
+            <div class="wf-line-short" style="width:60px; margin-left: auto;"></div>
+            <div class="wf-line-short" style="width:40px;"></div>
+            <div class="wf-line-short" style="width:50px;"></div>
+          </div>
+          <div class="wf-hero-block">Hero: Headline + CTA + Image</div>
+          <div class="wf-cards">
+            <div class="wf-card"></div>
+            <div class="wf-card"></div>
+            <div class="wf-card"></div>
+          </div>
+        </div>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Low-fi first:</strong> Start with pencil/paper or very rough Figma boxes. Save the detail for later</div>
+          <div class="key-point"><strong>Annotate everything:</strong> Add notes explaining what happens on click, hover, or submission</div>
+          <div class="key-point">Focus on layout, hierarchy, and flow — ignore color, fonts, and real images at this stage</div>
+          <div class="key-point">Test your wireframes with users before going hi-fi. It's 10x cheaper to fix problems here</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 3.5 — Wireframe a Full Flow</span>
+          </div>
+          <p>Wireframe a 4-screen mobile onboarding flow for a budgeting app. Screens: Welcome → Sign Up → Set Monthly Budget → Dashboard. Use only grey boxes, simple text labels, and arrows between screens.</p>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-ghost" onclick="showSection('phase2', document.querySelectorAll('.nav-item')[1])">← Phase 2</button>
+        <button class="btn btn-primary" onclick="showSection('phase4', document.querySelectorAll('.nav-item')[3])">Phase 4: Tools & Figma →</button>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 4 ==================== -->
+    <section class="section" id="phase4">
+      <div class="section-header">
+        <div class="phase-badge phase-4">Phase 4</div>
+        <h1 class="section-title">Tools & Figma</h1>
+        <p class="section-intro">Time to get hands-on. Figma is the industry-standard design tool used at 95%+ of product companies. Master it and you speak the universal language of modern design.</p>
+      </div>
+
+      <div class="lesson" id="l4-1">
+        <div class="lesson-num">Lesson 4.1</div>
+        <h3>The Designer's Toolkit</h3>
+        <div class="reading-time">
+          <span class="tag tag-beginner">Beginner</span>
+          <span class="tag tag-time">⏱ 6 min read</span>
+        </div>
+        <p>You don't need expensive tools to start. Here's what professionals actually use — and which ones matter most for getting hired.</p>
+
+        <div class="tools-grid">
+          <div class="tool-card">
+            <span class="tool-icon">🎨</span>
+            <div class="tool-name">Figma</div>
+            <div class="tool-use">UI Design, Prototyping, Collaboration — FREE to start</div>
+          </div>
+          <div class="tool-card">
+            <span class="tool-icon">📋</span>
+            <div class="tool-name">FigJam</div>
+            <div class="tool-use">Whiteboarding, Flows, Brainstorming</div>
+          </div>
+          <div class="tool-card">
+            <span class="tool-icon">🌈</span>
+            <div class="tool-name">Coolors.co</div>
+            <div class="tool-use">Color palette generation</div>
+          </div>
+          <div class="tool-card">
+            <span class="tool-icon">📸</span>
+            <div class="tool-name">Unsplash</div>
+            <div class="tool-use">Free stock photos for mockups</div>
+          </div>
+          <div class="tool-card">
+            <span class="tool-icon">🖼️</span>
+            <div class="tool-name">Lottie Files</div>
+            <div class="tool-use">Free animations for UI</div>
+          </div>
+          <div class="tool-card">
+            <span class="tool-icon">💡</span>
+            <div class="tool-name">Mobbin / Screenlane</div>
+            <div class="tool-use">UI inspiration from real apps</div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-label">🎯 Priority Order</span>
+          Learn Figma first. Get very good at it. Everything else is supplementary. Figma alone can take you from wireframe to polished prototype to dev handoff — it's all you need for 95% of jobs.
+        </div>
+      </div>
+
+      <div class="lesson" id="l4-2">
+        <div class="lesson-num">Lesson 4.2</div>
+        <h3>Figma Fundamentals — The Core Skills</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 15 min read</span>
+        </div>
+        <p>These are the Figma skills every junior designer needs before applying for a job. Work through each one in Figma as you read.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Frames vs Groups:</strong> Always use Frames (F) for screens and containers. Groups for temporary collections. Frames have constraints; groups don't</div>
+          <div class="key-point"><strong>Auto Layout:</strong> The most important Figma feature. Makes your designs responsive and easy to update. Apply it to buttons, cards, lists, everything</div>
+          <div class="key-point"><strong>Constraints:</strong> Tells elements how to behave when their parent frame resizes. Essential for responsive design</div>
+          <div class="key-point"><strong>Styles:</strong> Save your colors and text styles as named Styles. Change once, update everywhere</div>
+          <div class="key-point"><strong>Components:</strong> Create reusable UI elements. Change the main component and every instance updates automatically</div>
+          <div class="key-point"><strong>Layers panel:</strong> Name every layer clearly (not "Frame 4743"). Good layer structure = professional designer</div>
+          <div class="key-point"><strong>Keyboard shortcuts:</strong> F (frame), R (rectangle), T (text), A (select children), Ctrl+G (group), Ctrl+D (duplicate) — learn these cold</div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-label">⚠️ Common Mistakes in Figma</span>
+          Not using Auto Layout (everything breaks when content changes), using Groups instead of Frames, not naming layers, ignoring the Inspect panel (developers use this). Fix these habits early.
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 4.2 — Build a Button Component</span>
+          </div>
+          <p>In Figma, create a Button component with 4 variants: Primary, Secondary, Disabled, and Loading state. Use Auto Layout so the button resizes with its text. Save the fill color as a Color Style. Test that changing the main component updates all instances.</p>
+        </div>
+      </div>
+
+      <div class="lesson" id="l4-3">
+        <div class="lesson-num">Lesson 4.3</div>
+        <h3>Components & Variants — Design at Scale</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Variants let you create all states of a component in one place — like a button in default, hover, pressed, disabled, and loading states. This is how professional teams work.</p>
+
+        <div class="key-points">
+          <div class="key-point">Use the Component Properties panel to define Variants — each property becomes a dropdown for your team</div>
+          <div class="key-point">Name variants with clear descriptors: Type=Primary/Secondary, Size=Small/Medium/Large, State=Default/Hover/Disabled</div>
+          <div class="key-point">Always build components before designing screens — it forces you to think systematically</div>
+          <div class="key-point">Think in systems: don't just make one card — make a Card component that works for all card types in your app</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 4.3 — Build a Card Component</span>
+          </div>
+          <p>Create a Card component with these variants: Type (Default/Featured), With/Without Image, State (Default/Hover/Selected). Make it work with Auto Layout. Test it by placing 6 cards in a grid and changing their variants.</p>
+        </div>
+      </div>
+
+      <div class="lesson" id="l4-4">
+        <div class="lesson-num">Lesson 4.4</div>
+        <h3>Prototyping in Figma</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Prototypes turn static screens into interactive experiences that you can test with real users. You don't need to code. You just connect screens and add interactions in Figma's Prototype mode.</p>
+
+        <div class="key-points">
+          <div class="key-point">Use the Prototype panel to draw connections between frames (click button → navigate to next screen)</div>
+          <div class="key-point">Add Smart Animate transitions between screens for polished, realistic feel</div>
+          <div class="key-point">Use Interactive Components for in-component interactions (checkbox toggle, dropdown open/close)</div>
+          <div class="key-point">Share the prototype link with users for testing — they can interact on any device, no install needed</div>
+          <div class="key-point">Prototype fidelity should match the test goal: low-fi for layout testing, high-fi for visual/interaction testing</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 4.4 — Your First Prototype</span>
+          </div>
+          <p>Take the 4-screen wireframe from Exercise 3.5. Build it in Figma, add visual styling, then connect all 4 screens in Prototype mode with transitions. Share the link and test it on your phone. Does the flow feel intuitive?</p>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-ghost" onclick="showSection('phase3', document.querySelectorAll('.nav-item')[2])">← Phase 3</button>
+        <button class="btn btn-primary" onclick="showSection('phase5', document.querySelectorAll('.nav-item')[4])">Phase 5: Design Process →</button>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 5 ==================== -->
+    <section class="section" id="phase5">
+      <div class="section-header">
+        <div class="phase-badge phase-5">Phase 5</div>
+        <h1 class="section-title">Design Process & Testing</h1>
+        <p class="section-intro">Design isn't done when it looks good — it's done when it works well for users. This phase teaches you how to validate, iterate, and design inclusively.</p>
+      </div>
+
+      <div class="lesson" id="l5-1">
+        <div class="lesson-num">Lesson 5.1</div>
+        <h3>Usability Testing — Let Users Break Your Design</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Usability testing is the single highest-ROI activity in product design. 5 users will reveal 85% of your usability problems. You don't need expensive labs — a screen share call works perfectly.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Give tasks, not guidance:</strong> "Try to add a product to your cart" — not "click the button in the top right"</div>
+          <div class="key-point"><strong>Think-aloud protocol:</strong> Ask users to narrate what they're thinking. Silence often means confusion</div>
+          <div class="key-point"><strong>Never defend your design:</strong> When a user struggles, it's data. Don't explain or apologize — just observe and note</div>
+          <div class="key-point"><strong>Look for patterns:</strong> One user's confusion might be noise. Three users hitting the same problem is a signal</div>
+          <div class="key-point"><strong>Test early:</strong> Test wireframes, not just polished designs. Catching problems early is cheaper and less emotionally painful</div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">📋 Test Script Template</span>
+          1. "Thanks for joining. I'm testing the design, not you — there are no wrong answers." 2. "Please think out loud as you go." 3. Task: "Imagine you just installed this app. Please [task]." 4. Follow-up: "What did you expect to happen?" 5. "On a scale of 1-10, how easy was that?"
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 5.1 — Run a Guerrilla Test</span>
+          </div>
+          <p>Share your Figma prototype from Exercise 4.4 with 3 people (friends, family). Give them one task and watch silently. Note every moment they pause, hesitate, or click the wrong thing. After testing, identify the 2 biggest usability problems and fix them.</p>
+        </div>
+      </div>
+
+      <div class="lesson" id="l5-2">
+        <div class="lesson-num">Lesson 5.2</div>
+        <h3>Iteration — Design is Never "Done"</h3>
+        <div class="reading-time">
+          <span class="tag tag-intermediate">Intermediate</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Professional designers are not attached to their work. Every design is a hypothesis. Testing is how you find out if your hypothesis was right. Iteration is how you make it better.</p>
+
+        <div class="key-points">
+          <div class="key-point">After testing, prioritize issues by severity: critical (blocks task completion) → serious (causes frustration) → minor (cosmetic)</div>
+          <div class="key-point">Fix critical issues first before re-testing. Don't try to fix everything at once</div>
+          <div class="key-point">Track versions — Figma's version history is your safety net. Use it. Name your versions</div>
+          <div class="key-point">Sometimes the right answer is to go back to a flow diagram and rethink the structure, not just tweak the UI</div>
+          <div class="key-point">Feedback from developers and stakeholders is also input for iteration — not just user testing</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="l5-3">
+        <div class="lesson-num">Lesson 5.3</div>
+        <h3>Accessibility — Design for Everyone</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 12 min read</span>
+        </div>
+        <p>Accessibility (a11y) isn't optional — it's a legal requirement in many countries and a moral obligation. 15% of the world lives with some form of disability. Design for them, and you improve the experience for everyone.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Color contrast:</strong> 4.5:1 for normal text, 3:1 for large text (WCAG AA). Never use color as the only indicator of meaning</div>
+          <div class="key-point"><strong>Touch targets:</strong> Minimum 44x44px for interactive elements (Apple HIG standard). Fingers are not precise</div>
+          <div class="key-point"><strong>Focus states:</strong> Every interactive element must have a visible focus state for keyboard users</div>
+          <div class="key-point"><strong>Alt text:</strong> Every meaningful image needs descriptive alt text. Decorative images can have empty alt=""</div>
+          <div class="key-point"><strong>Don't rely on color alone:</strong> Use icons + labels, patterns, or text alongside color coding</div>
+          <div class="key-point"><strong>Readable font sizes:</strong> Minimum 16px for body text. Never use 10–11px for anything users need to read</div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-label">🛠️ Accessibility Tools</span>
+          Use the <strong>Stark plugin</strong> in Figma to check contrast ratios and simulate color blindness. Use <strong>Accessibility Insights</strong> (free from Microsoft) to audit live websites.
+        </div>
+      </div>
+
+      <div class="lesson" id="l5-4">
+        <div class="lesson-num">Lesson 5.4</div>
+        <h3>Responsive Design — Mobile, Tablet, Desktop</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Your designs will be used on screens of every size. Responsive design is how you ensure the experience is great everywhere — not just on the device you designed on.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Mobile first:</strong> Start designing for the smallest screen. It forces you to prioritize. Then scale up to tablet and desktop</div>
+          <div class="key-point"><strong>Common breakpoints:</strong> Mobile (375px), Tablet (768px), Desktop (1280px+). Design at least mobile and desktop</div>
+          <div class="key-point"><strong>Stacking vs side-by-side:</strong> Multi-column layouts on desktop typically stack vertically on mobile</div>
+          <div class="key-point"><strong>Touch vs mouse:</strong> Mobile users need larger tap targets; desktop users have precision cursors. Design accordingly</div>
+          <div class="key-point"><strong>Navigation patterns shift:</strong> Desktop nav bars become bottom tab bars or hamburger menus on mobile</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 5.4 — Responsive Redesign</span>
+          </div>
+          <p>Take any of your previous design screens and design its mobile AND desktop version. They should solve the same goal but with layouts appropriate to each context. Focus on navigation, spacing, and content hierarchy.</p>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-ghost" onclick="showSection('phase4', document.querySelectorAll('.nav-item')[3])">← Phase 4</button>
+        <button class="btn btn-primary" onclick="showSection('phase6', document.querySelectorAll('.nav-item')[5])">Phase 6: Design Systems →</button>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 6 ==================== -->
+    <section class="section" id="phase6">
+      <div class="section-header">
+        <div class="phase-badge phase-6">Phase 6</div>
+        <h1 class="section-title">Design Systems</h1>
+        <p class="section-intro">Design Systems are how real product teams stay consistent at scale. Understanding them separates junior designers from mid-senior ones. This is where you start thinking like a design engineer.</p>
+      </div>
+
+      <div class="lesson" id="l6-1">
+        <div class="lesson-num">Lesson 6.1</div>
+        <h3>What is a Design System?</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>A design system is a collection of reusable components, guided by clear standards, that enables teams to build consistent products faster. Think of it as the single source of truth for a product's visual and interactive language.</p>
+
+        <div class="key-points">
+          <div class="key-point">A design system includes: design tokens (variables), a component library, documentation, patterns, and guidelines</div>
+          <div class="key-point">Famous examples: Google's Material Design, Apple's Human Interface Guidelines, IBM Carbon, Atlassian Design System</div>
+          <div class="key-point">Benefits: consistency across the product, faster design (no reinventing the wheel), cleaner dev handoff, easier onboarding</div>
+          <div class="key-point">Knowing how to use AND contribute to a design system is a job requirement at most mid-to-large companies</div>
+        </div>
+
+        <div class="callout example">
+          <span class="callout-label">📖 Study These Free Design Systems</span>
+          <strong>Material Design 3</strong> (material.io) — Google's system, excellent documentation. <strong>Carbon Design System</strong> (carbondesignsystem.com) — IBM's enterprise system. <strong>Atlassian</strong> (atlassian.design) — great for SaaS products. Studying these teaches you how to think systematically.
+        </div>
+      </div>
+
+      <div class="lesson" id="l6-2">
+        <div class="lesson-num">Lesson 6.2</div>
+        <h3>Building a Style Guide</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>A style guide documents the visual foundations of your system: colors, typography, spacing, and icons. It's the first thing you build in a design system.</p>
+
+        <div class="key-points">
+          <div class="key-point">Document every color in your palette with name, hex code, and intended use</div>
+          <div class="key-point">Create a full type scale showing every text style with its properties (size, weight, line-height, use-case)</div>
+          <div class="key-point">Define your spacing scale (4px, 8px, 12px, 16px, 24px, 32px, 48px, 64px)</div>
+          <div class="key-point">Document border radius values (small:4px, medium:8px, large:16px, pill:9999px)</div>
+          <div class="key-point">Specify icon style: outline vs filled, size variants (16, 20, 24px)</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="l6-3">
+        <div class="lesson-num">Lesson 6.3</div>
+        <h3>Component Libraries</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>A component library is a collection of UI building blocks — buttons, inputs, cards, modals, navigation elements — built as Figma components, ready to use across any screen in your product.</p>
+
+        <div class="key-points">
+          <div class="key-point">Start with atomic components (buttons, inputs, badges) before building molecules (search bars, cards) and organisms (navbars, dashboards)</div>
+          <div class="key-point">Every component should cover all states: default, hover, focus, active, disabled, loading, error, empty</div>
+          <div class="key-point">Use Figma's Publish Library feature to share your component library with collaborators</div>
+          <div class="key-point">Document each component: when to use it, when NOT to use it, and available variants</div>
+        </div>
+
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-label">🏋️ Exercise 6.3 — Build a Mini Design System</span>
+          </div>
+          <p>Create a Figma file with: a color palette page, a typography scale page, and a components page with at least: Button (3 variants, 3 states), Input field (default + error + disabled), Card, Badge, and Navigation bar. This becomes your first design system artifact for your portfolio.</p>
+        </div>
+      </div>
+
+      <div class="lesson" id="l6-4">
+        <div class="lesson-num">Lesson 6.4</div>
+        <h3>Design Tokens</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 8 min read</span>
+        </div>
+        <p>Design tokens are named variables that store visual values like colors, spacing, and typography. They're the bridge between design and code — allowing designers and developers to speak the same language.</p>
+
+        <div class="key-points">
+          <div class="key-point">Instead of hardcoding #7c5cfc, you use a token: `color.accent.primary` — the code and design reference the same name</div>
+          <div class="key-point">Tokens enable theming — swap all token values to switch between a light and dark theme instantly</div>
+          <div class="key-point">In Figma, use Variables (the new feature) to create tokens for colors, spacing, and typography</div>
+          <div class="key-point">Tokens follow a hierarchy: Global → Semantic → Component. E.g., blue-500 → color.interactive.primary → button.background</div>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-ghost" onclick="showSection('phase5', document.querySelectorAll('.nav-item')[4])">← Phase 5</button>
+        <button class="btn btn-primary" onclick="showSection('phase7', document.querySelectorAll('.nav-item')[6])">Phase 7: Job Ready →</button>
+      </div>
+    </section>
+
+    <!-- ==================== PHASE 7 ==================== -->
+    <section class="section" id="phase7">
+      <div class="section-header">
+        <div class="phase-badge phase-7">Phase 7</div>
+        <h1 class="section-title">Job Ready</h1>
+        <p class="section-intro">You've learned the craft. Now it's time to translate that into a job. This phase is about positioning, storytelling, and proving you can do the work.</p>
+      </div>
+
+      <div class="lesson" id="l7-1">
+        <div class="lesson-num">Lesson 7.1</div>
+        <h3>Building a Portfolio That Gets Interviews</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 12 min read</span>
+        </div>
+        <p>Your portfolio is the only thing that gets you hired — not your resume, not your degree. Here's exactly what it needs to contain to get interviews at product companies.</p>
+
+        <div class="portfolio-grid">
+          <div class="portfolio-item" data-num="1">
+            <h4>3–5 Projects Max</h4>
+            <p>Quality beats quantity. 3 excellent case studies beat 10 mediocre ones every time.</p>
+          </div>
+          <div class="portfolio-item" data-num="2">
+            <h4>Show Your Process</h4>
+            <p>Research → problem definition → ideation → wireframes → final design → testing. Hiring managers want to see HOW you think.</p>
+          </div>
+          <div class="portfolio-item" data-num="3">
+            <h4>Solve Real Problems</h4>
+            <p>Redesign a frustrating real app. Design an app for a local business. Solve a problem in your own life. Real > hypothetical.</p>
+          </div>
+          <div class="portfolio-item" data-num="4">
+            <h4>Include Metrics</h4>
+            <p>If possible: "This redesign reduced checkout abandonment by 23%" — even estimated impact is better than nothing.</p>
+          </div>
+        </div>
+
+        <div class="key-points">
+          <div class="key-point">Host on a clean, fast-loading site: Notion (free), Cargo, Webflow, or Framer all work great</div>
+          <div class="key-point">Your portfolio site itself is a design project — it shows your eye for layout, typography, and UX</div>
+          <div class="key-point">Include a clear "About" section with your skills, current location, and what you're looking for</div>
+          <div class="key-point">Make every project linkable so you can share individual case studies in applications</div>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-label">❌ Portfolio Red Flags That Kill Applications</span>
+          Only showing final screens with no process explanation. "Concept" projects that show no real research. Inconsistent quality across projects. A portfolio site that's hard to navigate (ironic for a UX designer).
+        </div>
+      </div>
+
+      <div class="lesson" id="l7-2">
+        <div class="lesson-num">Lesson 7.2</div>
+        <h3>Writing Compelling Case Studies</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>A case study is not a gallery of your best screens. It's a story about how you solved a problem. The structure below works every single time.</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--accent2)"></div>
+            <div class="timeline-title">1. The Problem (Hook)</div>
+            <div class="timeline-desc">"Users were abandoning checkout at a 68% rate on mobile. Here's how I figured out why and fixed it." Start with impact, not process.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--accent2)"></div>
+            <div class="timeline-title">2. Research & Discovery</div>
+            <div class="timeline-desc">What you did to understand the problem. User interviews, data analysis, competitive research. Show artifacts (interview quotes, data charts, personas).</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--accent2)"></div>
+            <div class="timeline-title">3. Problem Definition</div>
+            <div class="timeline-desc">What insight did your research surface? What's the real problem to solve? Write your "How Might We" statement.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--accent2)"></div>
+            <div class="timeline-title">4. Ideation & Decision Making</div>
+            <div class="timeline-desc">Show your thinking — early sketches, options you considered, and WHY you chose the direction you did.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--accent2)"></div>
+            <div class="timeline-title">5. Design & Iteration</div>
+            <div class="timeline-desc">Show the progression from wireframes to final designs. Highlight what changed after user testing and why.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--accent2)"></div>
+            <div class="timeline-title">6. Outcome & Reflection</div>
+            <div class="timeline-desc">What happened? What would you do differently? Showing self-awareness is a green flag for hiring managers.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson" id="l7-3">
+        <div class="lesson-num">Lesson 7.3</div>
+        <h3>Interview Prep — What They'll Actually Ask</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Design interviews typically have 3 parts: portfolio walkthrough, design challenge, and behavioral questions. Here's how to ace each one.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Portfolio walkthrough:</strong> Practice telling your case study as a 5-minute verbal story. Focus on decisions and tradeoffs — not features</div>
+          <div class="key-point"><strong>Design challenge:</strong> You'll be given a prompt like "Design an app that helps elderly users take their medications." Ask clarifying questions first. Sketch on paper or whiteboard. Narrate your thinking out loud</div>
+          <div class="key-point"><strong>Critique exercise:</strong> They show you a screen and ask "what would you improve?" Start with what works, then what you'd change and why (use design principles, not personal taste)</div>
+        </div>
+
+        <div class="callout example">
+          <span class="callout-label">💬 Common Interview Questions</span>
+          "Walk me through your design process." / "Tell me about a design decision you made that you later changed. Why?" / "How do you handle stakeholder feedback that you disagree with?" / "How do you know when a design is good enough?"
+        </div>
+
+        <div class="key-points">
+          <div class="key-point">Always ask clarifying questions before jumping into a design challenge — this is expected and shows maturity</div>
+          <div class="key-point">Think out loud during design exercises. Your reasoning matters as much as the output</div>
+          <div class="key-point">Have specific examples ready for behavioral questions using the STAR format (Situation, Task, Action, Result)</div>
+        </div>
+      </div>
+
+      <div class="lesson" id="l7-4">
+        <div class="lesson-num">Lesson 7.4</div>
+        <h3>Surviving (and Thriving) in Your First Design Job</h3>
+        <div class="reading-time">
+          <span class="tag tag-advanced">Advanced</span>
+          <span class="tag tag-time">⏱ 10 min read</span>
+        </div>
+        <p>Landing the job is step one. Here's how to actually do well once you're there — things nobody tells you before day one.</p>
+
+        <div class="key-points">
+          <div class="key-point"><strong>Ask more questions than you think is appropriate</strong> — seriously. Clarify ambiguous briefs. Ask why before designing</div>
+          <div class="key-point"><strong>Show work-in-progress early:</strong> Don't disappear for a week and come back with a "finished" design. Share rough work early to align on direction</div>
+          <div class="key-point"><strong>Separate your ego from your work:</strong> Feedback on your design is not feedback on you as a person. Treat critique as data</div>
+          <div class="key-point"><strong>Learn the product deeply:</strong> Use it every day. Understand the business goals. Know the metrics your work will be measured against</div>
+          <div class="key-point"><strong>Build relationships with developers:</strong> Sit with engineers early and often. Understand constraints before you design into them</div>
+          <div class="key-point"><strong>Document your wins:</strong> Keep a running doc of design decisions you made and outcomes. This becomes your case study material and ammunition for your next raise</div>
+        </div>
+
+        <div class="big-quote">
+          "The best designers aren't the ones who know the most tools. They're the ones who ask the best questions."
+          <cite>— Common wisdom in product design teams</cite>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-label">🚀 Your 90-Day Plan</span>
+          <strong>Days 1-30:</strong> Listen more than you talk. Learn the product, the users, the codebase constraints, and the team's existing patterns. <strong>Days 31-60:</strong> Contribute. Take on small improvements and deliver them well. <strong>Days 61-90:</strong> Lead. Identify an unaddressed problem, propose a solution, and drive it through the process.
+        </div>
+
+        <div class="callout example">
+          <span class="callout-label">📚 Keep Learning — Never Stop</span>
+          Follow these resources post-course: <strong>Nielsen Norman Group</strong> (nngroup.com) — UX research and articles. <strong>Refactoring UI</strong> (refactoringui.com) — practical visual design advice. <strong>Mobbin.com</strong> — real app patterns. <strong>Laws of UX</strong> (lawsofux.com) — principles explained visually. <strong>Read: "Don't Make Me Think"</strong> by Steve Krug. Then read it again.
+        </div>
+
+        <hr class="divider">
+
+        <div style="text-align: center; padding: 40px 0;">
+          <div style="font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; margin-bottom: 16px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">You're Job Ready. 🎉</div>
+          <p style="font-size: 16px; color: var(--muted); max-width: 460px; margin: 0 auto; line-height: 1.7;">You've covered everything a junior designer needs to get hired. Now comes the only part that matters: build projects, get feedback, and ship work into the world.</p>
+          <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="showSection('phase1', document.querySelectorAll('.nav-item')[0])">Review from Phase 1</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Track progress
+  let completedLessons = new Set();
+  const totalLessons = 20;
+
+  function updateProgress() {
+    const pct = Math.round((completedLessons.size / totalLessons) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPercent').textContent = pct + '%';
+  }
+
+  // Section switching
+  function showSection(sectionId, navEl) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    // Show target
+    document.getElementById(sectionId).classList.add('active');
+    if (navEl) navEl.classList.add('active');
+
+    // Update sidebar
+    document.querySelectorAll('[id^="sidebarPhase"]').forEach(s => s.style.display = 'none');
+    const num = sectionId.replace('phase', '');
+    const sidebar = document.getElementById('sidebarPhase' + num);
+    if (sidebar) sidebar.style.display = 'block';
+
+    // Scroll to top
+    window.scrollTo({ top: document.querySelector('.course-nav').offsetTop, behavior: 'smooth' });
+  }
+
+  function scrollToLesson(lessonId) {
+    const el = document.getElementById(lessonId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Mark as visited
+    completedLessons.add(lessonId);
+    updateProgress();
+
+    // Update sidebar
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      if (link.getAttribute('onclick')?.includes(lessonId)) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // Quiz interactions
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('quiz-opt')) {
+      const opts = e.target.parentElement.querySelectorAll('.quiz-opt');
+      opts.forEach(o => o.classList.remove('correct', 'wrong'));
+      e.target.classList.add(e.target.dataset.correct === 'true' ? 'correct' : 'wrong');
+    }
+  });
+
+  // Track lesson visibility for auto-progress
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        completedLessons.add(entry.target.id);
+        updateProgress();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.lesson').forEach(lesson => observer.observe(lesson));
+
+  // Animate sidebar links on section load
+  updateProgress();
+</script>
+</body>
+</html>

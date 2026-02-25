@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Command Line — Zero to Confident</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #13161e;
+  --bg3: #1c2030;
+  --border: #252a3a;
+  --green: #4ade80;
+  --green-dim: #22c55e55;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --cyan: #22d3ee;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-muted: #4b5563;
+  --accent: #4ade80;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden}
+
+/* ─── SIDEBAR ─── */
+#sidebar{
+  position:fixed;top:0;left:0;width:260px;height:100vh;
+  background:var(--bg2);border-right:1px solid var(--border);
+  overflow-y:auto;z-index:100;display:flex;flex-direction:column;
+  transition:transform .3s ease;
+}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sidebar-header{
+  padding:24px 20px 16px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--green);letter-spacing:.05em;
+}
+.sidebar-title{font-size:18px;font-weight:700;margin-top:6px;line-height:1.3}
+.sidebar-subtitle{font-size:12px;color:var(--text-dim);margin-top:4px}
+
+.sidebar-modules{padding:12px 0;flex:1}
+.module-group{margin-bottom:4px}
+.module-label{
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-muted);padding:8px 20px 4px;
+}
+.module-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;font-size:13px;color:var(--text-dim);
+  text-decoration:none;cursor:pointer;
+  transition:all .15s;border-left:3px solid transparent;
+}
+.module-link:hover{color:var(--text);background:var(--bg3)}
+.module-link.active{color:var(--green);border-left-color:var(--green);background:rgba(74,222,128,.06)}
+.module-num{
+  width:22px;height:22px;border-radius:6px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);
+  flex-shrink:0;border:1px solid var(--border);
+}
+.module-link.active .module-num{background:var(--green-dim);color:var(--green);border-color:var(--green)}
+
+.sidebar-footer{
+  padding:16px 20px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--text-muted);
+}
+.progress-bar-wrap{background:var(--bg3);border-radius:99px;height:4px;margin-top:8px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--green);border-radius:99px;width:0%;transition:width .4s}
+
+/* ─── MAIN ─── */
+#main{margin-left:260px;min-height:100vh}
+.hero{
+  padding:80px 60px 60px;
+  background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-100px;right:-100px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(74,222,128,.06) 0%,transparent 70%);
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--green);background:rgba(74,222,128,.08);
+  border:1px solid rgba(74,222,128,.2);padding:6px 14px;border-radius:99px;
+  margin-bottom:24px;
+}
+.hero-tag::before{content:'●';animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:52px;font-weight:800;line-height:1.15;max-width:700px;margin-bottom:16px}
+.hero h1 span{color:var(--green)}
+.hero p{font-size:18px;color:var(--text-dim);max-width:580px;font-weight:300;margin-bottom:32px}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column}
+.stat-num{font-size:28px;font-weight:700;color:var(--green)}
+.stat-label{font-size:13px;color:var(--text-muted)}
+
+/* ─── CONTENT AREA ─── */
+.content{max-width:780px;padding:60px 60px 120px}
+
+/* ─── MODULE HEADER ─── */
+.module-header{
+  display:flex;align-items:center;gap:16px;
+  padding:20px 24px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:12px;margin-bottom:36px;
+}
+.module-badge{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.module-meta h2{font-size:24px;font-weight:700}
+.module-meta p{font-size:14px;color:var(--text-dim);margin-top:2px}
+
+/* ─── TYPOGRAPHY ─── */
+.section{margin-bottom:48px}
+h3{font-size:20px;font-weight:700;margin-bottom:12px;color:var(--text)}
+h4{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text-dim)}
+p{margin-bottom:16px;color:var(--text-dim);font-weight:300}
+p strong{color:var(--text);font-weight:600}
+
+/* ─── CODE BLOCKS ─── */
+.terminal{
+  background:#0a0c10;border:1px solid var(--border);border-radius:12px;
+  margin:20px 0;overflow:hidden;
+}
+.terminal-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;background:#111318;border-bottom:1px solid var(--border);
+}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.red{background:#ff5f57}.dot.yellow{background:#febc2e}.dot.green{background:#28c840}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-left:auto;margin-right:auto;transform:translateX(-24px)}
+.terminal-body{padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.8}
+.cmd{color:var(--green)}
+.cmd::before{content:'$ ';color:var(--text-muted)}
+.out{color:var(--text-dim)}
+.comment{color:var(--text-muted)}
+.hl-flag{color:var(--yellow)}
+.hl-path{color:var(--cyan)}
+.hl-str{color:var(--purple)}
+.hl-num{color:var(--red)}
+.prompt{color:var(--green);font-weight:700}
+
+/* ─── CALLOUT BOXES ─── */
+.callout{
+  border-radius:12px;padding:20px 24px;margin:20px 0;
+  border-left:3px solid;
+}
+.callout-tip{background:rgba(74,222,128,.06);border-color:var(--green)}
+.callout-warning{background:rgba(251,191,36,.06);border-color:var(--yellow)}
+.callout-danger{background:rgba(248,113,113,.06);border-color:var(--red)}
+.callout-info{background:rgba(96,165,250,.06);border-color:var(--blue)}
+.callout-icon{font-size:18px;margin-bottom:6px}
+.callout h4{margin-bottom:6px}
+.callout-tip h4{color:var(--green)}
+.callout-warning h4{color:var(--yellow)}
+.callout-danger h4{color:var(--red)}
+.callout-info h4{color:var(--blue)}
+.callout p{margin-bottom:0}
+
+/* ─── COMMAND REFERENCE CARDS ─── */
+.cmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.cmd-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:16px;
+  transition:border-color .2s;
+}
+.cmd-card:hover{border-color:rgba(74,222,128,.3)}
+.cmd-name{
+  font-family:'JetBrains Mono',monospace;font-size:15px;
+  color:var(--green);font-weight:700;margin-bottom:4px;
+}
+.cmd-desc{font-size:13px;color:var(--text-dim);font-weight:300}
+.cmd-example{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--text-muted);margin-top:8px;
+  background:var(--bg3);padding:6px 10px;border-radius:6px;
+}
+.cmd-example::before{content:'$ ';color:rgba(74,222,128,.5)}
+
+/* ─── INLINE CODE ─── */
+code{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  background:var(--bg3);color:var(--cyan);
+  padding:2px 7px;border-radius:5px;border:1px solid var(--border);
+}
+
+/* ─── DIVIDER ─── */
+.divider{border:none;border-top:1px solid var(--border);margin:48px 0}
+
+/* ─── QUIZ ─── */
+.quiz{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:24px;margin:28px 0;
+}
+.quiz-q{font-size:16px;font-weight:600;margin-bottom:16px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg3);border:1px solid var(--border);
+  padding:12px 16px;border-radius:8px;cursor:pointer;
+  transition:all .2s;font-size:14px;
+}
+.quiz-opt:hover{border-color:rgba(74,222,128,.3);color:var(--text)}
+.quiz-opt.correct{border-color:var(--green);background:rgba(74,222,128,.08);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(248,113,113,.08);color:var(--red)}
+.quiz-opt input{display:none}
+.quiz-feedback{margin-top:12px;font-size:14px;display:none;padding:12px 16px;border-radius:8px}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:rgba(74,222,128,.08);color:var(--green)}
+.quiz-feedback.wrong{background:rgba(248,113,113,.08);color:var(--red)}
+
+/* ─── MODULE NAV ─── */
+.module-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:60px;padding-top:40px;border-top:1px solid var(--border);
+  gap:16px;
+}
+.nav-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 20px;border-radius:10px;
+  border:1px solid var(--border);background:var(--bg2);
+  color:var(--text-dim);font-size:14px;cursor:pointer;
+  text-decoration:none;transition:all .2s;font-family:'Sora',sans-serif;
+}
+.nav-btn:hover{border-color:rgba(74,222,128,.3);color:var(--green)}
+.nav-btn.primary{
+  background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);
+  color:var(--green);font-weight:600;
+}
+.nav-btn.primary:hover{background:rgba(74,222,128,.2)}
+
+/* ─── PAGES ─── */
+.page{display:none}
+.page.active{display:block}
+
+/* ─── TABLE ─── */
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+th{background:var(--bg3);color:var(--text-dim);text-align:left;padding:10px 14px;border:1px solid var(--border);font-weight:600;font-size:13px}
+td{padding:10px 14px;border:1px solid var(--border);color:var(--text-dim)}
+tr:hover td{background:var(--bg2)}
+td:first-child{font-family:'JetBrains Mono',monospace;color:var(--green);font-size:13px}
+
+/* ─── MOBILE ─── */
+#menu-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;
+  background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:10px;cursor:pointer;color:var(--text)}
+@media(max-width:800px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .hero{padding:60px 24px 40px}
+  .hero h1{font-size:34px}
+  .content{padding:36px 24px 80px}
+  .cmd-grid{grid-template-columns:1fr}
+  #menu-toggle{display:flex}
+  .module-nav{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">● COURSE</div>
+    <div class="sidebar-title">The Command Line</div>
+    <div class="sidebar-subtitle">Zero to Job-Ready</div>
+  </div>
+  <div class="sidebar-modules">
+    <div class="module-group">
+      <div class="module-label">Start Here</div>
+      <a class="module-link active" onclick="goto(0)">
+        <span class="module-num">✦</span> Introduction
+      </a>
+    </div>
+    <div class="module-group">
+      <div class="module-label">The Basics</div>
+      <a class="module-link" onclick="goto(1)"><span class="module-num">1</span> Orientation</a>
+      <a class="module-link" onclick="goto(2)"><span class="module-num">2</span> Navigating Around</a>
+      <a class="module-link" onclick="goto(3)"><span class="module-num">3</span> Files & Folders</a>
+      <a class="module-link" onclick="goto(4)"><span class="module-num">4</span> Reading Files</a>
+    </div>
+    <div class="module-group">
+      <div class="module-label">Getting Productive</div>
+      <a class="module-link" onclick="goto(5)"><span class="module-num">5</span> Pipes & Redirection</a>
+      <a class="module-link" onclick="goto(6)"><span class="module-num">6</span> Searching Everything</a>
+      <a class="module-link" onclick="goto(7)"><span class="module-num">7</span> Permissions</a>
+    </div>
+    <div class="module-group">
+      <div class="module-label">Intermediate</div>
+      <a class="module-link" onclick="goto(8)"><span class="module-num">8</span> Processes & System</a>
+      <a class="module-link" onclick="goto(9)"><span class="module-num">9</span> Networking</a>
+      <a class="module-link" onclick="goto(10)"><span class="module-num">10</span> Package Managers</a>
+    </div>
+    <div class="module-group">
+      <div class="module-label">Level Up</div>
+      <a class="module-link" onclick="goto(11)"><span class="module-num">11</span> Shell Scripting</a>
+      <a class="module-link" onclick="goto(12)"><span class="module-num">12</span> Git on the CLI</a>
+      <a class="module-link" onclick="goto(13)"><span class="module-num">13</span> Pro Tips & Tricks</a>
+      <a class="module-link" onclick="goto(14)"><span class="module-num">✓</span> Cheat Sheet</a>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div style="color:var(--text-dim);font-size:12px">Progress</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <div style="margin-top:6px;font-size:11px;color:var(--text-muted)" id="progress-label">0 / 14 modules</div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+<!-- ══════════════════ PAGE 0: INTRO ══════════════════ -->
+<div class="page active" id="page-0">
+  <div class="hero">
+    <div class="hero-tag">Your command line journey starts here</div>
+    <h1>From <span>clueless</span> to<br/>command line confident.</h1>
+    <p>No fluff, no 90s PDF vibes. Just clear, modern lessons that get you job-ready — one command at a time.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">14</span><span class="stat-label">Modules</span></div>
+      <div class="stat"><span class="stat-num">~6hrs</span><span class="stat-label">Total Time</span></div>
+      <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Real Examples</span></div>
+      <div class="stat"><span class="stat-num">0</span><span class="stat-label">Prior Experience Needed</span></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="section">
+      <h3>What you'll walk away with</h3>
+      <p>By the end of this course, you won't just know commands — you'll <strong>think like someone who uses the command line every day</strong>. You'll be able to navigate any machine, manage files, understand what's running, search through code, and script repetitive tasks.</p>
+
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">🗂 Navigate</div><div class="cmd-desc">Move around your file system like you built it yourself</div></div>
+        <div class="cmd-card"><div class="cmd-name">🔍 Search</div><div class="cmd-desc">Find any file, text, or process instantly</div></div>
+        <div class="cmd-card"><div class="cmd-name">⚙️ Automate</div><div class="cmd-desc">Write scripts that do your repetitive work for you</div></div>
+        <div class="cmd-card"><div class="cmd-name">🌐 Network</div><div class="cmd-desc">Fetch data, connect to servers, debug connections</div></div>
+        <div class="cmd-card"><div class="cmd-name">🔧 Manage</div><div class="cmd-desc">Install software, control processes, manage permissions</div></div>
+        <div class="cmd-card"><div class="cmd-name">📦 Git</div><div class="cmd-desc">Use Git confidently from the terminal — like devs do</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>How to use this course</h3>
+      <p>Each module is short and focused. <strong>Don't rush.</strong> Open a terminal alongside this course and actually run the commands as you go. That's the only way this sticks.</p>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">💡</div>
+        <h4>The golden rule</h4>
+        <p>Reading about commands does nothing. The moment you see a command — <strong>stop and type it yourself.</strong> Even if you understand it perfectly, muscle memory is everything.</p>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">🖥️</div>
+        <h4>Opening your terminal</h4>
+        <p><strong>Mac:</strong> Press ⌘ + Space, type "Terminal", press Enter<br/>
+        <strong>Windows:</strong> Search "Windows Terminal" or install WSL2 (Windows Subsystem for Linux) for the best experience<br/>
+        <strong>Linux:</strong> You already know. Ctrl + Alt + T usually works.</p>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <div></div>
+      <a class="nav-btn primary" onclick="goto(1)">Start Module 1 →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 1: ORIENTATION ══════════════════ -->
+<div class="page" id="page-1">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(74,222,128,.1);font-size:22px">🗺</div>
+      <div class="module-meta">
+        <h2>Module 1 — Orientation</h2>
+        <p>What is the terminal, why does it exist, and how does it actually work?</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>What is the command line?</h3>
+      <p>The command line (also called the <strong>terminal</strong>, <strong>shell</strong>, or <strong>CLI</strong>) is a text-based interface to your computer. Instead of clicking icons, you type instructions and the computer responds.</p>
+      <p>The GUI (graphical interface) you use every day is just a pretty layer on top. The terminal talks directly to the operating system — it's faster, more powerful, and universal across every machine you'll ever work on.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">📖</div>
+        <h4>Shell vs Terminal — what's the difference?</h4>
+        <p>The <strong>terminal</strong> is the window you see. The <strong>shell</strong> is the program running inside it that interprets your commands. The most common shell is <strong>bash</strong> (or <strong>zsh</strong> on modern Macs). They're almost identical for everyday use.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Anatomy of a command</h3>
+      <p>Every command follows this pattern: <code>command [options] [arguments]</code></p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Simplest form: just the command name</span></div>
+          <div><span class="cmd">ls</span></div>
+          <div class="out" style="margin-bottom:12px">Documents  Downloads  Music  Pictures</div>
+          <div><span class="comment"># With an option (flags start with - or --)</span></div>
+          <div><span class="cmd">ls <span class="hl-flag">-l</span></span></div>
+          <div class="out" style="margin-bottom:12px">drwxr-xr-x  5 alex  staff  160 Jan 15 09:21 Documents</div>
+          <div><span class="comment"># With an option AND an argument (a path)</span></div>
+          <div><span class="cmd">ls <span class="hl-flag">-l</span> <span class="hl-path">~/Documents</span></span></div>
+        </div>
+      </div>
+
+      <div class="cmd-grid">
+        <div class="cmd-card">
+          <div class="cmd-name">command</div>
+          <div class="cmd-desc">The action to perform — like <code>ls</code>, <code>cd</code>, <code>mkdir</code></div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">-flag or --flag</div>
+          <div class="cmd-desc">Modifies how the command behaves. Short (-l) or long (--list)</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">argument</div>
+          <div class="cmd-desc">What the command acts on — usually a file, folder, or text</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">spaces matter</div>
+          <div class="cmd-desc">Command parts are separated by spaces. Exact spacing required.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Your first commands — right now</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — try these now</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># See where you are (Print Working Directory)</span></div>
+          <div><span class="cmd">pwd</span></div>
+          <div class="out" style="margin-bottom:12px">/home/yourname</div>
+          <div><span class="comment"># See what's in the current folder</span></div>
+          <div><span class="cmd">ls</span></div>
+          <div class="out" style="margin-bottom:12px">Desktop  Documents  Downloads  Music  Videos</div>
+          <div><span class="comment"># Find out what shell you're using</span></div>
+          <div><span class="cmd">echo $SHELL</span></div>
+          <div class="out" style="margin-bottom:12px">/bin/zsh</div>
+          <div><span class="comment"># Get help on any command</span></div>
+          <div><span class="cmd">man ls</span></div>
+          <div class="out">(opens the manual — press q to quit)</div>
+        </div>
+      </div>
+      <div class="callout callout-tip">
+        <div class="callout-icon">⌨️</div>
+        <h4>The most important keyboard shortcuts</h4>
+        <p><strong>↑ / ↓ arrows</strong> — scroll through previous commands<br/>
+        <strong>Tab</strong> — auto-complete file names (use this obsessively)<br/>
+        <strong>Ctrl + C</strong> — cancel/kill whatever is running<br/>
+        <strong>Ctrl + L</strong> — clear the screen<br/>
+        <strong>Ctrl + A / E</strong> — jump to start / end of line</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>✏️ Quick Check</h3>
+      <div class="quiz" id="quiz-1">
+        <div class="quiz-q">What does the <code>-l</code> part of <code>ls -l</code> represent?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'wrong','quiz-1')">A file named "l"</div>
+          <div class="quiz-opt" onclick="answer(this,'correct','quiz-1')">A flag/option that modifies how ls works</div>
+          <div class="quiz-opt" onclick="answer(this,'wrong','quiz-1')">A folder to list</div>
+          <div class="quiz-opt" onclick="answer(this,'wrong','quiz-1')">The letter L is a special command</div>
+        </div>
+        <div class="quiz-feedback correct" id="quiz-1-fb-correct">✓ Exactly! Flags start with <code>-</code> and change behavior. <code>-l</code> makes ls show a detailed "long" list.</div>
+        <div class="quiz-feedback wrong" id="quiz-1-fb-wrong">✗ Not quite. Flags start with <code>-</code> and modify how a command works. <code>-l</code> = long format listing.</div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(0)">← Introduction</a>
+      <a class="nav-btn primary" onclick="goto(2)">Module 2: Navigating →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 2: NAVIGATION ══════════════════ -->
+<div class="page" id="page-2">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(96,165,250,.1);font-size:22px">📁</div>
+      <div class="module-meta">
+        <h2>Module 2 — Navigating Around</h2>
+        <p>The file system is your city. Learn to move through it confidently.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>The file system is a tree</h3>
+      <p>Everything on your computer lives in a hierarchy of folders (called <strong>directories</strong>). At the top is the <strong>root</strong>, written as <code>/</code>. Every path flows down from there.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">file system structure</span></div>
+        <div class="terminal-body">
+          <div class="out">/                         ← root (top of everything)</div>
+          <div class="out">├── home/</div>
+          <div class="out">│   └── alex/             ← your home folder (~)</div>
+          <div class="out">│       ├── Documents/</div>
+          <div class="out">│       ├── Downloads/</div>
+          <div class="out">│       └── projects/</div>
+          <div class="out">├── usr/</div>
+          <div class="out">│   └── bin/              ← where most programs live</div>
+          <div class="out">└── etc/                  ← system config files</div>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">🏠</div>
+        <h4>The ~ shortcut</h4>
+        <p><code>~</code> (tilde) always means your home directory. So <code>~/Documents</code> is the same as <code>/home/yourname/Documents</code>. It saves a ton of typing.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Absolute vs Relative paths</h3>
+      <p>This is crucial. A path is just an address for a file or folder.</p>
+      <table>
+        <tr><th>Type</th><th>Starts with</th><th>Example</th><th>When to use</th></tr>
+        <tr><td>Absolute</td><td>/</td><td>/home/alex/Documents</td><td>Always works, no matter where you are</td></tr>
+        <tr><td>Relative</td><td>anything else</td><td>Documents/notes.txt</td><td>Relative to where you currently are</td></tr>
+      </table>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># . means "here" (current directory)</span></div>
+          <div><span class="cmd">ls <span class="hl-path">.</span></span></div>
+          <div class="out" style="margin-bottom:12px">same as just: ls</div>
+          <div><span class="comment"># .. means "one level up" (parent directory)</span></div>
+          <div><span class="cmd">ls <span class="hl-path">..</span></span></div>
+          <div class="out" style="margin-bottom:12px">shows contents of parent folder</div>
+          <div><span class="comment"># You can chain .. together</span></div>
+          <div><span class="cmd">cd <span class="hl-path">../../</span></span></div>
+          <div class="out">goes up TWO levels</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>The Navigation Commands</h3>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — practice these</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Where am I?</span></div>
+          <div><span class="cmd">pwd</span></div>
+          <div class="out" style="margin-bottom:12px">/home/alex/projects</div>
+
+          <div><span class="comment"># Go to home directory</span></div>
+          <div><span class="cmd">cd ~</span></div>
+          <div class="out" style="margin-bottom:12px">or just: cd (with nothing after)</div>
+
+          <div><span class="comment"># Go into a folder</span></div>
+          <div><span class="cmd">cd <span class="hl-path">Documents</span></span></div>
+          <div class="out" style="margin-bottom:12px">now you're inside Documents/</div>
+
+          <div><span class="comment"># Go back to where you just were (like browser back button!)</span></div>
+          <div><span class="cmd">cd -</span></div>
+          <div class="out" style="margin-bottom:12px">/home/alex  (switches to previous directory)</div>
+
+          <div><span class="comment"># List files — with details</span></div>
+          <div><span class="cmd">ls <span class="hl-flag">-la</span></span></div>
+          <div class="out">total 48</div>
+          <div class="out">drwxr-xr-x  8 alex staff  256 Jan 15 09:21 .</div>
+          <div class="out">drwxr-xr-x 20 alex staff  640 Jan 14 18:03 ..</div>
+          <div class="out">-rw-r--r--  1 alex staff 3452 Jan 15 09:00 notes.txt</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">🔥</div>
+        <h4>The Tab key is your best friend</h4>
+        <p>Start typing a folder or file name, then hit <strong>Tab</strong> to auto-complete. Hit Tab twice to see all options when there are multiple matches. Pros use this constantly — it prevents typos and saves time.</p>
+      </div>
+
+      <div class="cmd-grid">
+        <div class="cmd-card">
+          <div class="cmd-name">ls</div>
+          <div class="cmd-desc">List files in current directory</div>
+          <div class="cmd-example">ls -la ~/Documents</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">cd</div>
+          <div class="cmd-desc">Change directory (move around)</div>
+          <div class="cmd-example">cd ~/projects/myapp</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">pwd</div>
+          <div class="cmd-desc">Print current location (full path)</div>
+          <div class="cmd-example">pwd</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">ls -la</div>
+          <div class="cmd-desc">Long list + show hidden files (start with .)</div>
+          <div class="cmd-example">ls -la</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>✏️ Quick Check</h3>
+      <div class="quiz" id="quiz-2">
+        <div class="quiz-q">You're in <code>/home/alex/projects/app</code>. What does <code>cd ../../</code> do?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'wrong','quiz-2')">Takes you to /home/alex/projects/app/../../</div>
+          <div class="quiz-opt" onclick="answer(this,'correct','quiz-2')">Takes you to /home/alex (two levels up)</div>
+          <div class="quiz-opt" onclick="answer(this,'wrong','quiz-2')">Takes you to root /</div>
+          <div class="quiz-opt" onclick="answer(this,'wrong','quiz-2')">Shows contents two levels up</div>
+        </div>
+        <div class="quiz-feedback correct" id="quiz-2-fb-correct">✓ Right! Each <code>..</code> moves one level up. From <code>app</code> → <code>projects</code> → <code>alex</code>. Two steps up.</div>
+        <div class="quiz-feedback wrong" id="quiz-2-fb-wrong">✗ Each <code>..</code> means "go up one level". Two of them = two levels up. app → projects → alex.</div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(1)">← Module 1</a>
+      <a class="nav-btn primary" onclick="goto(3)">Module 3: Files & Folders →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 3: FILES & FOLDERS ══════════════════ -->
+<div class="page" id="page-3">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(167,139,250,.1);font-size:22px">📄</div>
+      <div class="module-meta">
+        <h2>Module 3 — Files & Folders</h2>
+        <p>Create, copy, move, rename, and delete — confidently.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Creating things</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Create an empty file</span></div>
+          <div><span class="cmd">touch <span class="hl-path">notes.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(creates notes.txt if it doesn't exist, or updates its timestamp)</div>
+
+          <div><span class="comment"># Create a folder</span></div>
+          <div><span class="cmd">mkdir <span class="hl-path">my-project</span></span></div>
+          <div class="out" style="margin-bottom:12px">(creates the my-project directory)</div>
+
+          <div><span class="comment"># Create nested folders in one shot (-p = make parents)</span></div>
+          <div><span class="cmd">mkdir <span class="hl-flag">-p</span> <span class="hl-path">projects/2024/january</span></span></div>
+          <div class="out" style="margin-bottom:12px">(creates all three folders even if projects/ doesn't exist)</div>
+
+          <div><span class="comment"># Write text directly into a file</span></div>
+          <div><span class="cmd">echo <span class="hl-str">"Hello, World"</span> > <span class="hl-path">notes.txt</span></span></div>
+          <div class="out">(creates/overwrites notes.txt with that text)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Copying and Moving</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Copy a file: cp source destination</span></div>
+          <div><span class="cmd">cp <span class="hl-path">notes.txt</span> <span class="hl-path">notes-backup.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(original still exists; copy created)</div>
+
+          <div><span class="comment"># Copy a whole folder (need -r for "recursive")</span></div>
+          <div><span class="cmd">cp <span class="hl-flag">-r</span> <span class="hl-path">my-project/</span> <span class="hl-path">my-project-backup/</span></span></div>
+          <div class="out" style="margin-bottom:12px">(copies entire folder and its contents)</div>
+
+          <div><span class="comment"># Move (or rename): mv source destination</span></div>
+          <div><span class="cmd">mv <span class="hl-path">notes.txt</span> <span class="hl-path">Documents/notes.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(moves the file into Documents/)</div>
+
+          <div><span class="comment"># Rename a file (mv works for renaming too!)</span></div>
+          <div><span class="cmd">mv <span class="hl-path">old-name.txt</span> <span class="hl-path">new-name.txt</span></span></div>
+          <div class="out">(same folder, different name = rename)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Deleting things</h3>
+      <div class="callout callout-danger">
+        <div class="callout-icon">☠️</div>
+        <h4>There is no undo</h4>
+        <p>The terminal doesn't have a Recycle Bin. When you delete with <code>rm</code>, it's <strong>gone forever</strong>. Always double-check before pressing Enter. When in doubt, move things to a backup folder first.</p>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Delete a file</span></div>
+          <div><span class="cmd">rm <span class="hl-path">notes-backup.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(gone forever)</div>
+
+          <div><span class="comment"># Delete a folder and everything in it</span></div>
+          <div><span class="cmd">rm <span class="hl-flag">-rf</span> <span class="hl-path">old-project/</span></span></div>
+          <div class="out" style="margin-bottom:12px">(-r = recursive, -f = force, no warnings)</div>
+
+          <div><span class="comment"># Safer: ask for confirmation on each file</span></div>
+          <div><span class="cmd">rm <span class="hl-flag">-ri</span> <span class="hl-path">old-project/</span></span></div>
+          <div class="out">(prompts you: "remove this file?" y/n)</div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <div class="callout-icon">⚠️</div>
+        <h4>NEVER run this command</h4>
+        <p><code>rm -rf /</code> — this deletes your entire system. If anyone ever tells you to run this as a "joke" or "fix", they're trying to destroy your machine. Walk away.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Practical exercise</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — do this now</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># 1. Go to your home directory</span></div>
+          <div><span class="cmd">cd ~</span></div>
+          <div class="out" style="margin-bottom:8px"></div>
+          <div><span class="comment"># 2. Create a practice folder</span></div>
+          <div><span class="cmd">mkdir cli-practice</span></div>
+          <div class="out" style="margin-bottom:8px"></div>
+          <div><span class="comment"># 3. Go into it</span></div>
+          <div><span class="cmd">cd cli-practice</span></div>
+          <div class="out" style="margin-bottom:8px"></div>
+          <div><span class="comment"># 4. Create some files</span></div>
+          <div><span class="cmd">touch file1.txt file2.txt file3.txt</span></div>
+          <div class="out" style="margin-bottom:8px"></div>
+          <div><span class="comment"># 5. Verify they exist</span></div>
+          <div><span class="cmd">ls</span></div>
+          <div class="out">file1.txt  file2.txt  file3.txt</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(2)">← Module 2</a>
+      <a class="nav-btn primary" onclick="goto(4)">Module 4: Reading Files →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 4: READING FILES ══════════════════ -->
+<div class="page" id="page-4">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(34,211,238,.1);font-size:22px">👀</div>
+      <div class="module-meta">
+        <h2>Module 4 — Reading Files</h2>
+        <p>View file contents — from tiny notes to massive log files.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>The reading commands</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># cat: dump entire file to screen (good for small files)</span></div>
+          <div><span class="cmd">cat <span class="hl-path">notes.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">Hello, World!</div>
+
+          <div><span class="comment"># less: scrollable viewer (use this for large files)</span></div>
+          <div><span class="cmd">less <span class="hl-path">big-log-file.log</span></span></div>
+          <div class="out" style="margin-bottom:12px">(scroll with arrows, / to search, q to quit)</div>
+
+          <div><span class="comment"># head: see the first 10 lines</span></div>
+          <div><span class="cmd">head <span class="hl-path">data.csv</span></span></div>
+          <div class="out" style="margin-bottom:12px">name,age,city ...</div>
+
+          <div><span class="comment"># head: first N lines</span></div>
+          <div><span class="cmd">head <span class="hl-flag">-n 20</span> <span class="hl-path">data.csv</span></span></div>
+          <div class="out" style="margin-bottom:12px">(first 20 lines)</div>
+
+          <div><span class="comment"># tail: last 10 lines (great for logs!)</span></div>
+          <div><span class="cmd">tail <span class="hl-path">server.log</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># tail -f: FOLLOW the file as it updates in real time</span></div>
+          <div><span class="cmd">tail <span class="hl-flag">-f</span> <span class="hl-path">server.log</span></span></div>
+          <div class="out">(stays open, shows new lines as they appear — Ctrl+C to stop)</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">🔥</div>
+        <h4><code>tail -f</code> is essential at your job</h4>
+        <p>When debugging a running server, <code>tail -f server.log</code> lets you watch log output in real time. You'll use this constantly.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>inside less — key shortcuts</h3>
+      <table>
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td>↑ / ↓</td><td>Scroll line by line</td></tr>
+        <tr><td>Space / b</td><td>Next page / Previous page</td></tr>
+        <tr><td>/searchterm</td><td>Search forward in file</td></tr>
+        <tr><td>n / N</td><td>Next / previous search match</td></tr>
+        <tr><td>g / G</td><td>Go to start / end of file</td></tr>
+        <tr><td>q</td><td>Quit less</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Word count and file info</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># wc: count lines, words, characters</span></div>
+          <div><span class="cmd">wc <span class="hl-path">notes.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">  42  128  843 notes.txt   ← (lines words chars filename)</div>
+          <div><span class="comment"># Just count lines (-l)</span></div>
+          <div><span class="cmd">wc <span class="hl-flag">-l</span> <span class="hl-path">big-file.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">15042 big-file.txt</div>
+          <div><span class="comment"># file: what type of file is this?</span></div>
+          <div><span class="cmd">file <span class="hl-path">mystery</span></span></div>
+          <div class="out">mystery: Python script, ASCII text executable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(3)">← Module 3</a>
+      <a class="nav-btn primary" onclick="goto(5)">Module 5: Pipes & Redirection →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 5: PIPES ══════════════════ -->
+<div class="page" id="page-5">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(74,222,128,.1);font-size:22px">🔗</div>
+      <div class="module-meta">
+        <h2>Module 5 — Pipes & Redirection</h2>
+        <p>The secret power of the command line: chaining commands together.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>The pipe <code>|</code></h3>
+      <p>The pipe <code>|</code> takes the <strong>output of one command</strong> and feeds it as the <strong>input of the next</strong>. This is one of the most powerful ideas in computing.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># List files and pipe into less (scroll through many files)</span></div>
+          <div><span class="cmd">ls <span class="hl-flag">-la</span> | less</span></div>
+          <div class="out" style="margin-bottom:12px">(scroll through the output)</div>
+
+          <div><span class="comment"># Search for something specific in output</span></div>
+          <div><span class="cmd">ls <span class="hl-flag">-la</span> | grep <span class="hl-str">"txt"</span></span></div>
+          <div class="out" style="margin-bottom:12px">-rw-r--r--  1 alex  staff  3452 notes.txt</div>
+
+          <div><span class="comment"># Count how many files are in a folder</span></div>
+          <div><span class="cmd">ls | wc <span class="hl-flag">-l</span></span></div>
+          <div class="out" style="margin-bottom:12px">47</div>
+
+          <div><span class="comment"># See the 5 biggest files in a folder</span></div>
+          <div><span class="cmd">ls <span class="hl-flag">-lS</span> | head <span class="hl-flag">-n 6</span></span></div>
+          <div class="out">(sort by size, show top 5)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Redirection: saving output to files</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># > saves output to a file (OVERWRITES)</span></div>
+          <div><span class="cmd">ls > <span class="hl-path">filelist.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(creates/overwrites filelist.txt with ls output)</div>
+
+          <div><span class="comment"># >> APPENDS to a file (doesn't overwrite)</span></div>
+          <div><span class="cmd">echo <span class="hl-str">"New entry"</span> >> <span class="hl-path">log.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(adds to end of file)</div>
+
+          <div><span class="comment"># 2> redirects error messages to a file</span></div>
+          <div><span class="cmd">ls fake-folder 2> <span class="hl-path">errors.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(error goes to file, not screen)</div>
+
+          <div><span class="comment"># Throw away all errors (send to /dev/null = trash)</span></div>
+          <div><span class="cmd">command 2> /dev/null</span></div>
+          <div class="out">(errors silently discarded)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Real-world combos you'll use</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — pro patterns</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Find all Python files and count them</span></div>
+          <div><span class="cmd">find . <span class="hl-flag">-name</span> <span class="hl-str">"*.py"</span> | wc -l</span></div>
+          <div class="out" style="margin-bottom:12px">23</div>
+
+          <div><span class="comment"># Search log file, show only errors, save to file</span></div>
+          <div><span class="cmd">grep <span class="hl-str">"ERROR"</span> <span class="hl-path">app.log</span> | tail <span class="hl-flag">-n 50</span> > <span class="hl-path">recent-errors.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Sort a list and remove duplicates</span></div>
+          <div><span class="cmd">cat <span class="hl-path">words.txt</span> | sort | uniq</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># See processes sorted by memory usage</span></div>
+          <div><span class="cmd">ps aux | sort <span class="hl-flag">-k4 -rn</span> | head <span class="hl-flag">-10</span></span></div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">💡</div>
+        <h4>The Unix philosophy</h4>
+        <p>Each command does one thing well. Pipes let you combine simple tools into powerful workflows. This is why the command line has survived 50 years — the same patterns work on any Unix-like system.</p>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(4)">← Module 4</a>
+      <a class="nav-btn primary" onclick="goto(6)">Module 6: Searching →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 6: SEARCHING ══════════════════ -->
+<div class="page" id="page-6">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(251,191,36,.1);font-size:22px">🔍</div>
+      <div class="module-meta">
+        <h2>Module 6 — Searching Everything</h2>
+        <p>grep and find: the two commands you'll use every single day.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>grep — search inside files</h3>
+      <p><code>grep</code> searches for text patterns inside files. It's incredibly fast and one of the most-used commands in development.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Search for a word in a file</span></div>
+          <div><span class="cmd">grep <span class="hl-str">"error"</span> <span class="hl-path">app.log</span></span></div>
+          <div class="out" style="margin-bottom:12px">2024-01-15 09:23:11 ERROR: connection refused</div>
+
+          <div><span class="comment"># Case-insensitive search (-i)</span></div>
+          <div><span class="cmd">grep <span class="hl-flag">-i</span> <span class="hl-str">"error"</span> <span class="hl-path">app.log</span></span></div>
+          <div class="out" style="margin-bottom:12px">(matches Error, ERROR, error, eRrOr...)</div>
+
+          <div><span class="comment"># Search recursively through all files in a folder (-r)</span></div>
+          <div><span class="cmd">grep <span class="hl-flag">-r</span> <span class="hl-str">"TODO"</span> <span class="hl-path">./src</span></span></div>
+          <div class="out" style="margin-bottom:12px">./src/app.py:42:  # TODO: fix this later</div>
+
+          <div><span class="comment"># Show line numbers (-n)</span></div>
+          <div><span class="cmd">grep <span class="hl-flag">-n</span> <span class="hl-str">"def "</span> <span class="hl-path">main.py</span></span></div>
+          <div class="out" style="margin-bottom:12px">12:def main():</div>
+          <div class="out" style="margin-bottom:12px">45:def process_data(input):</div>
+
+          <div><span class="comment"># Show count of matches (-c)</span></div>
+          <div><span class="cmd">grep <span class="hl-flag">-c</span> <span class="hl-str">"import"</span> <span class="hl-path">main.py</span></span></div>
+          <div class="out" style="margin-bottom:12px">8</div>
+
+          <div><span class="comment"># Invert match: show lines that DON'T match (-v)</span></div>
+          <div><span class="cmd">grep <span class="hl-flag">-v</span> <span class="hl-str">"#"</span> <span class="hl-path">config.txt</span></span></div>
+          <div class="out">(filters out comment lines)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>find — search for files</h3>
+      <p><code>find</code> searches for files and folders by name, type, size, age, and more.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Find files by name in current directory</span></div>
+          <div><span class="cmd">find <span class="hl-path">.</span> <span class="hl-flag">-name</span> <span class="hl-str">"config.json"</span></span></div>
+          <div class="out" style="margin-bottom:12px">./project/config.json</div>
+
+          <div><span class="comment"># Find all .log files anywhere under /var</span></div>
+          <div><span class="cmd">find <span class="hl-path">/var</span> <span class="hl-flag">-name</span> <span class="hl-str">"*.log"</span></span></div>
+          <div class="out" style="margin-bottom:12px">/var/log/system.log</div>
+
+          <div><span class="comment"># Find only directories (-type d)</span></div>
+          <div><span class="cmd">find <span class="hl-path">.</span> <span class="hl-flag">-type d -name</span> <span class="hl-str">"node_modules"</span></span></div>
+          <div class="out" style="margin-bottom:12px">./project/node_modules</div>
+
+          <div><span class="comment"># Find files modified in the last 7 days</span></div>
+          <div><span class="cmd">find <span class="hl-path">.</span> <span class="hl-flag">-mtime -7</span></span></div>
+          <div class="out" style="margin-bottom:12px">(all files touched in last week)</div>
+
+          <div><span class="comment"># Find AND delete (be careful!)</span></div>
+          <div><span class="cmd">find <span class="hl-path">.</span> <span class="hl-flag">-name</span> <span class="hl-str">"*.tmp"</span> <span class="hl-flag">-delete</span></span></div>
+          <div class="out">(deletes all .tmp files — no undo!)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>which, whereis — find programs</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Where is the python program installed?</span></div>
+          <div><span class="cmd">which python3</span></div>
+          <div class="out" style="margin-bottom:12px">/usr/bin/python3</div>
+          <div><span class="comment"># Is git installed?</span></div>
+          <div><span class="cmd">which git</span></div>
+          <div class="out">/usr/bin/git</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(5)">← Module 5</a>
+      <a class="nav-btn primary" onclick="goto(7)">Module 7: Permissions →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 7: PERMISSIONS ══════════════════ -->
+<div class="page" id="page-7">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(248,113,113,.1);font-size:22px">🔐</div>
+      <div class="module-meta">
+        <h2>Module 7 — Permissions</h2>
+        <p>Who can read, write, and run what. The basics you need for the real world.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Reading the permission string</h3>
+      <p>When you run <code>ls -l</code>, you see a string like <code>-rwxr-xr--</code> next to each file. Here's how to read it.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="cmd">ls <span class="hl-flag">-l</span></span></div>
+          <div class="out">-rwxr-xr--  1 alex staff 4096 Jan 15 script.sh</div>
+          <div class="out">│└──┘└──┘└──┘</div>
+          <div class="out">│  │   │   └── others (everyone else)</div>
+          <div class="out">│  │   └────── group</div>
+          <div class="out">│  └────────── owner (you)</div>
+          <div class="out">└───────────── file type (- = file, d = directory)</div>
+          <div class="out" style="margin-top:12px">r = read, w = write, x = execute, - = no permission</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Changing permissions with chmod</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Make a script executable (the most common use)</span></div>
+          <div><span class="cmd">chmod <span class="hl-num">+x</span> <span class="hl-path">script.sh</span></span></div>
+          <div class="out" style="margin-bottom:12px">(adds execute permission for everyone)</div>
+
+          <div><span class="comment"># Common numeric permissions you'll see:</span></div>
+          <div><span class="comment"># 755 = owner can do all, others can read+execute</span></div>
+          <div><span class="cmd">chmod <span class="hl-num">755</span> <span class="hl-path">script.sh</span></span></div>
+          <div class="out" style="margin-bottom:12px">(rwxr-xr-x)</div>
+
+          <div><span class="comment"># 644 = owner can read+write, others can only read</span></div>
+          <div><span class="cmd">chmod <span class="hl-num">644</span> <span class="hl-path">config.txt</span></span></div>
+          <div class="out" style="margin-bottom:12px">(rw-r--r--)</div>
+
+          <div><span class="comment"># 600 = only owner can read+write (private files)</span></div>
+          <div><span class="cmd">chmod <span class="hl-num">600</span> <span class="hl-path">~/.ssh/id_rsa</span></span></div>
+          <div class="out">(rw-------) — SSH keys must be this or SSH refuses to use them</div>
+        </div>
+      </div>
+
+      <table>
+        <tr><th>Number</th><th>Permission</th><th>Use case</th></tr>
+        <tr><td>755</td><td>rwxr-xr-x</td><td>Programs, scripts</td></tr>
+        <tr><td>644</td><td>rw-r--r--</td><td>Config files, documents</td></tr>
+        <tr><td>600</td><td>rw-------</td><td>Private keys, passwords</td></tr>
+        <tr><td>777</td><td>rwxrwxrwx</td><td>Avoid! Everyone can modify</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>sudo — running as administrator</h3>
+      <div class="callout callout-warning">
+        <div class="callout-icon">⚠️</div>
+        <h4>Use sudo carefully</h4>
+        <p><code>sudo</code> runs a command as the superuser (root) — the most powerful account on the system. It can do anything, including break things. Only use it when required, and always understand the command first.</p>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Run a command as superuser</span></div>
+          <div><span class="cmd">sudo apt install nginx</span></div>
+          <div class="out" style="margin-bottom:12px">[sudo] password for alex: ●●●●●●●●</div>
+          <div><span class="comment"># See who you are</span></div>
+          <div><span class="cmd">whoami</span></div>
+          <div class="out">alex</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(6)">← Module 6</a>
+      <a class="nav-btn primary" onclick="goto(8)">Module 8: Processes →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 8: PROCESSES ══════════════════ -->
+<div class="page" id="page-8">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(167,139,250,.1);font-size:22px">⚙️</div>
+      <div class="module-meta">
+        <h2>Module 8 — Processes & System</h2>
+        <p>See what's running on your machine and take control of it.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Viewing running processes</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># List all running processes</span></div>
+          <div><span class="cmd">ps aux</span></div>
+          <div class="out">USER   PID  %CPU %MEM    VSZ   RSS  COMMAND</div>
+          <div class="out" style="margin-bottom:12px">alex  1234   0.5  1.2  34512  24320 node server.js</div>
+
+          <div><span class="comment"># Find a specific process by name</span></div>
+          <div><span class="cmd">ps aux | grep <span class="hl-str">"python"</span></span></div>
+          <div class="out" style="margin-bottom:12px">alex  5678  0.1  0.8  22100  16384 python3 app.py</div>
+
+          <div><span class="comment"># Interactive live view (like Task Manager) — q to quit</span></div>
+          <div><span class="cmd">top</span></div>
+          <div class="out">(or use 'htop' if installed — much nicer)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Killing processes</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Kill a process by PID (Process ID)</span></div>
+          <div><span class="cmd">kill <span class="hl-num">5678</span></span></div>
+          <div class="out" style="margin-bottom:12px">(politely asks process to stop)</div>
+
+          <div><span class="comment"># Force kill (if it won't stop)</span></div>
+          <div><span class="cmd">kill <span class="hl-flag">-9</span> <span class="hl-num">5678</span></span></div>
+          <div class="out" style="margin-bottom:12px">(immediate termination, no cleanup)</div>
+
+          <div><span class="comment"># Kill by name (easier!)</span></div>
+          <div><span class="cmd">pkill <span class="hl-str">python3</span></span></div>
+          <div class="out">(kills all python3 processes)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Disk and memory info</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Disk space: how full is my drive?</span></div>
+          <div><span class="cmd">df <span class="hl-flag">-h</span></span></div>
+          <div class="out">Filesystem  Size  Used Avail Use%</div>
+          <div class="out" style="margin-bottom:12px">/dev/sda1   100G   42G   58G  42%</div>
+
+          <div><span class="comment"># Folder size: what's eating my space?</span></div>
+          <div><span class="cmd">du <span class="hl-flag">-sh</span> <span class="hl-path">*</span></span></div>
+          <div class="out">4.2G    node_modules</div>
+          <div class="out" style="margin-bottom:12px">128M    src</div>
+
+          <div><span class="comment"># System uptime and load</span></div>
+          <div><span class="cmd">uptime</span></div>
+          <div class="out">10:25  up 3 days, 2:14, 2 users, load averages: 0.82 0.74 0.68</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-icon">💡</div>
+        <h4>Background jobs</h4>
+        <p>Add <code>&</code> to the end of any command to run it in the background. Use <code>jobs</code> to see background tasks, and <code>fg</code> to bring one back to the foreground.</p>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(7)">← Module 7</a>
+      <a class="nav-btn primary" onclick="goto(9)">Module 9: Networking →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 9: NETWORKING ══════════════════ -->
+<div class="page" id="page-9">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(34,211,238,.1);font-size:22px">🌐</div>
+      <div class="module-meta">
+        <h2>Module 9 — Networking</h2>
+        <p>Make requests, check connectivity, and connect to remote servers.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>curl — fetch URLs from the terminal</h3>
+      <p><code>curl</code> is like a browser from the command line. It's used constantly for testing APIs and downloading files.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Simple GET request</span></div>
+          <div><span class="cmd">curl <span class="hl-path">https://api.github.com</span></span></div>
+          <div class="out" style="margin-bottom:12px">{current_user_url: "https://api.github.com/user" ...}</div>
+
+          <div><span class="comment"># Download a file</span></div>
+          <div><span class="cmd">curl <span class="hl-flag">-O</span> <span class="hl-path">https://example.com/file.zip</span></span></div>
+          <div class="out" style="margin-bottom:12px">(saves as file.zip)</div>
+
+          <div><span class="comment"># POST request with JSON data (API testing)</span></div>
+          <div><span class="cmd">curl <span class="hl-flag">-X POST</span> <span class="hl-path">https://api.example.com/users</span> \</span></div>
+          <div><span style="padding-left:20px"><span class="hl-flag">-H</span> <span class="hl-str">"Content-Type: application/json"</span> \</span></div>
+          <div><span style="padding-left:20px"><span class="hl-flag">-d</span> <span class="hl-str">'{"name": "Alex", "email": "a@b.com"}'</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Checking connectivity</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Test if a host is reachable</span></div>
+          <div><span class="cmd">ping google.com</span></div>
+          <div class="out" style="margin-bottom:12px">64 bytes from 142.250.80.46: icmp_seq=1 ttl=117 time=12.3 ms</div>
+
+          <div><span class="comment"># Look up DNS info for a domain</span></div>
+          <div><span class="cmd">nslookup github.com</span></div>
+          <div class="out" style="margin-bottom:12px">Address: 140.82.114.3</div>
+
+          <div><span class="comment"># See your IP address</span></div>
+          <div><span class="cmd">curl ifconfig.me</span></div>
+          <div class="out">102.214.73.xxx</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>SSH — connect to remote servers</h3>
+      <p>SSH (Secure Shell) lets you log into and control a remote machine. This is how developers deploy code and manage servers.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Connect to a remote server</span></div>
+          <div><span class="cmd">ssh <span class="hl-str">username@server-ip-address</span></span></div>
+          <div class="out" style="margin-bottom:12px">username@server-ip's password:</div>
+
+          <div><span class="comment"># Connect using a private key file</span></div>
+          <div><span class="cmd">ssh <span class="hl-flag">-i</span> <span class="hl-path">~/.ssh/mykey.pem</span> <span class="hl-str">ubuntu@54.123.45.67</span></span></div>
+          <div class="out" style="margin-bottom:12px">(AWS, DigitalOcean, etc. use keys not passwords)</div>
+
+          <div><span class="comment"># Copy a file TO a remote server</span></div>
+          <div><span class="cmd">scp <span class="hl-path">local-file.txt</span> <span class="hl-str">user@server:/remote/path/</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Copy a file FROM a remote server</span></div>
+          <div><span class="cmd">scp <span class="hl-str">user@server:/remote/file.txt</span> <span class="hl-path">./local-folder/</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(8)">← Module 8</a>
+      <a class="nav-btn primary" onclick="goto(10)">Module 10: Package Managers →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 10: PACKAGE MANAGERS ══════════════════ -->
+<div class="page" id="page-10">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(74,222,128,.1);font-size:22px">📦</div>
+      <div class="module-meta">
+        <h2>Module 10 — Package Managers</h2>
+        <p>Install, update, and remove software from the command line.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>What is a package manager?</h3>
+      <p>A package manager is like an app store for the terminal. Instead of downloading installers from websites, you type one command and it handles everything — download, install, dependencies, updates.</p>
+    </div>
+
+    <div class="section">
+      <h3>apt — Ubuntu / Debian Linux</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — Linux (Ubuntu/Debian)</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Update package list (do this first)</span></div>
+          <div><span class="cmd">sudo apt update</span></div>
+          <div class="out" style="margin-bottom:12px">Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]</div>
+
+          <div><span class="comment"># Install a package</span></div>
+          <div><span class="cmd">sudo apt install <span class="hl-str">git</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Remove a package</span></div>
+          <div><span class="cmd">sudo apt remove <span class="hl-str">git</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Upgrade all installed packages</span></div>
+          <div><span class="cmd">sudo apt upgrade</span></div>
+
+          <div><span class="comment"># Search for a package</span></div>
+          <div><span class="cmd">apt search <span class="hl-str">nodejs</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Homebrew — macOS</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — macOS (Homebrew)</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Install Homebrew (run once)</span></div>
+          <div><span class="cmd">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Install something</span></div>
+          <div><span class="cmd">brew install <span class="hl-str">git</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Update everything</span></div>
+          <div><span class="cmd">brew update && brew upgrade</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Install a GUI app</span></div>
+          <div><span class="cmd">brew install <span class="hl-flag">--cask</span> <span class="hl-str">visual-studio-code</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>npm — JavaScript / Node.js packages</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — npm (JavaScript)</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Install a package for your project</span></div>
+          <div><span class="cmd">npm install <span class="hl-str">express</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Install globally (available everywhere)</span></div>
+          <div><span class="cmd">npm install <span class="hl-flag">-g</span> <span class="hl-str">typescript</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Install all dependencies from package.json</span></div>
+          <div><span class="cmd">npm install</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(9)">← Module 9</a>
+      <a class="nav-btn primary" onclick="goto(11)">Module 11: Shell Scripting →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 11: SCRIPTING ══════════════════ -->
+<div class="page" id="page-11">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(251,191,36,.1);font-size:22px">📜</div>
+      <div class="module-meta">
+        <h2>Module 11 — Shell Scripting</h2>
+        <p>Write scripts to automate repetitive tasks — this is where the magic happens.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Your first script</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">hello.sh</span></div>
+        <div class="terminal-body">
+          <div><span class="comment">#!/bin/bash</span></div>
+          <div><span class="comment"># This line ↑ is the "shebang" — tells the system to use bash</span></div>
+          <div>&nbsp;</div>
+          <div><span class="out">echo <span class="hl-str">"Hello, $USER!"</span></span></div>
+          <div><span class="out">echo <span class="hl-str">"Today is: $(date)"</span></span></div>
+          <div><span class="out">echo <span class="hl-str">"You are in: $(pwd)"</span></span></div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — run it</span></div>
+        <div class="terminal-body">
+          <div><span class="cmd">chmod +x hello.sh</span></div>
+          <div><span class="cmd">./hello.sh</span></div>
+          <div class="out">Hello, alex!</div>
+          <div class="out">Today is: Mon Jan 15 09:30:21 EAT 2024</div>
+          <div class="out">You are in: /home/alex</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Variables</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">variables.sh</span></div>
+        <div class="terminal-body">
+          <div><span class="comment">#!/bin/bash</span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Assign a variable (no spaces around =)</span></div>
+          <div><span class="out">NAME=<span class="hl-str">"Alex"</span></span></div>
+          <div><span class="out">AGE=<span class="hl-num">25</span></span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Use it with $</span></div>
+          <div><span class="out">echo <span class="hl-str">"My name is $NAME and I am $AGE years old"</span></span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Capture command output into a variable</span></div>
+          <div><span class="out">CURRENT_DIR=<span class="hl-str">$(pwd)</span></span></div>
+          <div><span class="out">echo <span class="hl-str">"I am in: $CURRENT_DIR"</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>If / else</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">check.sh</span></div>
+        <div class="terminal-body">
+          <div><span class="comment">#!/bin/bash</span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Check if a file exists</span></div>
+          <div><span class="out">if [ -f <span class="hl-str">"config.json"</span> ]; then</span></div>
+          <div><span class="out">  echo <span class="hl-str">"Config file found!"</span></span></div>
+          <div><span class="out">else</span></div>
+          <div><span class="out">  echo <span class="hl-str">"No config file. Creating one..."</span></span></div>
+          <div><span class="out">  echo <span class="hl-str">"{}"</span> > config.json</span></div>
+          <div><span class="out">fi</span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Useful test flags:</span></div>
+          <div><span class="comment"># -f file exists  |  -d directory exists  |  -z string is empty</span></div>
+          <div><span class="comment"># -eq equal  |  -ne not equal  |  -gt greater than</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Loops</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">loops.sh</span></div>
+        <div class="terminal-body">
+          <div><span class="comment">#!/bin/bash</span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Loop over files</span></div>
+          <div><span class="out">for FILE in *.txt; do</span></div>
+          <div><span class="out">  echo <span class="hl-str">"Processing: $FILE"</span></span></div>
+          <div><span class="out">  cp <span class="hl-str">"$FILE"</span> <span class="hl-str">"backup_$FILE"</span></span></div>
+          <div><span class="out">done</span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Loop over a range of numbers</span></div>
+          <div><span class="out">for i in {1..5}; do</span></div>
+          <div><span class="out">  echo <span class="hl-str">"Step $i of 5"</span></span></div>
+          <div><span class="out">done</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>A real-world script: backup your project</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">backup.sh</span></div>
+        <div class="terminal-body">
+          <div><span class="comment">#!/bin/bash</span></div>
+          <div>&nbsp;</div>
+          <div><span class="out">PROJECT=<span class="hl-str">"my-app"</span></span></div>
+          <div><span class="out">DATE=<span class="hl-str">$(date +%Y-%m-%d)</span></span></div>
+          <div><span class="out">BACKUP=<span class="hl-str">"${PROJECT}-backup-${DATE}.tar.gz"</span></span></div>
+          <div>&nbsp;</div>
+          <div><span class="out">echo <span class="hl-str">"Creating backup: $BACKUP"</span></span></div>
+          <div><span class="out">tar <span class="hl-flag">-czf</span> <span class="hl-str">"$BACKUP"</span> <span class="hl-str">"$PROJECT/"</span></span></div>
+          <div>&nbsp;</div>
+          <div><span class="out">echo <span class="hl-str">"Done! Size: $(du -sh $BACKUP | cut -f1)"</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(10)">← Module 10</a>
+      <a class="nav-btn primary" onclick="goto(12)">Module 12: Git →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 12: GIT ══════════════════ -->
+<div class="page" id="page-12">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(248,113,113,.1);font-size:22px">🌿</div>
+      <div class="module-meta">
+        <h2>Module 12 — Git on the CLI</h2>
+        <p>The version control workflow used at every software company on earth.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>The Git workflow</h3>
+      <p>Git tracks changes to your files over time. Every developer uses it. At a job, you'll use these commands multiple times a day.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — daily git workflow</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># 1. Set up git (one time only)</span></div>
+          <div><span class="cmd">git config <span class="hl-flag">--global</span> user.name <span class="hl-str">"Your Name"</span></span></div>
+          <div><span class="cmd">git config <span class="hl-flag">--global</span> user.email <span class="hl-str">"you@email.com"</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># 2. Start a new repo</span></div>
+          <div><span class="cmd">git init</span></div>
+          <div class="out" style="margin-bottom:12px">Initialized empty Git repository in .git/</div>
+
+          <div><span class="comment"># 3. Check what's changed</span></div>
+          <div><span class="cmd">git status</span></div>
+          <div class="out" style="margin-bottom:12px">Untracked files: app.py, README.md</div>
+
+          <div><span class="comment"># 4. Stage your changes</span></div>
+          <div><span class="cmd">git add <span class="hl-path">.</span></span></div>
+          <div class="out" style="margin-bottom:12px">(stage everything) or: git add app.py</div>
+
+          <div><span class="comment"># 5. Commit with a message</span></div>
+          <div><span class="cmd">git commit <span class="hl-flag">-m</span> <span class="hl-str">"Add user login feature"</span></span></div>
+          <div class="out" style="margin-bottom:12px">[main 3a9f2b1] Add user login feature</div>
+
+          <div><span class="comment"># 6. Push to GitHub</span></div>
+          <div><span class="cmd">git push origin main</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Branches — working without breaking things</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># See all branches</span></div>
+          <div><span class="cmd">git branch</span></div>
+          <div class="out" style="margin-bottom:12px">* main</div>
+
+          <div><span class="comment"># Create and switch to a new branch</span></div>
+          <div><span class="cmd">git checkout <span class="hl-flag">-b</span> <span class="hl-str">feature/user-login</span></span></div>
+          <div class="out" style="margin-bottom:12px">Switched to a new branch 'feature/user-login'</div>
+
+          <div><span class="comment"># Switch back to main</span></div>
+          <div><span class="cmd">git checkout main</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Merge feature into main</span></div>
+          <div><span class="cmd">git merge <span class="hl-str">feature/user-login</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Essential Git commands</h3>
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">git clone</div><div class="cmd-desc">Download a repo from GitHub</div><div class="cmd-example">git clone https://github.com/user/repo</div></div>
+        <div class="cmd-card"><div class="cmd-name">git pull</div><div class="cmd-desc">Get latest changes from remote</div><div class="cmd-example">git pull origin main</div></div>
+        <div class="cmd-card"><div class="cmd-name">git log</div><div class="cmd-desc">See commit history</div><div class="cmd-example">git log --oneline</div></div>
+        <div class="cmd-card"><div class="cmd-name">git diff</div><div class="cmd-desc">See what changed since last commit</div><div class="cmd-example">git diff</div></div>
+        <div class="cmd-card"><div class="cmd-name">git stash</div><div class="cmd-desc">Temporarily save uncommitted changes</div><div class="cmd-example">git stash / git stash pop</div></div>
+        <div class="cmd-card"><div class="cmd-name">git reset</div><div class="cmd-desc">Undo staging or commits</div><div class="cmd-example">git reset HEAD~1</div></div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(11)">← Module 11</a>
+      <a class="nav-btn primary" onclick="goto(13)">Module 13: Pro Tips →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 13: PRO TIPS ══════════════════ -->
+<div class="page" id="page-13">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(251,191,36,.1);font-size:22px">⚡</div>
+      <div class="module-meta">
+        <h2>Module 13 — Pro Tips & Tricks</h2>
+        <p>The habits and shortcuts that separate power users from beginners.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Aliases — create your own commands</h3>
+      <p>Aliases let you create shortcuts for long commands. Add them to your <code>~/.bashrc</code> or <code>~/.zshrc</code> file.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">~/.zshrc</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Shorter navigation</span></div>
+          <div><span class="out">alias ll=<span class="hl-str">'ls -la'</span></span></div>
+          <div><span class="out">alias ..=<span class="hl-str">'cd ..'</span></span></div>
+          <div><span class="out">alias ...=<span class="hl-str">'cd ../..'</span></span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Git shortcuts</span></div>
+          <div><span class="out">alias gs=<span class="hl-str">'git status'</span></span></div>
+          <div><span class="out">alias gp=<span class="hl-str">'git push'</span></span></div>
+          <div><span class="out">alias glog=<span class="hl-str">'git log --oneline --graph'</span></span></div>
+          <div>&nbsp;</div>
+          <div><span class="comment"># Safety nets</span></div>
+          <div><span class="out">alias rm=<span class="hl-str">'rm -i'</span></span></div>
+          <div class="out" style="margin-top:12px"># After editing, reload with:</div>
+          <div><span class="cmd">source ~/.zshrc</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>History tricks</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Search command history interactively</span></div>
+          <div class="out">Ctrl + R  →  type to search  →  Enter to run</div>
+          <div class="out" style="margin-bottom:12px">(most powerful shortcut you'll ever learn)</div>
+
+          <div><span class="comment"># See all recent commands</span></div>
+          <div><span class="cmd">history</span></div>
+          <div class="out" style="margin-bottom:12px">  423  ls -la</div>
+          <div class="out" style="margin-bottom:12px">  424  git commit -m "fix bug"</div>
+
+          <div><span class="comment"># Run command #424 again</span></div>
+          <div><span class="cmd">!424</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Run last command again</span></div>
+          <div><span class="cmd">!!</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Run last command with sudo</span></div>
+          <div><span class="cmd">sudo !!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Handy one-liners for work</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash — save these</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># Find and kill a process on port 3000</span></div>
+          <div><span class="cmd">lsof <span class="hl-flag">-ti</span>:3000 | xargs kill</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Watch a command run every 2 seconds</span></div>
+          <div><span class="cmd">watch <span class="hl-flag">-n 2</span> df -h</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Run command but time how long it takes</span></div>
+          <div><span class="cmd">time npm install</span></div>
+          <div class="out" style="margin-bottom:12px">real  0m14.321s</div>
+
+          <div><span class="comment"># Open current folder in VS Code</span></div>
+          <div><span class="cmd">code .</span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Extract a .tar.gz file</span></div>
+          <div><span class="cmd">tar <span class="hl-flag">-xzf</span> <span class="hl-path">archive.tar.gz</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># See a command running in slow motion (for learning)</span></div>
+          <div><span class="cmd">set -x</span></div>
+          <div class="out">(shows each command as it runs in a script — debug mode)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Environment variables</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="terminal-title">bash</span></div>
+        <div class="terminal-body">
+          <div><span class="comment"># See all environment variables</span></div>
+          <div><span class="cmd">env</span></div>
+          <div class="out" style="margin-bottom:12px">PATH=/usr/local/bin:/usr/bin:/bin ...</div>
+
+          <div><span class="comment"># Set one temporarily (this session only)</span></div>
+          <div><span class="cmd">export MY_API_KEY=<span class="hl-str">"abc123"</span></span></div>
+          <div class="out" style="margin-bottom:12px"></div>
+
+          <div><span class="comment"># Use it</span></div>
+          <div><span class="cmd">echo $MY_API_KEY</span></div>
+          <div class="out">abc123</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(12)">← Module 12</a>
+      <a class="nav-btn primary" onclick="goto(14)">Cheat Sheet →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 14: CHEAT SHEET ══════════════════ -->
+<div class="page" id="page-14">
+  <div class="content">
+    <div class="module-header">
+      <div class="module-badge" style="background:rgba(74,222,128,.1);font-size:22px">✓</div>
+      <div class="module-meta">
+        <h2>Master Cheat Sheet</h2>
+        <p>Everything in one place. Bookmark this page.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Navigation</h3>
+      <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>pwd</td><td>Show current directory</td></tr>
+        <tr><td>ls</td><td>List files</td></tr>
+        <tr><td>ls -la</td><td>List all files with details (including hidden)</td></tr>
+        <tr><td>cd folder</td><td>Enter a directory</td></tr>
+        <tr><td>cd ~</td><td>Go home</td></tr>
+        <tr><td>cd -</td><td>Go back to previous directory</td></tr>
+        <tr><td>cd ..</td><td>Go up one level</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Files & Folders</h3>
+      <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>touch file.txt</td><td>Create empty file</td></tr>
+        <tr><td>mkdir folder</td><td>Create directory</td></tr>
+        <tr><td>mkdir -p a/b/c</td><td>Create nested directories</td></tr>
+        <tr><td>cp file dest</td><td>Copy file</td></tr>
+        <tr><td>cp -r dir dest</td><td>Copy entire directory</td></tr>
+        <tr><td>mv file dest</td><td>Move or rename</td></tr>
+        <tr><td>rm file</td><td>Delete file (no undo!)</td></tr>
+        <tr><td>rm -rf folder</td><td>Delete folder recursively</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Viewing Files</h3>
+      <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>cat file</td><td>Print file to screen</td></tr>
+        <tr><td>less file</td><td>Scroll through file (q to quit)</td></tr>
+        <tr><td>head -n 20 file</td><td>First 20 lines</td></tr>
+        <tr><td>tail -n 20 file</td><td>Last 20 lines</td></tr>
+        <tr><td>tail -f file</td><td>Follow file in real time</td></tr>
+        <tr><td>wc -l file</td><td>Count lines in file</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Searching</h3>
+      <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>grep "text" file</td><td>Search for text in file</td></tr>
+        <tr><td>grep -r "text" .</td><td>Search recursively in all files</td></tr>
+        <tr><td>grep -i "text" file</td><td>Case-insensitive search</td></tr>
+        <tr><td>grep -n "text" file</td><td>Show line numbers</td></tr>
+        <tr><td>find . -name "*.py"</td><td>Find files by name/pattern</td></tr>
+        <tr><td>find . -type d</td><td>Find directories only</td></tr>
+        <tr><td>which command</td><td>Where is this program installed</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Pipes & Redirection</h3>
+      <table>
+        <tr><th>Symbol</th><th>What it does</th></tr>
+        <tr><td>cmd1 | cmd2</td><td>Pipe output of cmd1 into cmd2</td></tr>
+        <tr><td>cmd > file</td><td>Save output to file (overwrite)</td></tr>
+        <tr><td>cmd >> file</td><td>Append output to file</td></tr>
+        <tr><td>cmd 2> file</td><td>Save error output to file</td></tr>
+        <tr><td>cmd 2>/dev/null</td><td>Discard errors silently</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Processes</h3>
+      <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>ps aux</td><td>List all processes</td></tr>
+        <tr><td>top / htop</td><td>Live process viewer</td></tr>
+        <tr><td>kill PID</td><td>Stop a process by ID</td></tr>
+        <tr><td>kill -9 PID</td><td>Force-kill a process</td></tr>
+        <tr><td>pkill name</td><td>Kill by process name</td></tr>
+        <tr><td>df -h</td><td>Disk usage (human readable)</td></tr>
+        <tr><td>du -sh *</td><td>Folder sizes</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Keyboard Shortcuts (memorize these)</h3>
+      <table>
+        <tr><th>Shortcut</th><th>What it does</th></tr>
+        <tr><td>Tab</td><td>Auto-complete (use constantly!)</td></tr>
+        <tr><td>↑ / ↓</td><td>Previous / next command</td></tr>
+        <tr><td>Ctrl + R</td><td>Search command history</td></tr>
+        <tr><td>Ctrl + C</td><td>Cancel / kill running command</td></tr>
+        <tr><td>Ctrl + L</td><td>Clear screen</td></tr>
+        <tr><td>Ctrl + A / E</td><td>Jump to start / end of line</td></tr>
+        <tr><td>Ctrl + W</td><td>Delete last word</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Git</h3>
+      <table>
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>git init</td><td>Start a new repo</td></tr>
+        <tr><td>git clone URL</td><td>Download a repo</td></tr>
+        <tr><td>git status</td><td>See what's changed</td></tr>
+        <tr><td>git add .</td><td>Stage all changes</td></tr>
+        <tr><td>git commit -m "msg"</td><td>Save a snapshot</td></tr>
+        <tr><td>git push origin main</td><td>Upload to GitHub</td></tr>
+        <tr><td>git pull</td><td>Download latest changes</td></tr>
+        <tr><td>git checkout -b name</td><td>Create and switch to branch</td></tr>
+        <tr><td>git log --oneline</td><td>See commit history</td></tr>
+        <tr><td>git diff</td><td>See uncommitted changes</td></tr>
+      </table>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top:40px">
+      <div class="callout-icon">🏆</div>
+      <h4>You made it!</h4>
+      <p>You've completed the entire course. The best thing you can do now is <strong>use the terminal every day</strong> — even for things you could do with a GUI. Open a project, navigate with <code>cd</code>, search with <code>grep</code>, manage it with <code>git</code>. In a few weeks, it'll feel like second nature. Good luck at the job! 🚀</p>
+    </div>
+
+    <div class="module-nav">
+      <a class="nav-btn" onclick="goto(13)">← Module 13</a>
+      <a class="nav-btn primary" onclick="goto(0)">↑ Back to Start</a>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const total = 14;
+const visited = new Set([0]);
+
+function goto(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.module-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  document.querySelectorAll('.module-link')[n].classList.add('active');
+  visited.add(n);
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function updateProgress(){
+  const pct = Math.round((visited.size/total)*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-label').textContent=visited.size+' / '+total+' modules';
+}
+
+function answer(el, result, quizId){
+  const quiz = document.getElementById(quizId);
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>{o.onclick=null;o.style.cursor='default'});
+  el.classList.add(result);
+  const fb = document.getElementById(quizId+'-fb-'+result);
+  fb.classList.add('show');
+}
+
+updateProgress();
+</script>
+</body>
+</html>
